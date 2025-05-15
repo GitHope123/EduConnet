@@ -22,4 +22,9 @@
         android:name="com.example.educonnet.ui.estudiante.EstudianteFragment"
         android:label="@string/menu_estudiante"
         tools:layout="@layout/fragment_estudiante" />
+    <fragment
+        android:id="@+id/nav_tutor"
+        android:name="com.example.educonnet.ui.tutor.TutorFragment"
+        android:label="@string/menu_tutor"
+        tools:layout="@layout/fragment_tutor" />
 </navigation>

@@ -11,6 +11,55 @@
     <string name="menu_perfil">Mi perfil</string>
     <string name="menu_profesor">Profesores</string>
     <string name="menu_estudiante">Estudiantes</string>
+    <string name="menu_tutor">Tutores</string>
     <string name="buscar_profesores">Buscar profesores...</string>
     <string name="agregar_profesor">Agregar profesor</string>
+    <string name="grado">Grado</string>
+    <string name="seccion">Sección</string>
+    <string name="buscar_estudiantes">Buscar estudiantes...</string>
+    <string name="agregar_estudiante">Agregar</string>
+
+    <string-array name="grados_array">
+        <item>Seleccione</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+
+    <string-array name="secciones_secundaria">
+        <item>Seleccione</item>
+        <item>Secundaria</item>
+    </string-array>
+
+    <string-array name="secciones_quinto">
+        <item>Seleccione</item>
+        <item>Primaria</item>
+        <item>Secundaria</item>
+    </string-array>
+
+    <string-array name="secciones_primaria">
+        <item>Seleccione</item>
+        <item>Primaria</item>
+    </string-array>
+
+    <string-array name="secciones_default">
+        <item>Seleccione</item>
+    </string-array>
+    <string name="nombre_completo_format">%1$s %2$s</string>
+    <string name="grado_nivel_format">%1$s° %2$s</string>
+    <string name="phone_not_available">No disponible</string>
+    <string name="contact_parent_title">Contactar al apoderado</string>
+    <string name="cancel">Cancelar</string>
+    <string name="call_failed">No se pudo realizar la llamada</string>
+    <string name="whatsapp_not_installed">WhatsApp no está instalado</string>
+    <string name="sms_failed">No se pudo enviar SMS</string>
+
+    <string-array name="contact_options">
+        <item>Llamar</item>
+        <item>WhatsApp</item>
+        <item>Enviar SMS</item>
+    </string-array>
 </resources>

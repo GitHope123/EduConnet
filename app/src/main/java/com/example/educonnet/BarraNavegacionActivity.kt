@@ -45,9 +45,7 @@ class BarraNavegacionActivity : AppCompatActivity(), NavigationView.OnNavigation
         setSupportActionBar(binding.appBarBarraNavegacion.toolbar)
 
         // Configurar FAB
-        binding.appBarBarraNavegacion.fab.setOnClickListener { view ->
-            showUserInfoSnackbar(view)
-        }
+
 
         // Configurar Navigation Controller
         navController = findNavController(R.id.nav_host_fragment_content_barra_navegacion)
@@ -101,19 +99,6 @@ class BarraNavegacionActivity : AppCompatActivity(), NavigationView.OnNavigation
         emailTextView.text = if (correo.isNotEmpty()) correo else "usuario@educonnet.com"
     }
 
-    private fun showUserInfoSnackbar(view: android.view.View) {
-        val userInfo = when(userType) {
-            "Administrador" -> "Modo Administrador"
-            "Profesor" -> "Modo Profesor"
-            "Tutor" -> "Modo Tutor"
-            else -> "Usuario General"
-        }
-
-        Snackbar.make(view, userInfo, Snackbar.LENGTH_LONG)
-            .setAction("Cerrar", null)
-            .setAnchorView(R.id.fab)
-            .show()
-    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.barra_navegacion, menu)

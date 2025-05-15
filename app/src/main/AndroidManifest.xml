@@ -28,6 +28,12 @@
         android:theme="@style/Theme.EduConnet"
         tools:targetApi="31">
         <activity
+            android:name=".ui.estudiante.EditEstudiante"
+            android:exported="false" />
+        <activity
+            android:name=".ui.estudiante.AddEstudiante"
+            android:exported="false" />
+        <activity
             android:name=".ui.perfil.EditPerfil"
             android:exported="false" />
         <activity
