@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">EduConnet</string>
+    <string name="title_activity_barra_navegacion">BarraNavegacionActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_logout">Cerrar sesión</string>
+    <string name="menu_perfil">Mi perfil</string>
+    <string name="menu_profesor">Profesores</string>
+    <string name="menu_estudiante">Estudiantes</string>
+    <string name="buscar_profesores">Buscar profesores...</string>
+    <string name="agregar_profesor">Agregar profesor</string>
 </resources>

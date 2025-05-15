@@ -8,22 +8,18 @@
     android:padding="24dp"
     tools:context=".LoginActivity">
 
-    <!-- Main content centered -->
-
-    <!-- Version Text at the very bottom -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/versionText"
+        app:layout_constraintBottom_toTopOf="@+id/versionTextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.20">
 
         <!-- Logo -->
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/logoImageView"
             android:layout_width="140dp"
             android:layout_height="140dp"
             android:layout_marginBottom="16dp"
@@ -33,87 +29,79 @@
             app:layout_constraintTop_toTopOf="parent"
             app:tint="@color/md_theme_primary" />
 
-        <!-- Welcome Titles -->
+        <!-- Titles -->
         <TextView
-            android:id="@+id/welcomeTitle"
+            android:id="@+id/titleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Bienvenido a EduConnect"
-            android:textAlignment="center"
             android:textColor="@color/md_theme_primary"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imageView" />
+            app:layout_constraintTop_toBottomOf="@id/logoImageView" />
 
         <TextView
-            android:id="@+id/welcomeSubtitle"
+            android:id="@+id/subtitleTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="28dp"
             android:text="Ingresa tus credenciales para acceder a tu cuenta"
-            android:textAlignment="center"
             android:textColor="@color/md_theme_onSurfaceVariant"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/welcomeTitle" />
+            app:layout_constraintTop_toBottomOf="@id/titleTextView" />
 
         <!-- Email Input -->
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/emailLayout"
+            android:id="@+id/emailTextInputLayout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="Correo electrónico"
             app:boxStrokeColor="@color/md_theme_primary"
-            app:boxStrokeWidth="1dp"
-            app:boxStrokeWidthFocused="2dp"
             app:endIconMode="clear_text"
             android:layout_marginTop="16dp"
             app:endIconTint="@color/md_theme_primary"
             app:hintTextColor="@color/md_theme_primary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/welcomeSubtitle">
+            app:layout_constraintTop_toBottomOf="@id/subtitleTextView">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/emailEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:textColor="@color/md_theme_onBackground"
-                android:textColorHint="@color/md_theme_outline" />
+                android:textColor="@color/md_theme_onBackground" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Password Input -->
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/passwordLayout"
+            android:id="@+id/passwordTextInputLayout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:hint="Contraseña"
             app:boxStrokeColor="@color/md_theme_primary"
-            app:boxStrokeWidth="1dp"
-            app:boxStrokeWidthFocused="2dp"
             app:endIconMode="password_toggle"
             app:endIconTint="@color/md_theme_primary"
             app:hintTextColor="@color/md_theme_primary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/emailLayout">
+            app:layout_constraintTop_toBottomOf="@id/emailTextInputLayout">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/passwordEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:textColor="@color/md_theme_onBackground"
-                android:textColorHint="@color/md_theme_outline" />
+                android:textColor="@color/md_theme_onBackground" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Login Button -->
@@ -123,23 +111,17 @@
             android:layout_height="56dp"
             android:layout_marginTop="24dp"
             android:text="Iniciar sesión"
-            android:textAllCaps="false"
-            android:textColor="@color/md_theme_onPrimary"
-            android:textSize="16sp"
             app:backgroundTint="@color/md_theme_primary"
             app:cornerRadius="12dp"
-            app:elevation="2dp"
             app:icon="@drawable/ic_login"
             app:iconGravity="textStart"
-            app:iconPadding="8dp"
-            app:iconTint="@color/md_theme_onPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/passwordLayout" />
+            app:layout_constraintTop_toBottomOf="@id/passwordTextInputLayout" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:id="@+id/versionText"
+        android:id="@+id/versionTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

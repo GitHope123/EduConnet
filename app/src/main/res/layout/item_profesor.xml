@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <!-- Nombre completo -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textViewNombreCompletos"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Nombre Completo"
+        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageButtonEdit"
+        app:layout_constraintBottom_toTopOf="@id/textViewTelefono"
+        android:ellipsize="end"
+        android:maxLines="1" />
+
+    <!-- Teléfono -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textViewTelefono"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="999999999"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorPrimary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewNombreCompletos"
+        app:layout_constraintEnd_toStartOf="@+id/imageButtonEdit"
+        app:layout_constraintBottom_toTopOf="@id/textViewCorreo"
+        android:ellipsize="end"
+        android:maxLines="1" />
+
+    <!-- Correo -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textViewCorreo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="correo@ejemplo.com"
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewTelefono"
+        app:layout_constraintEnd_toStartOf="@+id/imageButtonEdit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:ellipsize="end"
+        android:maxLines="1" />
+
+    <!-- Botón editar -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imageButtonEdit"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:contentDescription="Editar profesor"
+        app:srcCompat="@drawable/ic_edit"
+        android:tint="?attr/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:padding="8dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

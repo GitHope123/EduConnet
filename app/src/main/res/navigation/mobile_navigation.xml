@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_perfil">
+
+    <fragment
+        android:id="@+id/nav_perfil"
+        android:name="com.example.educonnet.ui.perfil.PerfilFragment"
+        android:label="@string/menu_perfil"
+        tools:layout="@layout/fragment_perfil" />
+
+    <fragment
+        android:id="@+id/nav_profesor"
+        android:name="com.example.educonnet.ui.profesor.ProfesorFragment"
+        android:label="@string/menu_profesor"
+        tools:layout="@layout/fragment_profesor" />
+
+    <fragment
+        android:id="@+id/nav_estudiante"
+        android:name="com.example.educonnet.ui.estudiante.EstudianteFragment"
+        android:label="@string/menu_estudiante"
+        tools:layout="@layout/fragment_estudiante" />
+</navigation>
