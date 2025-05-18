@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <!-- Permisos necesarios -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- Permisos de ubicación -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- Permisos de ubicación -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- Características de hardware -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- Características de hardware -->
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -27,26 +32,44 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EduConnet"
         tools:targetApi="31">
+
+        <!-- Actividades del proyecto -->
         <activity
             android:name=".ui.estudiante.EditEstudiante"
             android:exported="false" />
+
         <activity
             android:name=".ui.estudiante.AddEstudiante"
             android:exported="false" />
+
         <activity
             android:name=".ui.perfil.EditPerfil"
             android:exported="false" />
+
+        <activity
+            android:name=".ui.incidencia.AgregarEstudiantes"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.incidencia.AgregarIncidencia"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.incidencia.DescripcionIncidencia"
+            android:exported="false" />
+
         <activity
             android:name=".BarraNavegacionActivity"
             android:exported="false"
             android:label="@string/title_activity_barra_navegacion"
             android:theme="@style/Theme.EduConnet.NoActionBar" />
+
+        <!-- Pantalla de inicio (Login) -->
         <activity
             android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

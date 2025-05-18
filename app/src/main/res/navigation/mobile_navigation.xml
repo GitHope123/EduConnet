@@ -27,4 +27,19 @@
         android:name="com.example.educonnet.ui.tutor.TutorFragment"
         android:label="@string/menu_tutor"
         tools:layout="@layout/fragment_tutor" />
+    <fragment
+        android:id="@+id/nav_incidencia"
+        android:name="com.example.educonnet.ui.incidencia.IncidenciaFragment"
+        android:label="@string/menu_incidencia"
+        tools:layout="@layout/fragment_incidencia" />
+    <fragment
+        android:id="@+id/nav_tutoria"
+        android:name="com.example.educonnet.ui.tutoria.TutoriaFragment"
+        android:label="@string/menu_tutoria"
+        tools:layout="@layout/fragment_tutoria" />
+    <fragment
+        android:id="@+id/nav_reporte"
+        android:name="com.example.educonnet.ui.reporte.ReporteFragment"
+        android:label="@string/menu_reporte"
+        tools:layout="@layout/fragment_reporte" />
 </navigation>

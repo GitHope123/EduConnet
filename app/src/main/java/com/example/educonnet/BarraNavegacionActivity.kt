@@ -18,7 +18,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.educonnet.databinding.ActivityBarraNavegacionBinding
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 
 class BarraNavegacionActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -35,53 +34,45 @@ class BarraNavegacionActivity : AppCompatActivity(), NavigationView.OnNavigation
         binding = ActivityBarraNavegacionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Inicialización de Firebase Auth
         auth = FirebaseAuth.getInstance()
 
-        // Obtener tipo de usuario del Intent
         userType = intent.getStringExtra("USER_TYPE") ?: ""
 
-        // Configurar Toolbar
         setSupportActionBar(binding.appBarBarraNavegacion.toolbar)
 
-        // Configurar FAB
-
-
-        // Configurar Navigation Controller
         navController = findNavController(R.id.nav_host_fragment_content_barra_navegacion)
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
 
-        // Configurar AppBarConfiguration con los fragments de nivel superior
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_perfil,
                 R.id.nav_profesor,
-                R.id.nav_estudiante
+                R.id.nav_estudiante,
+                R.id.nav_tutor,
+                R.id.nav_incidencia,
+                R.id.nav_tutoria,
+                R.id.nav_reporte
             ), drawerLayout
         )
 
-        // Configurar ActionBar y NavigationView
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         navView.setNavigationItemSelectedListener(this)
 
-        // Actualizar header con datos del usuario
         updateNavigationHeader()
     }
 
     private fun updateNavigationHeader() {
-        val navView: NavigationView = binding.navView
+        val navView = binding.navView
         val headerView = navView.getHeaderView(0)
         val usernameTextView = headerView.findViewById<TextView>(R.id.nav_header_username)
         val emailTextView = headerView.findViewById<TextView>(R.id.nav_header_email)
 
-        // Obtener datos del usuario desde GlobalData
         val nombres = LoginActivity.GlobalData.nombresUsuario
         val apellidos = LoginActivity.GlobalData.apellidosUsuario
         val correo = LoginActivity.GlobalData.correoUsuario
 
-        // Formatear el nombre completo
         val nombreCompleto = when {
             nombres.isNotEmpty() && apellidos.isNotEmpty() ->
                 "${nombres.replaceFirstChar { it.uppercase() }} ${apellidos.replaceFirstChar { it.uppercase() }}"
@@ -94,11 +85,9 @@ class BarraNavegacionActivity : AppCompatActivity(), NavigationView.OnNavigation
             }
         }
 
-        // Asignar valores
         usernameTextView.text = nombreCompleto
         emailTextView.text = if (correo.isNotEmpty()) correo else "usuario@educonnet.com"
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.barra_navegacion, menu)
@@ -147,6 +136,35 @@ class BarraNavegacionActivity : AppCompatActivity(), NavigationView.OnNavigation
                     Toast.makeText(this, "Acceso no autorizado", Toast.LENGTH_SHORT).show()
                 }
             }
+            R.id.nav_tutor -> {
+                if (userType == "Administrador" || userType == "Tutor") {
+                    navController.navigate(R.id.nav_tutor)
+                } else {
+                    Toast.makeText(this, "Acceso no autorizado", Toast.LENGTH_SHORT).show()
+                }
+            }
+            R.id.nav_incidencia -> {
+                if (userType == "Administrador" || userType == "Profesor" || userType == "Tutor") {
+                    navController.navigate(R.id.nav_incidencia)
+                } else {
+                    Toast.makeText(this, "Acceso no autorizado", Toast.LENGTH_SHORT).show()
+                }
+            }
+            R.id.nav_tutoria -> {
+                if (userType == "Tutor" || userType == "Profesor") {
+                    navController.navigate(R.id.nav_tutoria)
+                } else {
+                    Toast.makeText(this, "Acceso no autorizado", Toast.LENGTH_SHORT).show()
+                }
+            }
+            R.id.nav_reporte -> {
+                if (userType == "Administrador") {
+                    navController.navigate(R.id.nav_reporte)
+                } else {
+                    Toast.makeText(this, "Acceso no autorizado", Toast.LENGTH_SHORT).show()
+                }
+            }
+            else -> return false
         }
         binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true

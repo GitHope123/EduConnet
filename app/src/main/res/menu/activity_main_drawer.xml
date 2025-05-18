@@ -20,5 +20,17 @@
             android:id="@+id/nav_tutor"
             android:icon="@drawable/ic_tutor"
             android:title="@string/menu_tutor" />
+        <item
+            android:id="@+id/nav_incidencia"
+            android:icon="@drawable/ic_incidencia"
+            android:title="@string/menu_incidencia"/>
+        <item
+            android:id="@+id/nav_tutoria"
+            android:icon="@drawable/ic_tutoria"
+            android:title="@string/menu_tutoria"/>
+        <item
+            android:id="@+id/nav_reporte"
+            android:icon="@drawable/ic_reporte"
+            android:title="@string/menu_reporte"/>
     </group>
 </menu>

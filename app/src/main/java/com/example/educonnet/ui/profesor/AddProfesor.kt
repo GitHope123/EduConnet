@@ -16,9 +16,6 @@ class AddProfesor : AppCompatActivity() {
         binding = ActivityAddProfesorBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-
-
         setupListeners()
     }
 

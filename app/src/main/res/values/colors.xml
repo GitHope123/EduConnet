@@ -2,6 +2,18 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="color_red">#FF0000</color>
+    <color name="color_orange">#FFA500</color>
+    <color name="Primary_green">#08A600</color>
+    <color name="Green">#4CAF50</color>
+    <color name="transparente">#00FFFFFF</color>
+
+    <!-- Status colors -->
+    <color name="status_pending">#B3261E</color>
+    <color name="status_reviewed">#4CAF50</color>
+    <color name="status_in_progress">#2196F3</color>
+
     <color name="md_theme_primary">#0058BC</color>
     <color name="md_theme_onPrimary">#FFFFFF</color>
     <color name="md_theme_primaryContainer">#0070EB</color>
