@@ -31,7 +31,18 @@ class AgregarEstudiantes : AppCompatActivity() {
         updateGrado()
         setupRecyclerView()
         setupSearchView()
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        // Habilita el botón de retroceso
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        // Maneja el clic en la flecha de retroceso
+        toolbar.setNavigationOnClickListener {
+            finish() // Cierra la actividad actual y vuelve a la anterior
+        }
     }
+
 
 
     private fun init() {

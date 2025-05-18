@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.educonnet.LoginActivity
+import com.example.educonnet.R
 import com.example.educonnet.databinding.ActivityEditPerfilBinding
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -25,7 +26,16 @@ class EditPerfil : AppCompatActivity() {
         binding.etCelular.setText(intent.getStringExtra("celular"))
         binding.etCorreo.setText(intent.getStringExtra("correo"))
         binding.etPassword.setText(intent.getStringExtra("password"))
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
+        // Habilita el botón de retroceso
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        // Maneja el clic en la flecha de retroceso
+        toolbar.setNavigationOnClickListener {
+            finish() // Cierra la actividad actual y vuelve a la anterior
+        }
         // Configurar campos no editables
         binding.etNombres.isEnabled = false
         binding.etApellidos.isEnabled = false

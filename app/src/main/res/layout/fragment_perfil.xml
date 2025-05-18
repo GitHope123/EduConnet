@@ -14,8 +14,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        app:cardElevation="4dp"
+        app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
         app:cardCornerRadius="12dp"
+        app:cardElevation="0dp"
+        app:strokeColor="?attr/colorOutline"
+        app:strokeWidth="1dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -32,15 +35,15 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/ic_profile_placeholder"
-                android:tint="@color/md_theme_primary"
-                app:strokeColor="?attr/colorPrimary" />
+                app:tint="?attr/colorPrimary" />
 
             <TextView
                 android:id="@+id/profileName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="10dp"
                 android:text="Marcelino Henry Alcala Castilla"
+                android:textSize="18sp"
                 android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
                 android:textColor="?attr/colorOnSurface" />
 
@@ -54,8 +57,11 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
-        app:cardElevation="2dp"
+        app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
         app:cardCornerRadius="12dp"
+        app:cardElevation="0dp"
+        app:strokeColor="?attr/colorOutline"
+        app:strokeWidth="1dp"
         app:layout_constraintTop_toBottomOf="@id/profileHeader"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -82,9 +88,11 @@
                 android:drawableStart="@drawable/ic_phone"
                 android:drawableTint="?attr/colorOnSurfaceVariant"
                 android:drawablePadding="8dp"
+                android:paddingVertical="8dp"
                 android:text="947419906"
-                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
-                android:layout_marginBottom="16dp"/>
+
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                android:textColor="?attr/colorOnSurface"/>
 
             <!-- Correo -->
             <TextView
@@ -92,25 +100,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_email"
+                android:drawableTint="?attr/colorOnSurfaceVariant"
                 android:drawablePadding="8dp"
+                android:paddingVertical="8dp"
+                android:maxLength="30"
+                android:ellipsize="end"
+                android:singleLine="true"
                 android:text="halcala@colegiosparroquiales.com"
-                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
-                android:layout_marginBottom="16dp"/>
-
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                android:textColor="?attr/colorOnSurface" />
             <!-- Botón de editar -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnEditar"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="match_parent"
-                android:backgroundTint="@color/md_theme_tertiaryContainer"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:text="Editar"
-                android:textColor="@color/md_theme_onSurface"
+                android:textColor="?attr/colorPrimary"
                 app:icon="@drawable/ic_edit"
-                app:iconTint="@color/md_theme_onSurface"
+                app:iconTint="?attr/colorPrimary"
                 app:iconGravity="textStart"
-                app:iconPadding="8dp"/>
+                app:iconPadding="8dp"
+                app:strokeColor="?attr/colorPrimary"/>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
