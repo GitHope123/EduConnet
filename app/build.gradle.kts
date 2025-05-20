@@ -91,4 +91,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation("com.itextpdf:html2pdf:4.0.4")  // Para convertir HTML a PDF
+    implementation("org.jsoup:jsoup:1.15.4")
+
 }
