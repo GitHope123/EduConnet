@@ -5,56 +5,56 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.educonnet.R
+import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager.widget.ViewPager
+import com.example.educonnet.LoginActivity
+import com.example.educonnet.databinding.FragmentTutoriaBinding
+import com.google.android.material.tabs.TabLayout
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [TutoriaFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class TutoriaFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var _binding: FragmentTutoriaBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var tutoriaViewModel: TutoriaViewModel
+    private lateinit var grado: String
+    private lateinit var nivel: String
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tutoria, container, false)
+        _binding = FragmentTutoriaBinding.inflate(inflater, container, false)
+        grado= LoginActivity.GlobalData.gradoUsuario.toString()
+        nivel = LoginActivity.nivelUsuario
+        tutoriaViewModel = ViewModelProvider(this).get(TutoriaViewModel::class.java)
+        tutoriaViewModel.cargarDatos(grado, nivel, TutoriaRepository())
+
+        setupViewPagerAndTabs()
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment TutoriaFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            TutoriaFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+
+    private fun setupViewPagerAndTabs() {
+        val viewPager: ViewPager = binding.viewPager
+        val tabLayout: TabLayout = binding.tabLayout
+
+        val adapter = AdapterFragments(childFragmentManager)
+        viewPager.adapter = adapter
+        tabLayout.setupWithViewPager(viewPager)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        tutoriaViewModel.cargarDatos(grado, nivel, TutoriaRepository())
+        _binding?.viewPager?.post {
+            _binding!!.viewPager?.currentItem = 0
+        }
     }
 }

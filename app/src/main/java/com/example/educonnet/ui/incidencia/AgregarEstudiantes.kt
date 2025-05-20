@@ -55,8 +55,8 @@ class AgregarEstudiantes : AppCompatActivity() {
 
     private fun updateGrado() {
         val grados = arrayOf("Selecione", "1", "2", "3", "4", "5","6")
-        val adapterGrados = ArrayAdapter(this, R.layout.spinner_item_selected, grados)
-        adapterGrados.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        val adapterGrados = ArrayAdapter(this, R.layout.item_spinner, grados)
+        adapterGrados.setDropDownViewResource(R.layout.spinner_dropdown_item)
         spinnerGrado.adapter = adapterGrados
 
         spinnerGrado.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -83,8 +83,8 @@ class AgregarEstudiantes : AppCompatActivity() {
             "6" -> arrayOf("Primaria")
             else -> arrayOf("Seleccione")
         }
-        val adapterSecciones = ArrayAdapter(this, R.layout.spinner_item_selected, secciones)
-        adapterSecciones.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        val adapterSecciones = ArrayAdapter(this, R.layout.item_spinner, secciones)
+        adapterSecciones.setDropDownViewResource(R.layout.spinner_dropdown_item)
         spinnerSeccion.adapter = adapterSecciones
         spinnerSeccion.isEnabled = gradoSeleccionado != "Selecione"
         spinnerSeccion.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {

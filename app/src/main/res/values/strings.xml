@@ -120,6 +120,14 @@
         <item>6</item>
     </string-array>
 
+    <string-array name="item_fecha_tutoria">
+        <item>Todos</item>
+        <item>Hoy</item>
+        <item>Ultimos 7 dias</item>
+        <item>Este mes</item>
+        <item>Este año</item>
+    </string-array>
+
     <string-array name="secciones_secundaria">
         <item>Seleccione</item>
         <item>Secundaria</item>

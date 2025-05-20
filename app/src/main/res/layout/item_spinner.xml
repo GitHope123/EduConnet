@@ -6,6 +6,8 @@
     android:paddingVertical="10dp"
     android:gravity="center"
     android:textSize="14sp"
+    android:textColor="@color/md_theme_inverseSurface"
+    android:text="Select"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:ellipsize="marquee"

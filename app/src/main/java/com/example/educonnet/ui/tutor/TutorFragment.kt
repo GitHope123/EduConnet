@@ -7,8 +7,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +17,6 @@ import com.example.educonnet.R
 import com.example.educonnet.ui.profesor.Profesor
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.toObject
 
 class TutorFragment : Fragment() {
 
@@ -31,8 +30,7 @@ class TutorFragment : Fragment() {
     private var isAddButtonVisible: Boolean = false
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_tutor, container, false)
@@ -46,71 +44,82 @@ class TutorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecyclerView()
-        setupSearchView()
-        setupButtons()
-    }
 
-    private fun setupRecyclerView() {
         recyclerViewTutores.layoutManager = LinearLayoutManager(requireContext())
+
         tutorAdapter = TutorAdapter(
-            onEditClickListener = { profesor -> handleEditClick(profesor) },
-            onRemoveClickListener = { profesor -> showRemoveConfirmation(profesor) },
+            onEditClickListener = { profesor ->
+                // Implementar lógica para editar un profesor si es necesario
+            },
+            onRemoveClickListener = { profesor ->
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Confirmar")
+                    .setMessage("¿Estás seguro de que deseas quitar al tutor?")
+                    .setPositiveButton("Sí") { dialog, which ->
+                        profesor.idProfesor?.let { id ->
+                            db.collection("Profesor").document(id)
+                                .update(
+                                    "grado", 0,
+                                    "nivel", "",
+                                    "tutor", false
+                                )
+                                .addOnSuccessListener {
+                                    val updatedList = tutorAdapter.currentList.filter { it.idProfesor != id }
+                                    tutorAdapter.updateList(updatedList)
+                                    Toast.makeText(requireContext(), "Tutor removido correctamente", Toast.LENGTH_SHORT).show()
+                                }
+                                .addOnFailureListener { exception ->
+                                    Toast.makeText(requireContext(), "Error al remover el tutor: ${exception.message}", Toast.LENGTH_SHORT).show()
+                                }
+                        }
+                    }
+                    .setNegativeButton("No") { dialog, which -> dialog.dismiss() }
+                    .show()
+            },
             isButtonVisible = userType == "Administrador",
             isTextViewGradosNivelVisible = true,
             isImageButtonQuitarTutor = isAddButtonVisible,
             buttonSeleccionar = false
         )
+
         recyclerViewTutores.adapter = tutorAdapter
         fetchProfesores()
-    }
 
-    private fun setupSearchView() {
         searchViewTutor.setOnClickListener {
             searchViewTutor.isIconified = false
             searchViewTutor.requestFocus()
         }
 
         searchViewTutor.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?) = handleSearch(query.orEmpty()).let { true }
-            override fun onQueryTextChange(newText: String?) = handleSearch(newText.orEmpty()).let { true }
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                handleSearch(query.orEmpty())
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                handleSearch(newText.orEmpty())
+                return true
+            }
         })
+
+        setupButtons()
+
+        addButtonTutor.setOnClickListener {
+            val intent = Intent(requireContext(), AddTutor::class.java)
+            startActivityForResult(intent, ADD_TUTOR_REQUEST_CODE)
+        }
     }
 
     private fun setupButtons() {
         addButtonTutor.visibility = if (isAddButtonVisible) View.VISIBLE else View.GONE
-        addButtonTutor.setOnClickListener {
-            startActivityForResult(Intent(requireContext(), AddTutor::class.java), ADD_TUTOR_REQUEST_CODE)
-        }
-    }
-
-    private fun handleEditClick(profesor: Profesor) {
-        // Implement edit functionality here
-    }
-
-    private fun showRemoveConfirmation(profesor: Profesor) {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Confirmar")
-            .setMessage("¿Estás seguro de que deseas quitar al tutor?")
-            .setPositiveButton("Sí") { _, _ -> removeTutor(profesor) }
-            .setNegativeButton("No", null)
-            .show()
-    }
-
-    private fun removeTutor(profesor: Profesor) {
-        profesor.idProfesor?.let { id ->
-            db.collection("Profesor").document(id)
-                .update("grado", 0, "nivel", "", "tutor", false)
-                .addOnSuccessListener {
-                    tutorAdapter.updateList(tutorAdapter.currentList.filter { it.idProfesor != id })
-                    showToast("Tutor removido correctamente")
-                }
-                .addOnFailureListener { e -> showToast("Error al remover el tutor: ${e.message}") }
-        }
     }
 
     private fun handleSearch(query: String) {
-        if (query.isBlank()) tutorAdapter.resetList() else tutorAdapter.filterList(query)
+        if (query.isBlank()) {
+            tutorAdapter.resetList()
+        } else {
+            tutorAdapter.filterList(query)
+        }
     }
 
     private fun fetchProfesores() {
@@ -119,31 +128,28 @@ class TutorFragment : Fragment() {
             .get()
             .addOnSuccessListener { result ->
                 val listaProfesores = result.documents.mapNotNull { document ->
-                    document.toObject<Profesor>()?.apply {
+                    document.toObject(Profesor::class.java)?.apply {
                         idProfesor = document.id
-                        // Ensure all fields are properly set
-                        nombres = document.getString("nombres").orEmpty()
-                        apellidos = document.getString("apellidos").orEmpty()
+                        nombres = document.getString("nombres") ?: ""
+                        apellidos = document.getString("apellidos") ?: ""
                         celular = document.getLong("celular") ?: 0L
-                        cargo = document.getString("cargo").orEmpty()
-                        correo = document.getString("correo").orEmpty()
+                        cargo = document.getString("cargo") ?: ""
+                        correo = document.getString("correo") ?: ""
                         tutor = document.getBoolean("tutor") ?: false
                         grado = when (val gradoValue = document.get("grado")) {
                             is Long -> gradoValue
                             is String -> gradoValue.toLongOrNull() ?: 0L
                             else -> 0L
                         }
-                        nivel = document.getString("nivel").orEmpty()
+                        nivel = document.getString("nivel") ?: ""
                         dni = document.getLong("dni") ?: 0L
                     }
                 }
                 tutorAdapter.updateList(listaProfesores)
             }
-            .addOnFailureListener { e -> showToast("Error al cargar tutores: ${e.message}") }
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            .addOnFailureListener { exception ->
+                Toast.makeText(requireContext(), "Error fetching tutors: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

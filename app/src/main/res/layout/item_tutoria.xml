@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="5dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    android:backgroundTint="@color/md_theme_surface"
+    app:strokeColor="@color/md_theme_outline"
+    app:strokeWidth="1dp"
+    android:padding="12dp"
+    app:checkedIconTint="@color/md_theme_primaryContainer">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+
+
+        <!-- Sección central con detalles -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="2"
+            android:orientation="vertical">
+
+            <!-- Fecha y hora -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textViewFechaTutoria"
+                    style="@style/TextAppearance.Material3.LabelSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="13/08/2024"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="12dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:background="?attr/colorOutline" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textViewHoraTutoria"
+                    style="@style/TextAppearance.Material3.LabelSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4:45pm"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+            </LinearLayout>
+
+            <!-- Nombre del estudiante -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textViewEstudianteTutoria"
+                style="@style/TextAppearance.Material3.BodySmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Torres Ramos Sebastian Rodrigo"
+                android:textColor="?attr/colorOnSurface"
+                android:textStyle="bold" />
+
+            <!-- Nombre del profesor -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textViewProfesorTutoria"
+                style="@style/TextAppearance.Material3.BodySmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Ana Maria Campos Cruz"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <!-- Curso -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/textViewCursoTutoria"
+                    style="@style/Widget.Material3.Chip.Assist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Grado y nivel"
+                    android:textSize="10sp"
+                    app:chipCornerRadius="5dp"
+                    app:chipEndPadding="8dp"
+                    app:chipMinHeight="24dp"
+                    app:chipStartPadding="8dp"
+                    app:chipStrokeWidth="0.5dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/ImagenViewAlertaTutoria"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_type_indicidencia"
+                        app:tint="@color/md_theme_primary" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/TextViewGravedadTutoria"
+                        style="@style/TextAppearance.Material3.LabelSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:text="Moderado" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Sección de estado y acciones -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+            <!-- Estado -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/textViewEstadoTutoria"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Pendiente"
+                android:textSize="10sp"
+                app:chipCornerRadius="5dp"
+                app:chipStrokeWidth="0.5dp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+            <!-- Botón de acción -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/imageButtonCallApoderado"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:cornerRadius="5dp"
+                app:icon="@drawable/ic_call"
+                app:iconGravity="top"
+                app:iconSize="20dp"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

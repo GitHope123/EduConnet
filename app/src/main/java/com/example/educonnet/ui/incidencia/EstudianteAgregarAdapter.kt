@@ -44,10 +44,6 @@ class EstudianteAgregarAdapter(private val estudiantes: MutableList<EstudianteAg
             studentNameTextView.text =estudiante.apellidos+ " " +estudiante.nombres
             studentGradeTextView.text = estudiante.grado.toString()
             studentSectionTextView.text = estudiante.nivel
-            itemView.setBackgroundColor(
-                if (adapterPosition == selectedPosition) Color.rgb(51, 162, 255)//Color al seleccionar
-                else itemView.resources.getColor(com.google.android.material.R.color.mtrl_btn_transparent_bg_color, null)// Color por defecto
-            )
         }
     }
 }
