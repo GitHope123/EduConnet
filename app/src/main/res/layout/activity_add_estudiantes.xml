@@ -5,13 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface">
+    android:background="?attr/colorSurfaceVariant">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
+        android:id="@+id/appBarLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorSurfaceContainer"
+        android:background="?attr/colorSurfaceVariant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -21,37 +21,27 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:title="Editar Estudiante"
+            app:title="Agregar Estudiante"
             app:titleTextColor="?attr/colorOnPrimary"
             app:navigationIcon="@drawable/ic_arrow_back"
-            app:navigationIconTint="?attr/colorOnPrimary"
-            app:navigationContentDescription="Editar Profesor" />
+            app:navigationIconTint="?attr/colorOnPrimary"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:cardBackgroundColor="?attr/colorSurfaceContainer"
+        app:cardBackgroundColor="?attr/colorSurface"
         app:cardElevation="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout2">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="24dp">
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imageViewProfile"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="24dp"
-                app:srcCompat="@drawable/ic_user"
-                app:tint="?attr/colorPrimary" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/nameLayout"
@@ -63,10 +53,10 @@
                 app:startIconDrawable="@drawable/icon_estudiante">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextNombres"
+                    android:id="@+id/addNameStudent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -79,20 +69,19 @@
                 app:startIconDrawable="@drawable/icon_estudiante">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextApellidos"
+                    android:id="@+id/addLastNameStudent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:cardElevation="1dp"
+                android:layout_marginTop="8dp"
+                app:cardElevation="0dp"
                 app:strokeColor="?attr/colorOutline"
-                app:strokeWidth="1dp"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.SmallComponent">
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -100,57 +89,51 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <!-- Grado -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="8dp">
+                        android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/textView"
-                            android:layout_width="70dp"
-                            android:layout_height="wrap_content"
                             style="@style/TextAppearance.Material3.BodyLarge"
-                            android:text="Grado:"
-                            android:textColor="@color/md_theme_primary"
-                            android:layout_marginEnd="8dp"/>
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:text="@string/hint_degree"/>
 
                         <Spinner
-                            android:id="@+id/spinnerGrado"
-                            android:background="@drawable/background_spinner"
+                            android:id="@+id/addSpinnerGradoStudent"
+                            style="@style/Widget.Material3.TextInputEditText.OutlinedBox"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"/>
                     </LinearLayout>
 
-                    <!-- Nivel -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/textVieNivel"
-                            android:layout_width="70dp"
-                            android:layout_height="wrap_content"
                             style="@style/TextAppearance.Material3.BodyLarge"
-                            android:text="Nivel:"
-                            android:textColor="@color/md_theme_primary"
-                            android:layout_marginEnd="8dp"/>
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:text="@string/hint_section"/>
 
                         <Spinner
-                            android:id="@+id/spinnerSection"
+                            android:id="@+id/addSpinnerSectionStudent"
+                            style="@style/Widget.Material3.TextInputEditText.OutlinedBox"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/background_spinner"/>
+                            android:layout_weight="1"/>
                     </LinearLayout>
-
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/phoneLayout"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
@@ -161,30 +144,21 @@
                 app:startIconDrawable="@drawable/ic_phone">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextCelularApoderadoEdit"
+                    android:id="@+id/addCelularApoderado"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="phone" />
+                    android:inputType="phone"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonAddStudent"
+                style="@style/Widget.Material3.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonModificar"
-                    style="@style/Widget.Material3.Button"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/modificar"
-                    app:icon="@drawable/ic_edit"
-                    app:iconTint="@color/white" />
-
-            </LinearLayout>
+                android:layout_marginTop="24dp"
+                android:text="Agregar"
+                app:icon="@drawable/ic_upload"
+                app:iconTint="?attr/colorOnPrimary"/>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

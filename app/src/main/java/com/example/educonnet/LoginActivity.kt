@@ -2,6 +2,7 @@ package com.example.educonnet
 
 import android.content.Intent
 import android.os.Bundle
+import kotlinx.coroutines.*
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -89,25 +90,30 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun handleTeacherLogin(document: DocumentSnapshot) {
-        val isTutor = document.getBoolean("tutor") == true // Corregido check de boolean
-        userType = if (isTutor) "Tutor" else "Profesor"
-        id = document.getString("idProfesor") ?: ""
+        CoroutineScope(Dispatchers.Default).launch {
+            val isTutor = document.getBoolean("tutor") == true
+            userType = if (isTutor) "Tutor" else "Profesor"
+            id = document.getString("idProfesor") ?: ""
 
-        GlobalData.apply {
-            datoTipoUsuario = userType
-            idUsuario = id
-            nombresUsuario = document.getString("nombres") ?: ""
-            apellidosUsuario = document.getString("apellidos") ?: ""
-            celularUsuario = document.getLong("celular") ?: 0L
-            correoUsuario = document.getString("correo") ?: ""
-            tutor = isTutor // Ahora se usa la propiedad
-            gradoUsuario = document.getLong("grado") ?: 0L
-            nivelUsuario = document.getString("nivel") ?: ""
-            passwordUsuario = document.getString("password") ?:""
+            GlobalData.apply {
+                datoTipoUsuario = userType
+                idUsuario = id
+                nombresUsuario = document.getString("nombres") ?: ""
+                apellidosUsuario = document.getString("apellidos") ?: ""
+                celularUsuario = document.getLong("celular") ?: 0L
+                correoUsuario = document.getString("correo") ?: ""
+                tutor = isTutor
+                gradoUsuario = document.getLong("grado") ?: 0L
+                nivelUsuario = document.getString("nivel") ?: ""
+                passwordUsuario = document.getString("password") ?: ""
+            }
+
+            withContext(Dispatchers.Main) {
+                navigateToMainActivity()
+            }
         }
-
-        navigateToMainActivity()
     }
+
 
     private fun navigateToMainActivity() {
         val intent = Intent(this, BarraNavegacionActivity::class.java).apply {

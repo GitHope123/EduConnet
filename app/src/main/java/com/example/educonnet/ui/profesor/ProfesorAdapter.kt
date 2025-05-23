@@ -13,6 +13,7 @@ class ProfesorAdapter(
     private val context: Context,
     private val profesores: List<Profesor>,
     private val onEditClickListener: (Profesor) -> Unit,
+    private val onDeleteClickListener: (Profesor) -> Unit,
     private val isEditButtonVisible: Boolean = true
 ) : RecyclerView.Adapter<ProfesorAdapter.ProfesorViewHolder>() {
 
@@ -32,18 +33,24 @@ class ProfesorAdapter(
         private val textViewNombreCompleto: TextView = itemView.findViewById(R.id.textViewNombreCompletos)
         private val textViewTelefono: TextView = itemView.findViewById(R.id.textViewTelefono)
         private val textViewCorreo: TextView = itemView.findViewById(R.id.textViewCorreo)
-        private val editButton: ShapeableImageView = itemView.findViewById(R.id.imageButtonEdit) // Cambiado a ShapeableImageView
+        private val editButton: ShapeableImageView = itemView.findViewById(R.id.imageButtonEdit)
+        private val deleteButton: ShapeableImageView = itemView.findViewById(R.id.imageButtonDelete)
 
         fun bind(profesor: Profesor) {
             val nombreCompleto = "${profesor.apellidos} ${profesor.nombres}"
             textViewNombreCompleto.text = nombreCompleto
-            textViewTelefono.text = profesor.celular?.toString() ?: "N/A" // Manejo de nulos
-            textViewCorreo.text = profesor.correo ?: "N/A" // Manejo de nulos
+            textViewTelefono.text = profesor.celular?.toString() ?: "N/A"
+            textViewCorreo.text = profesor.correo ?: "N/A"
 
             editButton.visibility = if (isEditButtonVisible) View.VISIBLE else View.GONE
+            deleteButton.visibility = if (isEditButtonVisible) View.VISIBLE else View.GONE
 
             editButton.setOnClickListener {
                 onEditClickListener(profesor)
+            }
+
+            deleteButton.setOnClickListener {
+                onDeleteClickListener(profesor)
             }
 
             itemView.setOnClickListener {

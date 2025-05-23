@@ -42,6 +42,14 @@
         <activity
             android:name=".ui.estudiante.AddEstudiante"
             android:exported="false" />
+        <activity
+            android:name=".ui.profesor.AddProfesor"
+            android:label="Add Professor"
+            android:exported="false" />
+        <activity
+            android:name=".ui.profesor.EditProfesor"
+            android:label="Edit Professor"
+            android:exported="false" />
 
         <activity
             android:name=".ui.perfil.EditPerfil"

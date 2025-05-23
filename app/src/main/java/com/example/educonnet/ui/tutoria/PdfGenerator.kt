@@ -143,26 +143,26 @@ class PdfGenerator(private val context: Context, private val tutoria: TutoriaCla
         """.trimIndent())
 
         // Añadir secciones con tipografía moderna
-        addSection(doc, "Información del Estudiante", listOf(
+        addSection(doc, "Estudiante observado", listOf(
             "Nombre completo" to safeToString("${tutoria.nombreEstudiante} ${tutoria.apellidoEstudiante}", "highlight"),
             "Grado académico" to safeToString(tutoria.grado),
             "Nivel educativo" to safeToString(tutoria.nivel),
             "Contacto del apoderado" to safeToString(tutoria.celularApoderado)
         ))
 
-        addSection(doc, "Información del Profesor", listOf(
+        addSection(doc, "Registrado por", listOf(
             "Profesor a cargo" to safeToString("${tutoria.nombreProfesor} ${tutoria.apellidoProfesor}", "highlight"),
             "Cargo académico" to safeToString(tutoria.cargo)
         ))
 
         val gravedadClass = if (tutoria.atencion == "Urgente") "urgent" else ""
 
-        addSection(doc, "Detalles de la Tutoría", listOf(
-            "Fecha programada" to safeToString(tutoria.fecha),
-            "Horario establecido" to safeToString(tutoria.hora),
-            "Estado actual" to safeToString(tutoria.estado),
-            "Tipo de tutoría" to safeToString(tutoria.tipo),
-            "Nivel de prioridad" to safeToString(tutoria.atencion, gravedadClass)
+        addSection(doc, "Detalles de la Incidencia", listOf(
+            "Fecha" to safeToString(tutoria.fecha),
+            "Horario" to safeToString(tutoria.hora),
+            "Estado" to safeToString(tutoria.estado),
+            "Tipo" to safeToString(tutoria.tipo),
+            "Nivel" to safeToString(tutoria.atencion, gravedadClass)
         ))
 
         // Detalles adicionales con diseño moderno

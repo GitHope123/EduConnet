@@ -98,6 +98,14 @@
     <string name="details_icon">Icono de detalles</string>
     <string name="delete_icon">Icono de eliminar</string>
 
+    <string name="hint_name">Nombres</string>
+    <string name="hint_lastName">Apellidos</string>
+    <string name="hint_degree">Grado</string>
+    <string name="hint_section">Sección</string>
+    <string name="hint_call">Celular</string>
+    <string name="modificar">Modificar</string>
+    <string name="eliminar">Eliminar</string>
+
 
     <string name="reporte_url">https://lookerstudio.google.com/reporting/861f85b1-4e07-4e3e-b3da-c863a4f02d45</string>
     <string name="reporte_clip_label">Reporte URL</string>

@@ -1,5 +1,6 @@
 package com.example.educonnet.ui.estudiante
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -48,9 +49,9 @@ class EstudianteFragment : Fragment() {
         ArrayAdapter.createFromResource(
             requireContext(),
             R.array.grados_array,
-            android.R.layout.simple_spinner_item
+            R.layout.spinner_item_selected
         ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            adapter.setDropDownViewResource(R.layout.spinner_item_selected)
             binding.spinnerGrado.adapter = adapter
         }
 
@@ -80,9 +81,9 @@ class EstudianteFragment : Fragment() {
         ArrayAdapter.createFromResource(
             requireContext(),
             seccionesArray,
-            android.R.layout.simple_spinner_item
+            R.layout.spinner_item_selected
         ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            adapter.setDropDownViewResource(R.layout.spinner_item_selected)
             binding.spinnerSeccion.adapter = adapter
             binding.spinnerSeccion.isEnabled = true
         }
@@ -160,11 +161,15 @@ class EstudianteFragment : Fragment() {
         estudianteAdapter = EstudianteAdapter(
             estudiantes = estudiantesFiltrados,
             onEditClickListener = { estudiante ->
-                // Implementar acción de edición
                 val intent = Intent(requireContext(), EditEstudiante::class.java).apply {
-                    putExtra("ESTUDIANTE_ID", estudiante.idEstudiante)
+                    putExtra("idEstudiante", estudiante.idEstudiante)
+                    putExtra("nombres", estudiante.nombres)
+                    putExtra("apellidos", estudiante.apellidos)
+                    putExtra("grado", estudiante.grado)
+                    putExtra("nivel", estudiante.nivel)
+                    putExtra("celularApoderado", estudiante.celularApoderado)
                 }
-                startActivity(intent)
+                startActivityForResult(intent, EDIT_ESTUDIANTE_REQUEST_CODE)
             },
             isEditButtonVisible = userType == "Administrador"
         )
@@ -176,6 +181,10 @@ class EstudianteFragment : Fragment() {
         }
     }
 
+    companion object {
+        const val EDIT_ESTUDIANTE_REQUEST_CODE = 1001
+    }
+
     private fun setupSearchView() {
         binding.searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?) = true
@@ -184,6 +193,12 @@ class EstudianteFragment : Fragment() {
                 return true
             }
         })
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == EDIT_ESTUDIANTE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            refrescarDatos()
+        }
     }
 
     private fun setupButtons() {

@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.educonnet.LoginActivity
 import com.example.educonnet.databinding.FragmentProfesorBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -32,8 +33,6 @@ class ProfesorFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentProfesorBinding.inflate(inflater, container, false)
-
-        // Asegúrate que searchBar es un SearchView en el layout XML
         userType = LoginActivity.GlobalData.datoTipoUsuario
         isAdmin = userType == "Administrador"
         setupRecyclerView()
@@ -48,7 +47,10 @@ class ProfesorFragment : Fragment() {
             context = requireContext(),
             profesores = filteredProfesorList,
             onEditClickListener = { profesor ->
-                // Aquí puedes manejar el clic para editar si quieres
+                editarProfesor(profesor)
+            },
+            onDeleteClickListener = { profesor ->
+                confirmarEliminacionProfesor(profesor.idProfesor.toString())
             },
             isEditButtonVisible = isAdmin
         )
@@ -58,6 +60,47 @@ class ProfesorFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
         }
     }
+
+    private fun editarProfesor(profesor: Profesor) {
+        val intent = Intent(requireContext(), EditProfesor::class.java).apply {
+            putExtra("idProfesor", profesor.idProfesor)
+            putExtra("nombres", profesor.nombres)
+            putExtra("apellidos", profesor.apellidos)
+            putExtra("celular", profesor.celular)
+            putExtra("cargo", profesor.cargo) // o usa "cargo" si ese es el campo real
+            putExtra("correo", profesor.correo)
+            putExtra("password", profesor.password) // si tienes acceso
+            putExtra("dni", profesor.dni)
+        }
+        startActivity(intent)
+    }
+    private fun confirmarEliminacionProfesor(idProfesor: String) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Confirmar eliminación")
+            .setMessage("¿Estás seguro de que deseas eliminar este profesor?")
+            .setPositiveButton("Eliminar") { _, _ ->
+                eliminarProfesor(idProfesor)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+    private fun eliminarProfesor(idProfesor: String) {
+        FirebaseFirestore.getInstance()
+            .collection("Profesor")
+            .document(idProfesor)
+            .delete()
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), "Profesor eliminado", Toast.LENGTH_SHORT).show()
+                fetchProfesores() // vuelve a cargar la lista si tienes esta función
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "Error al eliminar: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+    }
+
+
+
+
 
     private fun setupSearchView() {
         binding.searchBar.setOnClickListener {
