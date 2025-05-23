@@ -43,6 +43,9 @@
             android:name=".ui.estudiante.AddEstudiante"
             android:exported="false" />
         <activity
+            android:name=".ui.tutor.AddTutor"
+            android:exported="false" />
+        <activity
             android:name=".ui.profesor.AddProfesor"
             android:label="Add Professor"
             android:exported="false" />

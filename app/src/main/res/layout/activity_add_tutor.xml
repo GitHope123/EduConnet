@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <!-- SearchView -->
-        <SearchView
+        <androidx.appcompat.widget.SearchView
             android:id="@+id/searchViewTutorAdd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
