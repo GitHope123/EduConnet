@@ -13,17 +13,16 @@ import com.example.educonnet.R
 import com.example.educonnet.databinding.FragmentPendienteTutoriaBinding
 import com.example.educonnet.ui.tutoria.TutoriaAdapter
 import com.example.educonnet.ui.tutoria.TutoriaClass
-import com.example.educonnet.ui.tutoria.TutoriaRepository
 import com.example.educonnet.ui.tutoria.TutoriaViewModel
+import com.example.educonnet.ui.tutoria.recurso.TutoriaUpdateCallback
 import com.google.firebase.auth.FirebaseAuth
 
-class PendienteTutoria : Fragment() {
+class PendienteTutoria : Fragment(), TutoriaUpdateCallback {
+
     private var _binding: FragmentPendienteTutoriaBinding? = null
     private val binding get() = _binding!!
     private lateinit var tutoriaAdapter: TutoriaAdapter
     private val listaTutorias  : MutableList<TutoriaClass> = mutableListOf()
-    private val listaFilter  : MutableList<TutoriaClass> = mutableListOf()
-    private val tutoriaRepository = TutoriaRepository()
     private var currentFilter: String = "Todos"
     private lateinit var idUsuario:String
     private lateinit var tutoriaViewModel: TutoriaViewModel
@@ -44,11 +43,9 @@ class PendienteTutoria : Fragment() {
         return binding.root
     }
 
-
     private fun init() {
-
         binding.recyclerViewTutorias.layoutManager = LinearLayoutManager(context)
-        tutoriaAdapter = TutoriaAdapter(listaTutorias)
+        tutoriaAdapter = TutoriaAdapter(listaTutorias, this) // Pasar el callback
         binding.recyclerViewTutorias.adapter = tutoriaAdapter
     }
 
@@ -66,24 +63,32 @@ class PendienteTutoria : Fragment() {
     }
 
     private fun applyFilter(selection: String) {
-        currentFilter= selection
+        currentFilter = selection
         idUsuario = LoginActivity.GlobalData.idUsuario
         loadTutoriasForTutor(idUsuario, selection)
     }
 
     private fun loadTutoriasForTutor(id: String, filtroFecha: String) {
-        listaTutorias.clear() // Asegurarse de limpiar la lista antes
-        tutoriaViewModel.filtrarIncidenciasPorEstado("Pendiente",filtroFecha)
+        listaTutorias.clear()
+        tutoriaViewModel.filtrarIncidenciasPorEstado("Pendiente", filtroFecha)
         tutoriaViewModel.incidenciasFiltradasLiveData.observe(viewLifecycleOwner) { incidencias ->
-            listaTutorias.addAll(incidencias) // Agregar los datos cargados
-            tutoriaAdapter.updateData(listaTutorias) // Actualizar la vista
+            listaTutorias.addAll(incidencias)
+            tutoriaAdapter.updateData(listaTutorias)
         }
     }
 
+    // IMPLEMENTACIÓN de TutoriaUpdateCallback
+    override fun onTutoriaUpdated(tutoriaId: String, nuevoEstado: String) {
+        val position = listaTutorias.indexOfFirst { it.id == tutoriaId }
+        if (position != -1) {
+            listaTutorias[position].estado = nuevoEstado
+            tutoriaAdapter.notifyItemChanged(position)
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null // Limpia la referencia a la vista enlazada
+        _binding = null
     }
 
     override fun onResume() {

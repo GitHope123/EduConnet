@@ -10,10 +10,14 @@ data class IncidenciaClass(
     val apellidoEstudiante: String = "",
     val grado: Int = 0,
     val nivel: String = "",
-    val celularApoderado: Int=0,
+    val celularApoderado: Int = 0,
     val tipo: String = "",
     val atencion: String = "",
     val estado: String = "",
     val detalle: String = "",
-    val imageUri: String=""
-) : Serializable
+    val imageUri: String = ""
+) : Serializable {
+    fun cambiarEstado(nuevoEstado: String): IncidenciaClass {
+        return this.copy(estado = nuevoEstado)
+    }
+}

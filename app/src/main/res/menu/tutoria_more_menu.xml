@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_notificar"
+        android:title="Notificar" />
+    <item
+        android:id="@+id/action_citar"
+        android:title="Citar" />
+    <item
+        android:id="@+id/action_completar"
+        android:title="Completar" />
+</menu>

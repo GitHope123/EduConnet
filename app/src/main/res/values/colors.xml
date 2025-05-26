@@ -10,15 +10,16 @@
         <color name="md_theme_light_primaryContainer">#EADDFF</color>
         <color name="md_theme_light_onPrimaryContainer">#21005D</color>
 
-        <color name="md_theme_light_secondary">#625B71</color>
+        <color name="md_theme_light_secondary">#5B7170</color>
         <color name="md_theme_light_onSecondary">#FFFFFF</color>
-        <color name="md_theme_light_secondaryContainer">#E8DEF8</color>
-        <color name="md_theme_light_onSecondaryContainer">#1D192B</color>
+        <color name="md_theme_light_secondaryContainer">#DEF8F8</color>
+        <color name="md_theme_light_onSecondaryContainer">#0295A8</color>
 
-    <color name="md_theme_light_tertiary">#4CAF50</color> <!-- Verde brillante -->
-    <color name="md_theme_light_onTertiary">#FFFFFF</color> <!-- Texto claro sobre verde -->
-    <color name="md_theme_light_tertiaryContainer">#9EFB7D</color> <!-- Verde claro para contenedores -->
-    <color name="md_theme_light_onTertiaryContainer">#0A8C10</color> <!-- Texto oscuro sobre verde claro -->
+    <color name="md_theme_light_tertiary">#4CAF50</color> <!-- Verde brillante principal -->
+    <color name="md_theme_light_onTertiary">#FFFFFF</color> <!-- Texto blanco, buen contraste -->
+    <color name="md_theme_light_tertiaryContainer">#D0F8CE</color> <!-- Verde suave y armonioso para fondo -->
+    <color name="md_theme_light_onTertiaryContainer">#1B5E20</color> <!-- Verde oscuro para texto -->
+
 
 
     <color name="md_theme_light_error">#B3261E</color>
@@ -75,6 +76,16 @@
     <color name="Primary_green">#08A600</color>
     <color name="Green">#4CAF50</color>
     <color name="transparente">#00FFFFFF</color>
+
+    <!-- Colores para el estado Revisado -->
+    <color name="md_theme_light_tertiaryBlue">#1565C0</color> <!-- Azul fuerte -->
+    <color name="md_theme_light_tertiaryContainerBlue">#E3F2FD</color> <!-- Azul claro para fondo -->
+    <color name="md_theme_light_onTertiaryContainerBlue">#0D47A1</color> <!-- Texto oscuro para contraste -->
+
+    <!-- Colores para el estado Notificado (Amarillo) -->
+    <color name="md_theme_light_tertiaryYellow">#F9A825</color> <!-- Amarillo fuerte -->
+    <color name="md_theme_light_tertiaryContainerYellow">#FFF8E1</color> <!-- Fondo amarillo claro -->
+    <color name="md_theme_light_onTertiaryContainerYellow">#F57F17</color> <!-- Texto oscuro -->
 
     <!-- Status colors -->
     <color name="status_pending">#B3261E</color>

@@ -1,29 +1,44 @@
 package com.example.educonnet.ui.tutoria
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.Uri
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
+import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.educonnet.R
 import com.example.educonnet.databinding.ItemTutoriaBinding
+import com.example.educonnet.ui.tutoria.recurso.CitarFormulario
+import com.example.educonnet.ui.tutoria.recurso.InformeFormulario
+import com.example.educonnet.ui.tutoria.recurso.TutoriaUpdateCallback
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
+import com.google.firebase.firestore.FirebaseFirestore
+import org.bouncycastle.crypto.params.Blake3Parameters.context
 import java.io.File
 
-class TutoriaAdapter(private var listaTutorias: MutableList<TutoriaClass>) :
+class TutoriaAdapter(private var listaTutorias: MutableList<TutoriaClass>, private val updateCallback: TutoriaUpdateCallback) :
     RecyclerView.Adapter<TutoriaAdapter.TutoriaViewHolder>() {
 
     inner class TutoriaViewHolder(private val binding: ItemTutoriaBinding) :
@@ -37,8 +52,10 @@ class TutoriaAdapter(private var listaTutorias: MutableList<TutoriaClass>) :
         private val textViewProfesor: MaterialTextView = binding.textViewProfesorTutoria
         private val textViewCurso: Chip = binding.textViewCursoTutoria
         private val textViewEstado: Chip = binding.textViewEstadoTutoria
-        private val buttonCall: MaterialButton = binding.imageButtonCallApoderado
-
+        val rootView: View = binding.root
+       // cambie esto private val buttonCall: MaterialButton = binding.imageButtonCallApoderado por
+       private val buttonMore: MaterialButton = binding.buttonMore
+        @SuppressLint("ResourceAsColor")
         fun bind(tutoria: TutoriaClass) {
             // Configuración de datos
             textViewFecha.text = tutoria.fecha
@@ -51,11 +68,85 @@ class TutoriaAdapter(private var listaTutorias: MutableList<TutoriaClass>) :
 
             // Configuración de colores según estado
             setEstadoStyle(tutoria.estado)
+
             setAlertColors(getAlertColor(tutoria.atencion))
 
             // Configuración del botón de llamada
-            buttonCall.setOnClickListener {
-                showContactOptionsDialog(tutoria)
+            binding.buttonMore.setOnClickListener { view ->
+
+                if (tutoria.estado == "Pendiente") {
+                    // Opción: solo desactiva el botón si realmente no quieres que lo vuelvan a usar
+                    binding.buttonMore.isEnabled = false
+                    Snackbar.make(rootView, "No puedes usar las otras funciones hasta que revises", Snackbar.LENGTH_SHORT).show()
+                    return@setOnClickListener // Salir temprano para que no se muestre el menú
+                }
+
+                // Crear y mostrar el PopupMenu
+                val context = view.context
+                val popup = PopupMenu(context, view)
+                popup.menuInflater.inflate(R.menu.tutoria_more_menu, popup.menu)
+
+                // Cambiar el color del texto a negro
+                for (i in 0 until popup.menu.size()) {
+                    val menuItem = popup.menu.getItem(i)
+                    val spanString = SpannableString(menuItem.title)
+                    spanString.setSpan(ForegroundColorSpan(Color.BLACK), 0, spanString.length, 0)
+                    menuItem.title = spanString
+                }
+
+                popup.setOnMenuItemClickListener { item ->
+                    when (item.itemId) {
+                        R.id.action_notificar -> {
+                            when (tutoria.estado) {
+                                "Revisado" -> showContactOptionsDialog(tutoria)
+                                "Notificado" -> Snackbar.make(rootView, "Ya notificaste", Snackbar.LENGTH_SHORT).show()
+                                "Citado" -> Snackbar.make(rootView, "Ya citaste", Snackbar.LENGTH_SHORT).show()
+                                else -> Snackbar.make(rootView, "Solo se puede notificar si está Revisado", Snackbar.LENGTH_SHORT).show()
+                            }
+                            true
+                        }
+
+                        R.id.action_citar -> {
+                            if (tutoria.estado == "Notificado") {
+                                CitarFormulario.mostrar(
+                                    context = context,
+                                    tutoria = tutoria,
+                                    callback = object : TutoriaUpdateCallback {
+                                        override fun onTutoriaUpdated(tutoriaId: String, nuevoEstado: String) {
+                                            listaTutorias.find { it.id == tutoriaId }?.estado = nuevoEstado
+                                            updateCallback.onTutoriaUpdated(tutoriaId, nuevoEstado)
+                                        }
+                                    }
+                                )
+                            } else {
+                                Snackbar.make(rootView, "Solo se puede citar si está Notificado", Snackbar.LENGTH_SHORT).show()
+                            }
+                            true
+                        }
+
+                        R.id.action_completar -> {
+                            if (tutoria.estado == "Citado") {
+                                InformeFormulario.mostrar(
+                                    context = context,
+                                    tutoria = tutoria,
+                                    callback = object : TutoriaUpdateCallback {
+                                        override fun onTutoriaUpdated(tutoriaId: String, nuevoEstado: String) {
+                                            listaTutorias.find { it.id == tutoriaId }?.estado = nuevoEstado
+                                            updateCallback.onTutoriaUpdated(tutoriaId, nuevoEstado)
+                                        }
+                                    }
+                                )
+                            } else {
+                                Snackbar.make(rootView, "Ya se completó y se hizo el informe", Snackbar.LENGTH_SHORT).show()
+                            }
+                            true
+                        }
+
+                        else -> false
+                    }
+                }
+
+                popup.show()
             }
 
             // Click en el item
@@ -80,20 +171,37 @@ class TutoriaAdapter(private var listaTutorias: MutableList<TutoriaClass>) :
                     textViewEstado.setTextColor(ContextCompat.getColor(context, R.color.md_theme_light_onTertiaryContainer))
                     textViewEstado.chipStrokeColor = ContextCompat.getColorStateList(context, R.color.md_theme_light_tertiary)
                 }
+                "Completado" -> {
+                    textViewEstado.setChipBackgroundColorResource(R.color.md_theme_light_tertiaryContainerBlue)
+                    textViewEstado.setTextColor(ContextCompat.getColor(context, R.color.md_theme_light_onTertiaryContainerBlue))
+                    textViewEstado.chipStrokeColor = ContextCompat.getColorStateList(context, R.color.md_theme_light_tertiaryBlue)
+                }
+                "Notificado" -> {
+                    textViewEstado.setChipBackgroundColorResource(R.color.md_theme_light_tertiaryContainerYellow)
+                    textViewEstado.setTextColor(ContextCompat.getColor(context, R.color.md_theme_light_onTertiaryContainerYellow))
+                    textViewEstado.chipStrokeColor = ContextCompat.getColorStateList(context, R.color.md_theme_light_tertiaryYellow)
+                }
+
                 else -> {
                     textViewEstado.setChipBackgroundColorResource(R.color.md_theme_light_secondaryContainer)
                     textViewEstado.setTextColor(ContextCompat.getColor(context, R.color.md_theme_light_onSecondaryContainer))
                     textViewEstado.chipStrokeColor = ContextCompat.getColorStateList(context, R.color.md_theme_light_secondary)
+
                 }
             }
         }
 
         private fun getAlertColor(gravedad: String): Int {
             val context = binding.root.context
+
             return when (gravedad) {
                 "Moderado" -> ContextCompat.getColor(context, R.color.md_theme_light_primary)
-                "Urgente" -> ContextCompat.getColor(context, R.color.md_theme_light_error)
-                else -> ContextCompat.getColor(context, R.color.md_theme_light_tertiary)
+                "Urgente" -> ContextCompat.getColor(context, R.color.color_orange)
+                "Muy urgente" -> ContextCompat.getColor(context, R.color.md_theme_light_error)
+                else -> {
+                    imagenViewAlerta.visibility = View.GONE
+                    ContextCompat.getColor(context, R.color.md_theme_light_error)
+                }
             }
         }
 
@@ -102,46 +210,87 @@ class TutoriaAdapter(private var listaTutorias: MutableList<TutoriaClass>) :
             textViewGravedad.setTextColor(color)
         }
 
+
         private fun showContactOptionsDialog(tutoria: TutoriaClass) {
             val phoneNumber = tutoria.celularApoderado.toString()
-            if (phoneNumber.isNotBlank()) {
-                val context = binding.root.context
-                val options = listOf(
-                    "Llamar a Apoderado de ${tutoria.nombreEstudiante}",
-                    "Enviar mensaje por WhatsApp",
-                    "Enviar PDF por WhatsApp"
-                )
-                val icons = listOf(R.drawable.ic_phone, R.drawable.ic_whatsapp, R.drawable.ic_pdf)
+            val context = binding.root.context
 
-                val adapter = object : ArrayAdapter<String>(context, R.layout.dialog_option_item, options) {
-                    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                        val view = convertView ?: LayoutInflater.from(context)
-                            .inflate(R.layout.dialog_option_item, parent, false)
-                        val iconView = view.findViewById<ImageView>(R.id.icon)
-                        val textView = view.findViewById<TextView>(R.id.option_text)
-
-                        iconView.setImageResource(icons[position])
-                        textView.text = options[position]
-
-                        return view
-                    }
-                }
-
-                MaterialAlertDialogBuilder(context)
-                    .setTitle("Selecciona una opción")
-                    .setAdapter(adapter) { dialog, which ->
-                        when (which) {
-                            0 -> makePhoneCall(phoneNumber)
-                            1 -> openWhatsApp(phoneNumber)
-                            2 -> sendPdfViaWhatsApp(tutoria)
-                        }
-                    }
-                    .setNegativeButton("Cancelar", null)
-                    .show()
-            } else {
-                Toast.makeText(binding.root.context,
-                    "Número de teléfono no válido", Toast.LENGTH_SHORT).show()
+            if (phoneNumber.isBlank()) {
+                Toast.makeText(context, "Número de teléfono no válido", Toast.LENGTH_SHORT).show()
+                return
             }
+
+            if (tutoria.estado == "Pendiente" ) {
+                Toast.makeText(context, "Por favor, revise la incidencia antes de proceder con la notificación", Toast.LENGTH_LONG).show()
+                return
+            }
+
+            // Inflar el layout personalizado
+            val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_contact_options, null)
+            val optionsList = dialogView.findViewById<ListView>(R.id.options_list)
+            val checkBox = dialogView.findViewById<MaterialCheckBox>(R.id.confirm_checkbox)
+            val btnEnviar = dialogView.findViewById<MaterialButton>(R.id.btn_enviar)
+            val btnCancelar = dialogView.findViewById<MaterialButton>(R.id.btn_cancelar)
+
+            // Configurar las opciones
+            val options = listOf(
+                "Llamar a Apoderado de ${tutoria.nombreEstudiante}",
+                "Enviar mensaje por WhatsApp",
+                "Enviar PDF por WhatsApp"
+            )
+            val icons = listOf(R.drawable.ic_call_phone, R.drawable.ic_whatsapp, R.drawable.ic_pdf)
+
+            val adapter = object : ArrayAdapter<String>(context, R.layout.dialog_option_item, options) {
+                override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                    val view = convertView ?: LayoutInflater.from(context)
+                        .inflate(R.layout.dialog_option_item, parent, false)
+                    view.findViewById<ImageView>(R.id.icon).setImageResource(icons[position])
+                    view.findViewById<TextView>(R.id.option_text).text = options[position]
+                    return view
+                }
+            }
+
+            optionsList.adapter = adapter
+            var selectedOption = -1
+
+            optionsList.setOnItemClickListener { _, _, position, _ ->
+                selectedOption = position
+                checkBox.isEnabled = true
+            }
+
+            val dialog = MaterialAlertDialogBuilder(context)
+                .setTitle("Selecciona una opción")
+                .setView(dialogView)
+                .create()
+
+            btnEnviar.setOnClickListener {
+                if (checkBox.isChecked && selectedOption != -1) {
+                    when (selectedOption) {
+                        0 -> makePhoneCall(phoneNumber)
+                        1 -> openWhatsApp(phoneNumber)
+                        2 -> sendPdfViaWhatsApp(tutoria)
+                    }
+                    updateIncidenciaEstado(tutoria.id)
+                    dialog.dismiss()
+                } else {
+                    Toast.makeText(context, "Selecciona una opción y confirma el envío", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            btnCancelar.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        }
+
+
+        private fun updateIncidenciaEstado(incidenciaId: String) {
+            FirebaseFirestore.getInstance().collection("Incidencia")
+                .document(incidenciaId)
+                .update("estado", "Notificado")
+                .addOnSuccessListener { Log.d("Estado", "Incidencia marcada como notificada") }
+                .addOnFailureListener { e -> Log.e("Estado", "Error al actualizar", e) }
         }
 
         private fun makePhoneCall(phoneNumber: String) {

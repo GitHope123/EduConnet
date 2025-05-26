@@ -7,10 +7,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import com.bumptech.glide.Glide
 import com.example.educonnet.R
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.android.material.card.MaterialCardView
 class DescripcionRevisar : AppCompatActivity() {
     private lateinit var tutoria: TutoriaClass
     private lateinit var tvNombreEstudiante: TextView
@@ -29,6 +29,9 @@ class DescripcionRevisar : AppCompatActivity() {
     private lateinit var checkBoxRevisado: MaterialCheckBox
     private lateinit var btnEnviar: MaterialButton
     private lateinit var cardRevisarEnviar: MaterialCardView
+    private lateinit var iconGravedad: ImageView
+    private lateinit var linearView : View
+    private lateinit var imageViewCard: MaterialCardView
     private val firestore = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,6 +71,11 @@ class DescripcionRevisar : AppCompatActivity() {
         tvRevisado = findViewById(R.id.tvRevisado)
         btnEnviar = findViewById(R.id.btnEnviar)
         cardRevisarEnviar = findViewById(R.id.cardRevisarEnviar)
+        //ocultar esto cuando sea de tipo Reconocimiento
+        iconGravedad=findViewById(R.id.iconGravedad)
+        linearView=findViewById(R.id.viewLinear)
+        // ocultar esto cuando no tenga imagen
+        imageViewCard=findViewById(R.id.imageViewCard)
     }
 
     private fun getIntentData() {
@@ -99,10 +107,24 @@ class DescripcionRevisar : AppCompatActivity() {
         } ?: run {
             imagen.setImageResource(R.drawable.placeholder_image) // Imagen por defecto
         }
+        if (tutoria.tipo == "Reconocimiento") {
+            iconGravedad.visibility = View.GONE
+            linearView.visibility = View.GONE
+        } else {
+            iconGravedad.visibility = View.VISIBLE
+            linearView.visibility = View.VISIBLE
+        }
+
+        if (tutoria.urlImagen.isNullOrEmpty()) {
+            imageViewCard.visibility = View.GONE
+        } else {
+            imageViewCard.visibility = View.VISIBLE
+        }
+
     }
 
     private fun ocultar() {
-        if (::tutoria.isInitialized && tutoria.estado == "Revisado") {
+        if (::tutoria.isInitialized && (tutoria.estado == "Revisado" || tutoria.estado == "Notificado" || tutoria.estado == "Citado" || tutoria.estado == "Completado")) {
             cardRevisarEnviar.visibility = View.GONE // Ocultar todo el CardView
 
             // Mantener estas líneas por compatibilidad
@@ -112,6 +134,7 @@ class DescripcionRevisar : AppCompatActivity() {
         } else {
             cardRevisarEnviar.visibility = View.VISIBLE // Asegurar que sea visible
         }
+
     }
 
     private fun setupListeners() {
@@ -127,17 +150,26 @@ class DescripcionRevisar : AppCompatActivity() {
     private fun updateEstadoInDatabase() {
         if (!::tutoria.isInitialized) return
 
+        // Cambiar el estado localmente
+        tutoria.cambiarEstado("Revisado")
+
+        // Referencia al documento en Firestore
         val incidenciaRef = firestore.collection("Incidencia").document(tutoria.id)
-        incidenciaRef.update("estado", "Revisado")
+
+        // Actualizar estado en la base de datos
+        incidenciaRef.update("estado", tutoria.estado)
             .addOnSuccessListener {
-                tvEstado.text = "Revisado"
+                // Actualizar UI solo si Firestore responde con éxito
+                tvEstado.text = tutoria.estado
                 checkBoxRevisado.isEnabled = false
                 btnEnviar.isEnabled = false
                 finish()
             }
             .addOnFailureListener { e ->
+                // En caso de error, revertir cambios si es necesario (opcional)
                 e.printStackTrace()
                 btnEnviar.isEnabled = true
             }
     }
+
 }

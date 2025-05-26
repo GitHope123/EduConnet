@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.EduConnet" parent="Theme.Material3.Dark.NoActionBar">
+    <style name="Base.Theme.EduConnet" parent="Theme.Material3.Light.NoActionBar">
 
         <item name="android:statusBarColor">@color/md_theme_primary</item>
 
@@ -51,4 +51,15 @@
         <item name="colorSurfaceContainerHigh">@color/md_theme_surfaceContainerHigh</item>
         <item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest</item>
     </style>
+
+    <style name="Theme.EduConnet" parent="Base.Theme.EduConnet" />
+
+    <style name="Theme.EduConnet.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.EduConnet.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.EduConnet.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

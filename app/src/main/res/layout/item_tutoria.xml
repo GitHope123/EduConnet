@@ -151,15 +151,17 @@
                 android:layout_weight="1" />
             <!-- Botón de acción -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/imageButtonCallApoderado"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                app:cornerRadius="5dp"
-                app:icon="@drawable/ic_call"
-                app:iconGravity="top"
-                app:iconSize="20dp"
-                android:layout_gravity="center" />
-
+                android:id="@+id/button_more"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="?attr/colorSurface"
+                android:layout_marginStart="20dp"
+                android:padding="8dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                app:icon="@drawable/ic_more_vert"
+                app:iconTint="@color/black"
+                app:cornerRadius="16dp" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

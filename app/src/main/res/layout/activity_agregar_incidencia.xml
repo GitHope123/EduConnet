@@ -133,7 +133,38 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="12dp"
+                            android:src="@drawable/icon_tipo"
+                            app:tint="?attr/colorOnSurfaceVariant" />
+
+                        <TextView
+                            android:layout_width="80dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="10dp"
+                            android:gravity="center"
+                            android:text="Tipo:"
+                            android:textColor="@color/md_theme_inverseSurface" />
+
+                        <Spinner
+                            android:id="@+id/spinnerTipo"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/background_spinner"
+                            android:popupBackground="@color/md_theme_inverseSurface" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layout_gravedad"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -161,33 +192,6 @@
                     </LinearLayout>
 
                     <!-- Incident Type -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginEnd="12dp"
-                            android:src="@drawable/icon_tipo"
-                            android:layout_gravity="center_vertical"
-                            app:tint="?attr/colorOnSurfaceVariant" />
-                        <TextView
-                            android:layout_width="80dp"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:textColor="@color/md_theme_inverseSurface"
-                            android:layout_marginEnd="10dp"
-                            android:text="Tipo:"/>
-                        <Spinner
-                            android:id="@+id/spinnerTipo"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/background_spinner"
-                            android:popupBackground="@color/md_theme_inverseSurface" />
-                    </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -231,21 +235,49 @@
                             android:textStyle="bold" />
                     </LinearLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edMultilinea"
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="150dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Etiqueta o Valoración :"
+                            android:layout_marginEnd="8dp"
+                            android:textColor="?attr/colorOnSurface"
+                            android:layout_marginBottom="8dp" />
+
+                        <Spinner
+                            android:id="@+id/spinnerSugerencias"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/background_spinner"
+                            android:popupBackground="@color/md_theme_inverseSurface" />
+                    </LinearLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        android:background="@drawable/outlined_edittext_background"
-                        android:gravity="top|start"
-                        android:hint="Escribe aquí..."
-                        android:inputType="textMultiLine"
-                        android:maxLines="8"
-                        android:padding="16dp"
-                        android:scrollbars="vertical"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textColorHint="?attr/colorOnSurfaceVariant"
-                        android:textSize="16sp" />
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        android:hint="Escribe aquí...">
+
+                        <androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView
+                            android:id="@+id/edMultilinea"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:gravity="top|start"
+                            android:inputType="textMultiLine|textCapSentences"
+                            android:maxLines="8"
+                            android:padding="16dp"
+                            android:scrollbars="vertical"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textColorHint="?attr/colorOnSurfaceVariant"
+                            android:textSize="16sp"
+                            android:completionThreshold="1"/>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <!-- Evidence -->
                     <LinearLayout

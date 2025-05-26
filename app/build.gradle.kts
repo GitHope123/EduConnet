@@ -87,7 +87,7 @@ dependencies {
 
     // Animations
     implementation("androidx.dynamicanimation:dynamicanimation:1.1.0")
-
+    implementation ("com.mikhaellopez:circularprogressbar:3.1.0")
     // Testing
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

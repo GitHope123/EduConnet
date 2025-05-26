@@ -152,6 +152,24 @@
         <item>Primaria</item>
     </string-array>
 
+        <!-- Otros arrays que puedas tener -->
+        <string-array name="parentesco_array">
+            <item>Madre</item>
+            <item>Padre</item>
+            <item>Abuelo/a</item>
+            <item>Tío/a</item>
+            <item>Hermano/a mayor</item>
+            <item>Otro (especificar)</item> // añadir un texto para rellenar
+        </string-array>
+    <string name="dialog_informe_titulo">Generar Informe</string>
+    <string name="hint_detalles_informe">Detalles del informe</string>
+    <string name="hint_fecha_informe">Fecha del informe</string>
+    <string name="btn_enviar_informe">Guardar Informe</string>
+    <string name="informe_registrado_exito">Informe guardado correctamente</string>
+    <string name="error_registro_informe">Error al guardar informe: %1$s</string>
+    <string name="error_detalles_vacios">Debe ingresar los detalles del informe</string>
+    <string name="error_detalles_cortos">Los detalles deben tener al menos 10 caracteres</string>
+    <string name="hint_parentesco">Relación familiar</string>
     <string-array name="secciones_default">
         <item>Seleccione</item>
     </string-array>
@@ -164,6 +182,21 @@
     <string name="whatsapp_not_installed">WhatsApp no está instalado</string>
     <string name="sms_failed">No se pudo enviar SMS</string>
 
+        <string name="titulo_cita_apoderado">Citar Apoderado</string>
+        <string name="boton_cancelar">Cancelar</string>
+        <string name="error_campos_vacios">Por favor, complete todos los campos.</string>
+        <string name="cita_registrada_exito">Cita registrada con éxito.</string>
+        <string name="error_registro_cita">Error al registrar la cita: %1$s</string>
+
+        <string name="hint_apoderado">Nombre del apoderado</string>
+        <string name="hint_fecha">Fecha de la cita</string>
+        <string name="hint_hora">Hora de la cita</string>
+        <string name="confirmacion_cita">Confirmo que deseo agendar esta cita</string>
+        <string name="btn_cancelar">Cancelar</string>
+        <string name="btn_enviar">Enviar</string>
+
+
+
     <string-array name="contact_options">
         <item>Llamar</item>
         <item>WhatsApp</item>
@@ -171,4 +204,8 @@
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="attention_default" />
+    <string name="dialog_citar_titulo">Citar Apoderado</string>
+    <string name="confirmacion_informe">Confirma que se completo el informe</string>
+    <string name="titulo_informe">Generar Informe</string>
 </resources>

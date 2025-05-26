@@ -18,5 +18,11 @@ data class TutoriaClass(
     val celularApoderado: Int = 0,
     val tipo: String = "",
     val urlImagen: String = "",
-    val cargo:String=""
-):Serializable
+    val cargo: String = ""
+) : Serializable {
+
+    // Modifica el estado directamente
+    fun cambiarEstado(nuevoEstado: String) {
+        this.estado = nuevoEstado
+    }
+}

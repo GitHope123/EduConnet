@@ -7,8 +7,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.ArrayAdapter
-import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -35,16 +36,17 @@ import java.util.UUID
 
 class AgregarIncidencia : AppCompatActivity() {
     private lateinit var takePhotoLauncher: ActivityResultLauncher<Intent>
-
     private lateinit var binding: ActivityAgregarIncidenciaBinding
     private lateinit var studentId: String
     private lateinit var studentName: String
     private lateinit var studentLastName: String
     private lateinit var auth: FirebaseAuth
     private lateinit var spinnerAtencion: Spinner
+    private lateinit var layoutGravedad: LinearLayout
+    private lateinit var spinnerSugerencia: Spinner
     private lateinit var hora: TextView
     private lateinit var fecha: TextView
-    private lateinit var edMultilinea: EditText
+    private lateinit var edMultilinea: androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView
     private lateinit var spinnerTipo: Spinner
     private var studentGrade: Int = 0
     private lateinit var studentNivel: String
@@ -54,8 +56,11 @@ class AgregarIncidencia : AppCompatActivity() {
     private lateinit var storageRef: StorageReference
     private lateinit var imageViewEvidencia: ImageView
     private lateinit var pickImageLauncher: ActivityResultLauncher<Intent>
-    private lateinit var idUsuario:String
-    private lateinit var datoTipoUsuario:String
+    private lateinit var idUsuario: String
+    private lateinit var datoTipoUsuario: String
+
+    private val sugerenciasPositivas = listOf("Participativo", "Colaborativo", "Responsable")
+    private val sugerenciasNegativas = listOf("Académica", "Conductual", "Otro")
 
     private val firestore: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
 
@@ -67,6 +72,7 @@ class AgregarIncidencia : AppCompatActivity() {
         storageRef = FirebaseStorage.getInstance().reference
         init()
         set()
+        setupSpinnerTipoListener()
         selectedImagen()
         checkPermissions()
         selectedRegistrar()
@@ -85,7 +91,7 @@ class AgregarIncidencia : AppCompatActivity() {
         studentLastName = intent.getStringExtra("EXTRA_STUDENT_LAST_NAME") ?: "N/A"
         studentGrade = intent.getIntExtra("EXTRA_STUDENT_GRADE", 0)
         studentNivel = intent.getStringExtra("EXTRA_STUDENT_SECTION") ?: "N/A"
-        studentCelular = intent.getIntExtra("EXTRA_STUDENT_CELULAR",0)
+        studentCelular = intent.getIntExtra("EXTRA_STUDENT_CELULAR", 0)
         estudiante = findViewById(R.id.tvEstudiante)
         spinnerAtencion = findViewById(R.id.spinnerAtencion)
         spinnerTipo = findViewById(R.id.spinnerTipo)
@@ -93,22 +99,51 @@ class AgregarIncidencia : AppCompatActivity() {
         fecha = findViewById(R.id.tvFecha)
         edMultilinea = findViewById(R.id.edMultilinea)
         imageViewEvidencia = findViewById(R.id.imageViewEvidencia)
-
+        layoutGravedad = findViewById(R.id.layout_gravedad)
+        spinnerSugerencia = findViewById(R.id.spinnerSugerencias)
     }
 
     private fun set() {
         estudiante.text = "$studentLastName $studentName"
+
+        // Configurar spinner de atención
         val atencion = arrayOf("Moderado", "Urgente", "Muy urgente")
         val adapterAtencion = ArrayAdapter(this, R.layout.item_spinner, atencion)
         adapterAtencion.setDropDownViewResource(R.layout.spinner_dropdown_item)
         spinnerAtencion.adapter = adapterAtencion
 
-        val tipo = arrayOf("Conductual", "Académicas", "Otros")
+        // Configurar spinner de tipo
+        val tipo = arrayOf("Reconocimiento", "Falta")
         val adapterTipo = ArrayAdapter(this, R.layout.item_spinner, tipo)
         adapterTipo.setDropDownViewResource(R.layout.spinner_dropdown_item)
         spinnerTipo.adapter = adapterTipo
+
+        // Configurar spinner de sugerencias inicial (vacío hasta que se seleccione tipo)
+        val adapterSugerencia = ArrayAdapter(this, R.layout.item_spinner, emptyList<String>())
+        adapterSugerencia.setDropDownViewResource(R.layout.spinner_dropdown_item)
+        spinnerSugerencia.adapter = adapterSugerencia
+
         fecha.text = obtenerFechaActual()
         hora.text = obtenerHoraActual()
+    }
+
+    private fun setupSpinnerTipoListener() {
+        spinnerTipo.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
+                val tipoSeleccionado = parent?.getItemAtPosition(position).toString()
+                layoutGravedad.isVisible = tipoSeleccionado == "Falta"
+                updateSpinnerSugerencias(tipoSeleccionado)
+            }
+
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
+        }
+    }
+
+    private fun updateSpinnerSugerencias(tipo: String) {
+        val sugerencias = if (tipo == "Reconocimiento") sugerenciasPositivas else sugerenciasNegativas
+        val adapter = ArrayAdapter(this, R.layout.item_spinner, sugerencias)
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+        spinnerSugerencia.adapter = adapter
     }
 
     private fun selectedImagen() {
@@ -142,19 +177,18 @@ class AgregarIncidencia : AppCompatActivity() {
             }
         }
 
-        // Configuración del clic en la vista de imagen
         imageViewEvidencia.setOnClickListener {
             val options = arrayOf("Seleccionar imagen", "Tomar foto")
             AlertDialog.Builder(this)
                 .setTitle("Elegir opción")
                 .setItems(options) { _, which ->
                     when (which) {
-                        0 -> { // Opción para seleccionar imagen
+                        0 -> {
                             val intent = Intent(Intent.ACTION_PICK)
                             intent.type = "image/*"
                             pickImageLauncher.launch(intent)
                         }
-                        1 -> { // Opción para tomar foto
+                        1 -> {
                             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                             if (takePictureIntent.resolveActivity(packageManager) != null) {
                                 takePhotoLauncher.launch(takePictureIntent)
@@ -196,13 +230,10 @@ class AgregarIncidencia : AppCompatActivity() {
     }
 
     private fun subirImagen(imageUri: Uri) {
-
         val ref = storageRef.child("incidencias/${UUID.randomUUID()}")
         ref.putFile(imageUri).continueWithTask { task ->
             if (!task.isSuccessful) {
-                task.exception?.let {
-                    throw it
-                }
+                task.exception?.let { throw it }
             }
             ref.downloadUrl
         }.addOnCompleteListener { task ->
@@ -210,15 +241,13 @@ class AgregarIncidencia : AppCompatActivity() {
                 val downloadUri = task.result
                 guardarDatosIncidencia(downloadUri.toString())
             } else {
-                Toast.makeText(this, "Error al obtener la URL de la imagen", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this, "Error al obtener la URL de la imagen", Toast.LENGTH_SHORT).show()
                 guardarDatosIncidencia("")
             }
         }.addOnFailureListener {
             Toast.makeText(this, "Error al subir la imagen", Toast.LENGTH_SHORT).show()
             guardarDatosIncidencia("")
         }
-
     }
 
     private fun guardarDatosIncidencia(urlImagen: String?) {
@@ -226,12 +255,25 @@ class AgregarIncidencia : AppCompatActivity() {
         datoTipoUsuario = LoginActivity.GlobalData.datoTipoUsuario
         val estado = "Pendiente"
 
+        // Obtener la sugerencia seleccionada
+        val sugerenciaSeleccionada = if (spinnerSugerencia.selectedItemPosition != -1) {
+            spinnerSugerencia.selectedItem.toString()
+        } else {
+            ""
+        }
+
+        // Combinar la sugerencia seleccionada con los detalles
+        val detallesCompletos = if (sugerenciaSeleccionada.isNotEmpty()) {
+            "$sugerenciaSeleccionada: ${edMultilinea.text.toString()}"
+        } else {
+            edMultilinea.text.toString()
+        }
+
         if (datoTipoUsuario == "Administrador") {
-            // Si es Administrador, el ID de usuario no es necesario
             val incidencia = hashMapOf(
                 "fecha" to obtenerFechaActual(),
                 "hora" to obtenerHoraActual(),
-                "idProfesor" to idUsuario,  // O puedes usar "" si prefieres no tener un campo nulo
+                "idProfesor" to idUsuario,
                 "nombreEstudiante" to studentName,
                 "apellidoEstudiante" to studentLastName,
                 "grado" to studentGrade,
@@ -241,7 +283,7 @@ class AgregarIncidencia : AppCompatActivity() {
                 "cargo" to null,
                 "atencion" to spinnerAtencion.selectedItem.toString(),
                 "tipo" to spinnerTipo.selectedItem.toString(),
-                "detalle" to edMultilinea.text.toString(),
+                "detalle" to detallesCompletos,
                 "apellidoProfesor" to "",
                 "nombreProfesor" to "Director",
                 "urlImagen" to urlImagen
@@ -259,9 +301,7 @@ class AgregarIncidencia : AppCompatActivity() {
                     Toast.makeText(this, "Error al registrar la incidencia", Toast.LENGTH_SHORT).show()
                     binding.btnRegistrarIncidencia.isEnabled = true
                 }
-
         } else {
-            // Si no es Administrador, obtén los datos del profesor normalmente
             firestore.collection("Profesor")
                 .document(idUsuario)
                 .get()
@@ -280,9 +320,9 @@ class AgregarIncidencia : AppCompatActivity() {
                             "nivel" to studentNivel,
                             "celularApoderado" to studentCelular,
                             "estado" to estado,
-                            "atencion" to spinnerAtencion.selectedItem.toString(),
+                            "atencion" to if (spinnerTipo.selectedItem.toString() == "Reconocimiento") "" else spinnerAtencion.selectedItem.toString(),
                             "tipo" to spinnerTipo.selectedItem.toString(),
-                            "detalle" to edMultilinea.text.toString(),
+                            "detalle" to detallesCompletos,
                             "apellidoProfesor" to apellidosProfesor,
                             "nombreProfesor" to nombresProfesor,
                             "cargo" to cargo,
@@ -319,7 +359,6 @@ class AgregarIncidencia : AppCompatActivity() {
         }
     }
 
-
     private fun incrementarCantidadIncidencia() {
         val studentRef = firestore.collection("Estudiante").document(studentId)
 
@@ -337,19 +376,20 @@ class AgregarIncidencia : AppCompatActivity() {
             ).show()
         }
     }
+
     private fun checkPermissions() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
             ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_CODE_PERMISSIONS)
         }
     }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permiso concedido
             } else {
-                // Permiso denegado
                 Toast.makeText(this, "Permiso necesario para usar la cámara", Toast.LENGTH_SHORT).show()
             }
         }
@@ -358,5 +398,4 @@ class AgregarIncidencia : AppCompatActivity() {
     companion object {
         private const val REQUEST_CODE_PERMISSIONS = 1001
     }
-
 }

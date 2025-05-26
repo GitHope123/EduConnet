@@ -11,4 +11,36 @@
         <!-- Eliminar subrayado -->
         <item name="queryBackground">@android:color/transparent</item>
     </style>
+
+    <!-- Estilo personalizado claro para DatePickerDialog -->
+    <!-- res/values/styles.xml -->
+    <style name="CustomDatePickerDialog" parent="@android:style/Theme.Material.Light.Dialog">
+        <!-- Fondo del diálogo -->
+        <item name="android:background">@color/md_theme_surface</item>
+
+        <!-- Colores del texto principal -->
+        <item name="android:textColorPrimary">@color/md_theme_onSurface</item>
+
+        <!-- Colores del DatePicker -->
+        <item name="android:datePickerStyle">@style/CustomDatePickerStyle</item>
+    </style>
+
+    <style name="CustomDatePickerStyle" parent="@android:style/Widget.Material.Light.DatePicker">
+        <!-- Color del texto en el calendario -->
+        <item name="android:calendarTextColor">@color/md_theme_onSurface</item>
+
+        <!-- Color del fondo del DatePicker -->
+        <item name="android:background">@color/md_theme_surface</item>
+
+        <!-- Color de selección en el calendario -->
+        <item name="android:weekDayTextAppearance">@style/CustomDatePickerText</item>
+    </style>
+
+    <!-- Estilo para los días de la semana, opcional -->
+    <style name="CustomDatePickerText" parent="@android:style/TextAppearance.Material">
+        <item name="android:textColor">@color/md_theme_primary</item>
+    </style>
+
+
+
 </resources>

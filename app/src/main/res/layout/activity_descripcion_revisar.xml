@@ -199,6 +199,7 @@
 
                             <!-- Separador visual -->
                             <View
+                                android:id="@+id/viewLinear"
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginHorizontal="4dp"
@@ -206,6 +207,7 @@
 
                             <!-- Icono Gravedad -->
                             <ImageView
+                                android:id="@+id/iconGravedad"
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:layout_marginEnd="8dp"
@@ -318,6 +320,7 @@
 
             <!-- Evidence Image Card -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/imageViewCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"

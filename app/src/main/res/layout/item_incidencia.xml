@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
@@ -106,6 +106,40 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical">
+
+            <FrameLayout
+                android:id="@+id/clickFrameStepper"
+                android:layout_width="30dp"
+                android:layout_height="30dp">
+
+                <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                    android:id="@+id/circularProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:cpb_progress="25"
+                    app:cpb_progress_max="100"
+                    app:cpb_progressbar_width="4dp"
+                    app:cpb_background_progressbar_width="2dp"
+                    app:cpb_background_progressbar_color="@color/md_theme_surfaceContainerHigh_mediumContrast"
+                    app:cpb_progressbar_color="@color/md_theme_primary" />
+
+                <TextView
+                    android:id="@+id/tvProgressText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="25%"
+                    android:textColor="@color/md_theme_primary"
+                    android:textSize="10sp"
+                    android:gravity="center"
+                    android:fontFamily="sans-serif-medium" />
+            </FrameLayout>
+
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="16dp"
+                android:layout_marginHorizontal="8dp"
+                android:background="@color/md_theme_primary"/>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvFecha"

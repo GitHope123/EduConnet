@@ -96,7 +96,16 @@ class DescripcionIncidencia : AppCompatActivity() {
         tvNivel.text = getString(R.string.section_format, nivel)
         tvEstado.text = getString(R.string.status_format, estado)
         tvTipo.text = getString(R.string.type_format, tipo)
-        tvAtencion.text = getString(R.string.attention_format, atencion)
+
+        val textoAtencion = if (atencion.isBlank()) {
+            getString(R.string.attention_format, getString(R.string.attention_default))
+        } else {
+            getString(R.string.attention_format, atencion)
+        }
+
+        tvAtencion.text = textoAtencion
+
+
         tvDetalle.text = detalle
 
         // Configurar imagen
@@ -113,7 +122,7 @@ class DescripcionIncidencia : AppCompatActivity() {
     }
 
     private fun configurarBotonEliminar() {
-        btnEliminar.visibility = if (estado == "Pendiente") View.VISIBLE else View.GONE
+        btnEliminar.visibility = if (estado == "Pendiente"||estado == "Notificado" || estado=="Citado" || estado =="Completado") View.VISIBLE else View.GONE
         btnEliminar.setOnClickListener { confirmarEliminacion() }
     }
 
