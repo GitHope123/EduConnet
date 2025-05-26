@@ -45,17 +45,27 @@ class ProfesorAdapter(
             editButton.visibility = if (isEditButtonVisible) View.VISIBLE else View.GONE
             deleteButton.visibility = if (isEditButtonVisible) View.VISIBLE else View.GONE
 
-            editButton.setOnClickListener {
-                onEditClickListener(profesor)
-            }
-
-            deleteButton.setOnClickListener {
-                onDeleteClickListener(profesor)
-            }
-
-            itemView.setOnClickListener {
-                onEditClickListener(profesor)
+            if (isEditButtonVisible) {
+                editButton.setOnClickListener {
+                    onEditClickListener(profesor)
+                }
+                deleteButton.setOnClickListener {
+                    onDeleteClickListener(profesor)
+                }
+                itemView.setOnClickListener {
+                    onEditClickListener(profesor)
+                }
+                itemView.isClickable = true
+                itemView.isFocusable = true
+            } else {
+                // Deshabilitar clicks si no puede editar
+                editButton.setOnClickListener(null)
+                deleteButton.setOnClickListener(null)
+                itemView.setOnClickListener(null)
+                itemView.isClickable = false
+                itemView.isFocusable = false
             }
         }
+
     }
 }

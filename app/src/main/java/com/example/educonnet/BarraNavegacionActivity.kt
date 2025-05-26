@@ -207,7 +207,7 @@ class BarraNavegacionActivity : AppCompatActivity(), NavigationView.OnNavigation
         navMenu.findItem(R.id.nav_tutor).isVisible = true
         navMenu.findItem(R.id.nav_incidencia).isVisible = true
         navMenu.findItem(R.id.nav_tutoria).isVisible = false
-        navMenu.findItem(R.id.nav_reporte).isVisible = true
+        navMenu.findItem(R.id.nav_reporte).isVisible = false
     }
 
     private fun showTutorMenuItems(navMenu: Menu) {
@@ -227,7 +227,7 @@ class BarraNavegacionActivity : AppCompatActivity(), NavigationView.OnNavigation
         navMenu.findItem(R.id.nav_tutor).isVisible = true
         navMenu.findItem(R.id.nav_incidencia).isVisible = true
         navMenu.findItem(R.id.nav_tutoria).isVisible = false
-        navMenu.findItem(R.id.nav_reporte).isVisible = true
+        navMenu.findItem(R.id.nav_reporte).isVisible = false
     }
 
     private fun showDefaultMenuItems(navMenu: Menu) {
@@ -276,7 +276,7 @@ class BarraNavegacionActivity : AppCompatActivity(), NavigationView.OnNavigation
             R.id.nav_estudiante -> handleNavigation(R.id.nav_estudiante,
                 userType == "Administrador" || userType == "Tutor")
             R.id.nav_tutor -> handleNavigation(R.id.nav_tutor,
-                userType == "Administrador" || userType == "Tutor")
+                userType == "Administrador" || userType == "Tutor"|| userType=="Profesor")
             R.id.nav_incidencia -> handleNavigation(R.id.nav_incidencia,
                 userType == "Administrador" || userType == "Profesor" || userType == "Tutor")
             R.id.nav_tutoria -> handleNavigation(R.id.nav_tutoria,
