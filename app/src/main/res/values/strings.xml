@@ -136,20 +136,14 @@
         <item>Este año</item>
     </string-array>
 
-    <string-array name="secciones_secundaria">
+    <string-array name="seccion_array">
         <item>Seleccione</item>
-        <item>Secundaria</item>
-    </string-array>
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+        <item>E</item>
 
-    <string-array name="secciones_quinto">
-        <item>Seleccione</item>
-        <item>Primaria</item>
-        <item>Secundaria</item>
-    </string-array>
-
-    <string-array name="secciones_primaria">
-        <item>Seleccione</item>
-        <item>Primaria</item>
     </string-array>
 
         <!-- Otros arrays que puedas tener -->
