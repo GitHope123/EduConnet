@@ -16,8 +16,4 @@ data class IncidenciaClass(
     val estado: String = "",
     val detalle: String = "",
     val imageUri: String = ""
-) : Serializable {
-    fun cambiarEstado(nuevoEstado: String): IncidenciaClass {
-        return this.copy(estado = nuevoEstado)
-    }
-}
+) : Serializable

@@ -74,7 +74,7 @@ class AddProfesor : AppCompatActivity() {
             "correo" to correo,
             "tutor" to false,
             "grado" to 0,
-            "nivel" to "",
+            "seccion" to "",
             "password" to password
         )
 

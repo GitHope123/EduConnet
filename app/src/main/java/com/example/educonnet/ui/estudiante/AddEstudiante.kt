@@ -56,38 +56,33 @@ class AddEstudiante : AppCompatActivity() {
         spinnerAddGrado = findViewById(R.id.addSpinnerGradoStudent)
         spinnerAddSection = findViewById(R.id.addSpinnerSectionStudent)
         btnAdd = findViewById(R.id.buttonAddStudent)
-        updateGrado()
+        setupGradoSpinner()
     }
 
-    private fun updateGrado() {
-        val grados = arrayOf("1", "2", "3", "4", "5","6")
+    private fun setupGradoSpinner() {
+        val grados = arrayOf("1", "2", "3", "4", "5")
         val adapterGrados = ArrayAdapter(this, R.layout.spinner_item_selected, grados)
         adapterGrados.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerAddGrado.adapter = adapterGrados
+
         spinnerAddGrado.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val gradoSeleccionado = spinnerAddGrado.selectedItem.toString()
-                updateSecciones(gradoSeleccionado)
+                setupSeccionSpinner(gradoSeleccionado)
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
 
-    private fun updateSecciones(gradoSeleccionado: String) {
-        val niveles = when (gradoSeleccionado) {
-            "1" -> arrayOf("Secundaria")
-            "2" -> arrayOf("Secundaria")
-            "3" -> arrayOf("Secundaria")
-            "4" -> arrayOf("Secundaria")
-            "5" -> arrayOf("Primaria", "Secundaria")
-            "6" -> arrayOf("Primaria")
-            else -> arrayOf("Seleccione")
+    private fun setupSeccionSpinner(gradoSeleccionado: String) {
+        val secciones = when (gradoSeleccionado) {
+            "1" -> arrayOf("A", "B", "C", "D", "E")
+            else -> arrayOf("A", "B", "C", "D")
         }
 
-        val adapterSecciones = ArrayAdapter(this, R.layout.spinner_item_selected, niveles)
+        val adapterSecciones = ArrayAdapter(this, R.layout.spinner_item_selected, secciones)
         adapterSecciones.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerAddSection.adapter = adapterSecciones
-        spinnerAddSection.isEnabled = gradoSeleccionado != "Todas"
     }
 
     private fun listener() {
@@ -99,17 +94,17 @@ class AddEstudiante : AppCompatActivity() {
     private fun saveStudentToFirebase() {
         addName = edTxtAddName.text.toString().trim()
         addLastName = edTxtAddLastName.text.toString().trim()
-        addGrado = spinnerAddGrado.selectedItem.toString().trim().toIntOrNull() ?: 0
-        addSection = spinnerAddSection.selectedItem.toString().trim()
+        addGrado = spinnerAddGrado.selectedItem.toString().toInt()
+        addSection = spinnerAddSection.selectedItem.toString()
         addCelularApoderado = edTxtAddCelularApoderado.text.toString().toIntOrNull() ?: 0
 
-        if (addName.isNotEmpty() && addLastName.isNotEmpty() && addSection.isNotEmpty()) {
+        if (validateInputs()) {
             val student = Estudiante(
                 idEstudiante = "",
                 nombres = addName,
                 apellidos = addLastName,
                 grado = addGrado,
-                nivel = addSection,
+                seccion = addSection,
                 cantidadIncidencias = 0,
                 celularApoderado = addCelularApoderado
             )
@@ -120,19 +115,35 @@ class AddEstudiante : AppCompatActivity() {
                     val updatedStudent = student.copy(idEstudiante = documentReference.id)
                     documentReference.update("idEstudiante", updatedStudent.idEstudiante)
                         .addOnSuccessListener {
-                            Toast.makeText(this, "Estudiante agregado con éxito", Toast.LENGTH_SHORT).show()
+                            showToast("Estudiante agregado con éxito")
                             clearFields()
                             finish()
                         }
-                        .addOnFailureListener {
-                            Toast.makeText(this, "Error al actualizar ID del estudiante", Toast.LENGTH_SHORT).show()
+                        .addOnFailureListener { e ->
+                            showToast("Error al actualizar ID: ${e.message}")
                         }
                 }
-                .addOnFailureListener {
-                    Toast.makeText(this, "Error al agregar al estudiante", Toast.LENGTH_SHORT).show()
+                .addOnFailureListener { e ->
+                    showToast("Error al agregar: ${e.message}")
                 }
-        } else {
-            Toast.makeText(this, "Complete todos los campos", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun validateInputs(): Boolean {
+        return when {
+            addName.isEmpty() -> {
+                edTxtAddName.error = "Ingrese el nombre"
+                false
+            }
+            addLastName.isEmpty() -> {
+                edTxtAddLastName.error = "Ingrese los apellidos"
+                false
+            }
+            addCelularApoderado == 0 -> {
+                edTxtAddCelularApoderado.error = "Ingrese un celular válido"
+                false
+            }
+            else -> true
         }
     }
 
@@ -140,5 +151,11 @@ class AddEstudiante : AppCompatActivity() {
         edTxtAddName.text?.clear()
         edTxtAddLastName.text?.clear()
         edTxtAddCelularApoderado.text?.clear()
+        spinnerAddGrado.setSelection(0)
+        spinnerAddSection.setSelection(0)
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

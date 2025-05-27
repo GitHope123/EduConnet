@@ -1,11 +1,8 @@
 package com.example.educonnet.ui.tutoria
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.text.SpannableString
@@ -35,11 +32,12 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.firestore.FirebaseFirestore
-import org.bouncycastle.crypto.params.Blake3Parameters.context
 import java.io.File
 
-class TutoriaAdapter(private var listaTutorias: MutableList<TutoriaClass>, private val updateCallback: TutoriaUpdateCallback) :
-    RecyclerView.Adapter<TutoriaAdapter.TutoriaViewHolder>() {
+class TutoriaAdapter(
+    private var listaTutorias: MutableList<TutoriaClass>,
+    private val updateCallback: TutoriaUpdateCallback
+) : RecyclerView.Adapter<TutoriaAdapter.TutoriaViewHolder>() {
 
     inner class TutoriaViewHolder(private val binding: ItemTutoriaBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -52,9 +50,9 @@ class TutoriaAdapter(private var listaTutorias: MutableList<TutoriaClass>, priva
         private val textViewProfesor: MaterialTextView = binding.textViewProfesorTutoria
         private val textViewCurso: Chip = binding.textViewCursoTutoria
         private val textViewEstado: Chip = binding.textViewEstadoTutoria
+        private val buttonMore: MaterialButton = binding.buttonMore
         val rootView: View = binding.root
-       // cambie esto private val buttonCall: MaterialButton = binding.imageButtonCallApoderado por
-       private val buttonMore: MaterialButton = binding.buttonMore
+
         @SuppressLint("ResourceAsColor")
         fun bind(tutoria: TutoriaClass) {
             // Configuración de datos
@@ -66,88 +64,12 @@ class TutoriaAdapter(private var listaTutorias: MutableList<TutoriaClass>, priva
             textViewEstado.text = tutoria.estado
             textViewGravedad.text = tutoria.atencion
 
-            // Configuración de colores según estado
+            // Configuración de estilos
             setEstadoStyle(tutoria.estado)
-
             setAlertColors(getAlertColor(tutoria.atencion))
 
-            // Configuración del botón de llamada
-            binding.buttonMore.setOnClickListener { view ->
-
-                if (tutoria.estado == "Pendiente") {
-                    // Opción: solo desactiva el botón si realmente no quieres que lo vuelvan a usar
-                    binding.buttonMore.isEnabled = false
-                    Snackbar.make(rootView, "No puedes usar las otras funciones hasta que revises", Snackbar.LENGTH_SHORT).show()
-                    return@setOnClickListener // Salir temprano para que no se muestre el menú
-                }
-
-                // Crear y mostrar el PopupMenu
-                val context = view.context
-                val popup = PopupMenu(context, view)
-                popup.menuInflater.inflate(R.menu.tutoria_more_menu, popup.menu)
-
-                // Cambiar el color del texto a negro
-                for (i in 0 until popup.menu.size()) {
-                    val menuItem = popup.menu.getItem(i)
-                    val spanString = SpannableString(menuItem.title)
-                    spanString.setSpan(ForegroundColorSpan(Color.BLACK), 0, spanString.length, 0)
-                    menuItem.title = spanString
-                }
-
-                popup.setOnMenuItemClickListener { item ->
-                    when (item.itemId) {
-                        R.id.action_notificar -> {
-                            when (tutoria.estado) {
-                                "Revisado" -> showContactOptionsDialog(tutoria)
-                                "Notificado" -> Snackbar.make(rootView, "Ya notificaste", Snackbar.LENGTH_SHORT).show()
-                                "Citado" -> Snackbar.make(rootView, "Ya citaste", Snackbar.LENGTH_SHORT).show()
-                                else -> Snackbar.make(rootView, "Solo se puede notificar si está Revisado", Snackbar.LENGTH_SHORT).show()
-                            }
-                            true
-                        }
-
-                        R.id.action_citar -> {
-                            if (tutoria.estado == "Notificado") {
-                                CitarFormulario.mostrar(
-                                    context = context,
-                                    tutoria = tutoria,
-                                    callback = object : TutoriaUpdateCallback {
-                                        override fun onTutoriaUpdated(tutoriaId: String, nuevoEstado: String) {
-                                            listaTutorias.find { it.id == tutoriaId }?.estado = nuevoEstado
-                                            updateCallback.onTutoriaUpdated(tutoriaId, nuevoEstado)
-                                        }
-                                    }
-                                )
-                            } else {
-                                Snackbar.make(rootView, "Solo se puede citar si está Notificado", Snackbar.LENGTH_SHORT).show()
-                            }
-                            true
-                        }
-
-                        R.id.action_completar -> {
-                            if (tutoria.estado == "Citado") {
-                                InformeFormulario.mostrar(
-                                    context = context,
-                                    tutoria = tutoria,
-                                    callback = object : TutoriaUpdateCallback {
-                                        override fun onTutoriaUpdated(tutoriaId: String, nuevoEstado: String) {
-                                            listaTutorias.find { it.id == tutoriaId }?.estado = nuevoEstado
-                                            updateCallback.onTutoriaUpdated(tutoriaId, nuevoEstado)
-                                        }
-                                    }
-                                )
-                            } else {
-                                Snackbar.make(rootView, "Ya se completó y se hizo el informe", Snackbar.LENGTH_SHORT).show()
-                            }
-                            true
-                        }
-
-                        else -> false
-                    }
-                }
-
-                popup.show()
-            }
+            // Configuración del botón de opciones
+            setupMoreButton(tutoria)
 
             // Click en el item
             binding.root.setOnClickListener {
@@ -156,6 +78,183 @@ class TutoriaAdapter(private var listaTutorias: MutableList<TutoriaClass>, priva
                 }
                 it.context.startActivity(intent)
             }
+        }
+
+        private fun setupMoreButton(tutoria: TutoriaClass) {
+            buttonMore.setOnClickListener { view ->
+                if (tutoria.estado == "Pendiente") {
+                    buttonMore.isEnabled = false
+                    Snackbar.make(
+                        rootView,
+                        "Debes revisar la tutoria antes de usar otras funciones",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                    return@setOnClickListener
+                }
+
+                showPopupMenu(view, tutoria)
+            }
+        }
+
+        private fun showPopupMenu(view: View, tutoria: TutoriaClass) {
+            val context = view.context
+            val popup = PopupMenu(context, view)
+            popup.menuInflater.inflate(R.menu.tutoria_more_menu, popup.menu)
+
+            // Cambiar el color del texto a negro
+            for (i in 0 until popup.menu.size()) {
+                val menuItem = popup.menu.getItem(i)
+                val spanString = SpannableString(menuItem.title)
+                spanString.setSpan(ForegroundColorSpan(Color.BLACK), 0, spanString.length, 0)
+                menuItem.title = spanString
+            }
+
+            popup.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.action_notificar -> handleNotificarAction(tutoria)
+                    R.id.action_citar -> handleCitarAction(tutoria)
+                    R.id.action_completar -> handleCompletarAction(tutoria)
+                    else -> false
+                }
+            }
+            popup.show()
+        }
+
+        private fun handleNotificarAction(tutoria: TutoriaClass): Boolean {
+            return when (tutoria.estado) {
+                "Revisado" -> {
+                    showContactOptionsDialog(tutoria)
+                    true
+                }
+                "Notificado" -> {
+                    Snackbar.make(rootView,
+                        "Ya notificaste al apoderado",
+                        Snackbar.LENGTH_LONG).show()
+                    true
+                }
+                "Citado" -> {
+                    Snackbar.make(rootView,
+                        "Esta tutoría ya fue citada",
+                        Snackbar.LENGTH_LONG).show()
+                    true
+                }
+                "Completado" -> {
+                    Snackbar.make(rootView,
+                        "Esta tutoría ya fue completada, no se puede notificar",
+                        Snackbar.LENGTH_SHORT).show()
+                    true
+                }
+                "Pendiente" -> {
+                    Snackbar.make(rootView,
+                        "Debes revisar la tutoría antes de notificar al apoderado",
+                        Snackbar.LENGTH_LONG).show()
+                    true
+                }
+                else -> {
+                    Snackbar.make(rootView,
+                        "Estado no válido para notificación: ${tutoria.estado}",
+                        Snackbar.LENGTH_SHORT).show()
+                    true
+                }
+            }
+        }
+
+        private fun handleCitarAction(tutoria: TutoriaClass): Boolean {
+            return when (tutoria.estado) {
+                "Notificado" -> {
+                    CitarFormulario.mostrar(
+                        context = rootView.context,
+                        tutoria = tutoria,
+                        callback = object : TutoriaUpdateCallback {
+                            override fun onTutoriaUpdated(tutoriaId: String, nuevoEstado: String) {
+                                updateTutoriaState(tutoriaId, nuevoEstado)
+                            }
+                        }
+                    )
+                    true
+                }
+                "Revisado" -> {
+                    Snackbar.make(rootView,
+                        "Primero debes notificar al apoderado antes de citar",
+                        Snackbar.LENGTH_LONG).show()
+                    true
+                }
+                "Pendiente" -> {
+                    Snackbar.make(rootView,
+                        "Debes revisar y notificar al apoderado antes de citar",
+                        Snackbar.LENGTH_LONG).show()
+                    true
+                }
+                "Citado" -> {
+                    Snackbar.make(rootView,
+                        "Ya se citó al apoderado para esta tutoría",
+                        Snackbar.LENGTH_SHORT).show()
+                    true
+                }
+                "Completado" -> {
+                    Snackbar.make(rootView,
+                        "Esta tutoría ya fue completada, no se puede citar",
+                        Snackbar.LENGTH_SHORT).show()
+                    true
+                }
+                else -> {
+                    Snackbar.make(rootView,
+                        "Estado no reconocido: ${tutoria.estado}",
+                        Snackbar.LENGTH_SHORT).show()
+                    true
+                }
+            }
+        }
+        private fun handleCompletarAction(tutoria: TutoriaClass): Boolean {
+            return when (tutoria.estado) {
+                "Citado" -> {
+                    InformeFormulario.mostrar(
+                        context = rootView.context,
+                        tutoria = tutoria,
+                        callback = object : TutoriaUpdateCallback {
+                            override fun onTutoriaUpdated(tutoriaId: String, nuevoEstado: String) {
+                                updateTutoriaState(tutoriaId, nuevoEstado)
+                            }
+                        }
+                    )
+                    true
+                }
+                "Notificado" -> {
+                    Snackbar.make(rootView,
+                        "Primero debes citar al apoderado antes de completar el informe",
+                        Snackbar.LENGTH_LONG).show()
+                    true
+                }
+                "Revisado" -> {
+                    Snackbar.make(rootView,
+                        "Debes notificar al apoderado y citarlo antes de completar el informe",
+                        Snackbar.LENGTH_LONG).show()
+                    true
+                }
+                "Pendiente" -> {
+                    Snackbar.make(rootView,
+                        "Debes revisar, notificar y citar antes de completar el informe",
+                        Snackbar.LENGTH_LONG).show()
+                    true
+                }
+                "Completado" -> {
+                    Snackbar.make(rootView,
+                        "El informe de esta tutoría ya fue completado",
+                        Snackbar.LENGTH_SHORT).show()
+                    true
+                }
+                else -> {
+                    Snackbar.make(rootView,
+                        "Estado no reconocido: ${tutoria.estado}",
+                        Snackbar.LENGTH_SHORT).show()
+                    true
+                }
+            }
+        }
+
+        private fun updateTutoriaState(tutoriaId: String, nuevoEstado: String) {
+            listaTutorias.find { it.id == tutoriaId }?.estado = nuevoEstado
+            updateCallback.onTutoriaUpdated(tutoriaId, nuevoEstado)
         }
 
         private fun setEstadoStyle(estado: String) {
@@ -181,19 +280,16 @@ class TutoriaAdapter(private var listaTutorias: MutableList<TutoriaClass>, priva
                     textViewEstado.setTextColor(ContextCompat.getColor(context, R.color.md_theme_light_onTertiaryContainerYellow))
                     textViewEstado.chipStrokeColor = ContextCompat.getColorStateList(context, R.color.md_theme_light_tertiaryYellow)
                 }
-
                 else -> {
                     textViewEstado.setChipBackgroundColorResource(R.color.md_theme_light_secondaryContainer)
                     textViewEstado.setTextColor(ContextCompat.getColor(context, R.color.md_theme_light_onSecondaryContainer))
                     textViewEstado.chipStrokeColor = ContextCompat.getColorStateList(context, R.color.md_theme_light_secondary)
-
                 }
             }
         }
 
         private fun getAlertColor(gravedad: String): Int {
             val context = binding.root.context
-
             return when (gravedad) {
                 "Moderado" -> ContextCompat.getColor(context, R.color.md_theme_light_primary)
                 "Urgente" -> ContextCompat.getColor(context, R.color.color_orange)
@@ -210,7 +306,6 @@ class TutoriaAdapter(private var listaTutorias: MutableList<TutoriaClass>, priva
             textViewGravedad.setTextColor(color)
         }
 
-
         private fun showContactOptionsDialog(tutoria: TutoriaClass) {
             val phoneNumber = tutoria.celularApoderado.toString()
             val context = binding.root.context
@@ -220,19 +315,17 @@ class TutoriaAdapter(private var listaTutorias: MutableList<TutoriaClass>, priva
                 return
             }
 
-            if (tutoria.estado == "Pendiente" ) {
+            if (tutoria.estado == "Pendiente") {
                 Toast.makeText(context, "Por favor, revise la incidencia antes de proceder con la notificación", Toast.LENGTH_LONG).show()
                 return
             }
 
-            // Inflar el layout personalizado
             val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_contact_options, null)
             val optionsList = dialogView.findViewById<ListView>(R.id.options_list)
             val checkBox = dialogView.findViewById<MaterialCheckBox>(R.id.confirm_checkbox)
             val btnEnviar = dialogView.findViewById<MaterialButton>(R.id.btn_enviar)
             val btnCancelar = dialogView.findViewById<MaterialButton>(R.id.btn_cancelar)
 
-            // Configurar las opciones
             val options = listOf(
                 "Llamar a Apoderado de ${tutoria.nombreEstudiante}",
                 "Enviar mensaje por WhatsApp",
@@ -284,7 +377,6 @@ class TutoriaAdapter(private var listaTutorias: MutableList<TutoriaClass>, priva
             dialog.show()
         }
 
-
         private fun updateIncidenciaEstado(incidenciaId: String) {
             FirebaseFirestore.getInstance().collection("Incidencia")
                 .document(incidenciaId)
@@ -320,7 +412,7 @@ class TutoriaAdapter(private var listaTutorias: MutableList<TutoriaClass>, priva
         }
 
         private fun sendPdfViaWhatsApp(tutoria: TutoriaClass) {
-            val context = binding.root.context // Mueve esta línea al inicio
+            val context = binding.root.context
 
             try {
                 val pdfGenerator = PdfGenerator(context, tutoria)
@@ -353,7 +445,6 @@ class TutoriaAdapter(private var listaTutorias: MutableList<TutoriaClass>, priva
                 e.printStackTrace()
             }
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TutoriaViewHolder {

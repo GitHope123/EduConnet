@@ -16,13 +16,13 @@ class TutorDiffCallback : DiffUtil.ItemCallback<Profesor>() {
                 oldItem.celular == newItem.celular &&
                 oldItem.correo == newItem.correo &&
                 oldItem.grado == newItem.grado &&
-                oldItem.nivel == newItem.nivel &&
+                oldItem.seccion == newItem.seccion &&
                 oldItem.tutor == newItem.tutor
     }
 
     override fun getChangePayload(oldItem: Profesor, newItem: Profesor): Any? {
         // Return specific changes if needed for partial updates
-        return if (oldItem.grado != newItem.grado || oldItem.nivel != newItem.nivel) {
+        return if (oldItem.grado != newItem.grado || oldItem.seccion != newItem.seccion) {
             mapOf("grado_nivel" to true)
         } else {
             super.getChangePayload(oldItem, newItem)

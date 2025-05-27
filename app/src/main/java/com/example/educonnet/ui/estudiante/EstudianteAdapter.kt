@@ -62,7 +62,7 @@ class EstudianteAdapter(
             gradoTextView.text = context.getString(
                 R.string.grado_nivel_format,
                 estudiante.grado,
-                estudiante.nivel
+                estudiante.seccion
             )
 
             celularTextView.text = estudiante.celularApoderado?.let { phone ->

@@ -141,7 +141,7 @@ class TutorFragment : Fragment() {
                             is String -> gradoValue.toLongOrNull() ?: 0L
                             else -> 0L
                         }
-                        nivel = document.getString("nivel") ?: ""
+                        seccion = document.getString("seccion") ?: ""
                         dni = document.getLong("dni") ?: 0L
                     }
                 }

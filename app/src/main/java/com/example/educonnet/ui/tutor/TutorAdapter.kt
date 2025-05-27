@@ -46,7 +46,7 @@ class TutorAdapter(
             textViewCelular.text = profesor.celular.toString()
             textViewCorreo.text = profesor.correo
 
-            val letra = profesor.nivel.firstOrNull() ?: ' '
+            val letra = profesor.seccion.firstOrNull() ?: ' '
             textViewGradosNivelTutor.text = "${profesor.grado} $letra"
 
             // Configuración de la visibilidad

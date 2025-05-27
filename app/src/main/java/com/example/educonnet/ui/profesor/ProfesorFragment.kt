@@ -170,7 +170,7 @@ class ProfesorFragment : Fragment() {
                 cargo = getString("cargo") ?: "",
                 correo = getString("correo") ?: "",
                 grado = (get("grado") as? Number)?.toLong() ?: 0L,
-                nivel = getString("nivel") ?: "",
+                seccion = getString("seccion") ?: "",
                 password = getString("password") ?: "",
                 dni = (get("dni") as? Number)?.toLong() ?: 0L
             )

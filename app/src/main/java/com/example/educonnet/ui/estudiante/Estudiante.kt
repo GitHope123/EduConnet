@@ -7,7 +7,8 @@ data class Estudiante(
     val apellidos: String = "",
     val nombres: String = "",
     val grado: Int = 0,
-    val nivel: String = "", // Primaria y Secundaria
+    val seccion: String = "", // A B C D..
     val cantidadIncidencias:Int=0,
     val celularApoderado: Int =0
+
 ):Serializable

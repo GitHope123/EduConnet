@@ -45,15 +45,11 @@ class EstudianteFragment : Fragment() {
     }
 
     private fun setupSpinners() {
-        // Configuración del spinner de grados
-        ArrayAdapter.createFromResource(
-            requireContext(),
-            R.array.grados_array,
-            R.layout.spinner_item_selected
-        ).also { adapter ->
-            adapter.setDropDownViewResource(R.layout.spinner_item_selected)
-            binding.spinnerGrado.adapter = adapter
-        }
+        // Configuración del spinner de grados (1-5)
+        val grados = arrayOf("Seleccione", "1", "2", "3", "4", "5")
+        val adapterGrados = ArrayAdapter(requireContext(), R.layout.spinner_item_selected, grados)
+        adapterGrados.setDropDownViewResource(R.layout.spinner_item_selected)
+        binding.spinnerGrado.adapter = adapterGrados
 
         binding.spinnerGrado.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
@@ -71,22 +67,16 @@ class EstudianteFragment : Fragment() {
             return
         }
 
-        val seccionesArray = when (grado) {
-            "1", "2", "3", "4" -> R.array.secciones_secundaria
-            "5" -> R.array.secciones_quinto
-            "6" -> R.array.secciones_primaria
-            else -> R.array.secciones_default
+        val secciones = when (grado) {
+            "Seleccione" -> arrayOf("Seleccione")
+            "1" -> arrayOf("Seleccione", "A", "B", "C", "D", "E")
+            else -> arrayOf("Seleccione", "A", "B", "C", "D")
         }
 
-        ArrayAdapter.createFromResource(
-            requireContext(),
-            seccionesArray,
-            R.layout.spinner_item_selected
-        ).also { adapter ->
-            adapter.setDropDownViewResource(R.layout.spinner_item_selected)
-            binding.spinnerSeccion.adapter = adapter
-            binding.spinnerSeccion.isEnabled = true
-        }
+        val adapterSecciones = ArrayAdapter(requireContext(), R.layout.spinner_item_selected, secciones)
+        adapterSecciones.setDropDownViewResource(R.layout.spinner_item_selected)
+        binding.spinnerSeccion.adapter = adapterSecciones
+        binding.spinnerSeccion.isEnabled = grado != "Seleccione"
 
         binding.spinnerSeccion.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
@@ -105,7 +95,7 @@ class EstudianteFragment : Fragment() {
     private fun cargarEstudiantes(grado: String, seccion: String) {
         firestore.collection("Estudiante")
             .whereEqualTo("grado", grado.toInt())
-            .whereEqualTo("nivel", seccion)
+            .whereEqualTo("seccion", seccion)
             .get()
             .addOnSuccessListener { result ->
                 estudiantesList.clear()
@@ -116,19 +106,20 @@ class EstudianteFragment : Fragment() {
             }
             .addOnFailureListener { e ->
                 Log.e("EstudianteFragment", "Error al cargar estudiantes", e)
+                // Aquí podrías mostrar un mensaje al usuario
             }
     }
 
     private fun DocumentSnapshot.toEstudiante(): Estudiante? {
         return try {
             Estudiante(
-                idEstudiante = getString("idEstudiante").orEmpty(),
-                apellidos = getString("apellidos").orEmpty(),
-                nombres = getString("nombres").orEmpty(),
-                grado = (get("grado") as? Number)?.toInt() ?: 0,
-                nivel = getString("nivel").orEmpty(),
-                cantidadIncidencias = (get("cantidadIncidencias") as? Number)?.toInt() ?: 0,
-                celularApoderado = (get("celularApoderado") as? Number)?.toInt() ?: 0
+                idEstudiante = getString("idEstudiante") ?: "",
+                apellidos = getString("apellidos") ?: "",
+                nombres = getString("nombres") ?: "",
+                grado = getLong("grado")?.toInt() ?: 0,
+                seccion = getString("seccion") ?: "",
+                cantidadIncidencias = getLong("cantidadIncidencias")?.toInt() ?: 0,
+                celularApoderado = getLong("celularApoderado")?.toInt() ?: 0
             )
         } catch (e: Exception) {
             Log.e("EstudianteFragment", "Error al convertir documento", e)
@@ -145,7 +136,7 @@ class EstudianteFragment : Fragment() {
         estudiantesFiltrados.addAll(
             estudiantesList.filter { estudiante ->
                 val coincideFiltros = (grado == null || estudiante.grado.toString() == grado) &&
-                        (seccion == null || estudiante.nivel == seccion)
+                        (seccion == null || estudiante.seccion == seccion)
 
                 val coincideNombre = "${estudiante.nombres} ${estudiante.apellidos}"
                     .lowercase().contains(queryLower)
@@ -166,7 +157,7 @@ class EstudianteFragment : Fragment() {
                     putExtra("nombres", estudiante.nombres)
                     putExtra("apellidos", estudiante.apellidos)
                     putExtra("grado", estudiante.grado)
-                    putExtra("nivel", estudiante.nivel)
+                    putExtra("seccion", estudiante.seccion)
                     putExtra("celularApoderado", estudiante.celularApoderado)
                 }
                 startActivityForResult(intent, EDIT_ESTUDIANTE_REQUEST_CODE)
@@ -181,10 +172,6 @@ class EstudianteFragment : Fragment() {
         }
     }
 
-    companion object {
-        const val EDIT_ESTUDIANTE_REQUEST_CODE = 1001
-    }
-
     private fun setupSearchView() {
         binding.searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?) = true
@@ -193,12 +180,6 @@ class EstudianteFragment : Fragment() {
                 return true
             }
         })
-    }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == EDIT_ESTUDIANTE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            refrescarDatos()
-        }
     }
 
     private fun setupButtons() {
@@ -213,6 +194,13 @@ class EstudianteFragment : Fragment() {
     private fun limpiarLista() {
         estudiantesFiltrados.clear()
         estudianteAdapter.notifyDataSetChanged()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == EDIT_ESTUDIANTE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            refrescarDatos()
+        }
     }
 
     override fun onResume() {
@@ -231,5 +219,9 @@ class EstudianteFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        const val EDIT_ESTUDIANTE_REQUEST_CODE = 1001
     }
 }
