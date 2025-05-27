@@ -43,7 +43,7 @@ class EstudianteAgregarAdapter(private val estudiantes: MutableList<EstudianteAg
 
             studentNameTextView.text =estudiante.apellidos+ " " +estudiante.nombres
             studentGradeTextView.text = estudiante.grado.toString()
-            studentSectionTextView.text = estudiante.nivel
+            studentSectionTextView.text = estudiante.seccion
         }
     }
 }

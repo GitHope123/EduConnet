@@ -9,7 +9,7 @@ data class IncidenciaClass(
     val nombreEstudiante: String = "",
     val apellidoEstudiante: String = "",
     val grado: Int = 0,
-    val nivel: String = "",
+    val seccion: String = "",
     val celularApoderado: Int = 0,
     val tipo: String = "",
     val atencion: String = "",

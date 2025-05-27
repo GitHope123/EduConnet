@@ -41,7 +41,7 @@ class IncidenciaAdapter(
                 tvFecha.text = incidencia.fecha
                 tvEstado.text = incidencia.estado
                 tvGrado.text = incidencia.grado.toString()
-                tvNivel.text = incidencia.nivel
+                tvNivel.text = incidencia.seccion
                 tvTipo.text = incidencia.tipo
 
                 clickFrameStepper.setOnClickListener {
@@ -167,7 +167,7 @@ class IncidenciaAdapter(
                     "INCIDENCIA_NOMBRE" to incidencia.nombreEstudiante,
                     "INCIDENCIA_APELLIDO" to incidencia.apellidoEstudiante,
                     "INCIDENCIA_GRADO" to incidencia.grado,
-                    "INCIDENCIA_SECCION" to incidencia.nivel,
+                    "INCIDENCIA_SECCION" to incidencia.seccion,
                     "INCIDENCIA_TIPO" to incidencia.tipo,
                     "INCIDENCIA_ATENCION" to incidencia.atencion,
                     "INCIDENCIA_ESTADO" to incidencia.estado,

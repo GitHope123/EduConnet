@@ -49,7 +49,7 @@ class AgregarIncidencia : AppCompatActivity() {
     private lateinit var edMultilinea: androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView
     private lateinit var spinnerTipo: Spinner
     private var studentGrade: Int = 0
-    private lateinit var studentNivel: String
+    private lateinit var studentSeccion: String
     private var studentCelular: Int = 0
     private lateinit var estudiante: TextView
     private var imageUri: Uri? = null
@@ -90,7 +90,7 @@ class AgregarIncidencia : AppCompatActivity() {
         studentName = intent.getStringExtra("EXTRA_STUDENT_NAME") ?: "N/A"
         studentLastName = intent.getStringExtra("EXTRA_STUDENT_LAST_NAME") ?: "N/A"
         studentGrade = intent.getIntExtra("EXTRA_STUDENT_GRADE", 0)
-        studentNivel = intent.getStringExtra("EXTRA_STUDENT_SECTION") ?: "N/A"
+        studentSeccion = intent.getStringExtra("EXTRA_STUDENT_SECTION") ?: "N/A"
         studentCelular = intent.getIntExtra("EXTRA_STUDENT_CELULAR", 0)
         estudiante = findViewById(R.id.tvEstudiante)
         spinnerAtencion = findViewById(R.id.spinnerAtencion)
@@ -277,7 +277,7 @@ class AgregarIncidencia : AppCompatActivity() {
                 "nombreEstudiante" to studentName,
                 "apellidoEstudiante" to studentLastName,
                 "grado" to studentGrade,
-                "nivel" to studentNivel,
+                "seccion" to studentSeccion,
                 "celularApoderado" to studentCelular,
                 "estado" to estado,
                 "cargo" to null,
@@ -317,7 +317,7 @@ class AgregarIncidencia : AppCompatActivity() {
                             "nombreEstudiante" to studentName,
                             "apellidoEstudiante" to studentLastName,
                             "grado" to studentGrade,
-                            "nivel" to studentNivel,
+                            "seccion" to studentSeccion,
                             "celularApoderado" to studentCelular,
                             "estado" to estado,
                             "atencion" to if (spinnerTipo.selectedItem.toString() == "Reconocimiento") "" else spinnerAtencion.selectedItem.toString(),

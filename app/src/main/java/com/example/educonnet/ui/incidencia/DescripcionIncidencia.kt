@@ -22,7 +22,7 @@ class DescripcionIncidencia : AppCompatActivity() {
     private lateinit var hora: String
     private lateinit var nombreEstudiante: String
     private lateinit var apellidoEstudiante: String
-    private lateinit var nivel: String
+    private lateinit var seccion: String
     private lateinit var tipo: String
     private lateinit var atencion: String
     private lateinit var estado: String
@@ -35,7 +35,7 @@ class DescripcionIncidencia : AppCompatActivity() {
     private lateinit var tvHora: TextView
     private lateinit var tvNombreCompleto: TextView
     private lateinit var tvGrado: TextView
-    private lateinit var tvNivel: TextView
+    private lateinit var tvSeccion: TextView
     private lateinit var tvEstado: TextView
     private lateinit var tvTipo: TextView
     private lateinit var tvAtencion: TextView
@@ -64,7 +64,7 @@ class DescripcionIncidencia : AppCompatActivity() {
             nombreEstudiante = getStringExtra("INCIDENCIA_NOMBRE").orEmpty()
             apellidoEstudiante = getStringExtra("INCIDENCIA_APELLIDO").orEmpty()
             grado = getIntExtra("INCIDENCIA_GRADO", 0)
-            nivel = getStringExtra("INCIDENCIA_SECCION").orEmpty()
+            seccion = getStringExtra("INCIDENCIA_SECCION").orEmpty()
             tipo = getStringExtra("INCIDENCIA_TIPO").orEmpty()
             atencion = getStringExtra("INCIDENCIA_ATENCION").orEmpty()
             estado = getStringExtra("INCIDENCIA_ESTADO").orEmpty()
@@ -78,7 +78,7 @@ class DescripcionIncidencia : AppCompatActivity() {
         tvHora = findViewById(R.id.tvHora)
         tvNombreCompleto = findViewById(R.id.tvNombreCompleto)
         tvGrado = findViewById(R.id.tvGrado)
-        tvNivel = findViewById(R.id.tvNivel)
+        tvSeccion= findViewById(R.id.tvNivel)
         tvEstado = findViewById(R.id.tvEstado)
         tvTipo = findViewById(R.id.tvTipo)
         tvAtencion = findViewById(R.id.tvAtencion)
@@ -93,7 +93,7 @@ class DescripcionIncidencia : AppCompatActivity() {
         tvHora.text = hora
         tvNombreCompleto.text = getString(R.string.full_name_format, apellidoEstudiante, nombreEstudiante)
         tvGrado.text = getString(R.string.grade_format, grado)
-        tvNivel.text = getString(R.string.section_format, nivel)
+        tvSeccion.text = getString(R.string.section_format, seccion)
         tvEstado.text = getString(R.string.status_format, estado)
         tvTipo.text = getString(R.string.type_format, tipo)
 

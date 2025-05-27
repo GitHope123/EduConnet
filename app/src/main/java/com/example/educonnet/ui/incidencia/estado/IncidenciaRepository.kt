@@ -24,7 +24,7 @@ class IncidenciaRepository {
                             nombreEstudiante = document.getString("nombreEstudiante") ?: "",
                             apellidoEstudiante = document.getString("apellidoEstudiante") ?: "",
                             grado = document.getLong("grado")?.toInt() ?: 0,
-                            nivel = document.getString("nivel") ?: "",
+                            seccion = document.getString("seccion") ?: "",
                             tipo = document.getString("tipo") ?: "",
                             atencion = document.getString("atencion") ?: "",
                             estado = document.getString("estado") ?: "",

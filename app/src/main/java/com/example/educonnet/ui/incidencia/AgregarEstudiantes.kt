@@ -1,6 +1,5 @@
 package com.example.educonnet.ui.incidencia
 
-
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -8,6 +7,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.SearchView
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,177 +28,156 @@ class AgregarEstudiantes : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_agregar_estudiantes)
         init()
-        updateGrado()
+        setupGradoSpinner()
         setupRecyclerView()
         setupSearchView()
+
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-
-        // Habilita el botón de retroceso
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        // Maneja el clic en la flecha de retroceso
-        toolbar.setNavigationOnClickListener {
-            finish() // Cierra la actividad actual y vuelve a la anterior
-        }
+        toolbar.setNavigationOnClickListener { finish() }
     }
-
-
 
     private fun init() {
         recyclerViewEstudiantes = findViewById(R.id.recyclerViewEstudiantes)
         searchViewEstudiante = findViewById(R.id.searchViewEstudiante)
         spinnerGrado = findViewById(R.id.spinnerGrado)
         spinnerSeccion = findViewById(R.id.spinnerSeccion)
-
     }
 
-    private fun updateGrado() {
-        val grados = arrayOf("Selecione", "1", "2", "3", "4", "5","6")
+    private fun setupGradoSpinner() {
+        val grados = arrayOf("Seleccione", "1", "2", "3", "4", "5")
         val adapterGrados = ArrayAdapter(this, R.layout.item_spinner, grados)
         adapterGrados.setDropDownViewResource(R.layout.spinner_dropdown_item)
         spinnerGrado.adapter = adapterGrados
 
         spinnerGrado.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?, view: View?, position: Int, id: Long
-            ) {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val gradoSeleccionado = spinnerGrado.selectedItem.toString()
-                updateSecciones(gradoSeleccionado)
+                setupSeccionSpinner(gradoSeleccionado)
             }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
 
-    private fun updateSecciones(gradoSeleccionado: String) {
+    private fun setupSeccionSpinner(gradoSeleccionado: String) {
         val secciones = when (gradoSeleccionado) {
             "Seleccione" -> arrayOf("Seleccione")
-            "1" -> arrayOf("Secundaria")
-            "2" -> arrayOf("Secundaria")
-            "3" -> arrayOf("Secundaria")
-            "4" -> arrayOf("Secundaria")
-            "5" -> arrayOf("Primaria","Secundaria")
-            "6" -> arrayOf("Primaria")
-            else -> arrayOf("Seleccione")
+            "1" -> arrayOf("A", "B", "C", "D", "E")
+            else -> arrayOf("A", "B", "C", "D")
         }
+
         val adapterSecciones = ArrayAdapter(this, R.layout.item_spinner, secciones)
         adapterSecciones.setDropDownViewResource(R.layout.spinner_dropdown_item)
         spinnerSeccion.adapter = adapterSecciones
-        spinnerSeccion.isEnabled = gradoSeleccionado != "Selecione"
+        spinnerSeccion.isEnabled = gradoSeleccionado != "Seleccione"
+
         spinnerSeccion.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?, view: View?, position: Int, id: Long
-            ) {
-                val gradoSeleccionado = spinnerGrado.selectedItem.toString()
-                val seccionSeleccionada = spinnerSeccion.selectedItem.toString()
-                if (gradoSeleccionado != "Seleccione" && seccionSeleccionada != "Seleccione") {
-                    fetchEstudiantes(gradoSeleccionado, seccionSeleccionada)
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val grado = spinnerGrado.selectedItem.toString()
+                val seccion = spinnerSeccion.selectedItem.toString()
+                if (grado != "Seleccione" && seccion != "Seleccione") {
+                    fetchEstudiantes(grado, seccion)
                 } else {
                     filterEstudianteList.clear()
                     estudianteAdapter.notifyDataSetChanged()
                 }
             }
-
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-
     }
 
     private fun setupRecyclerView() {
-        estudianteAdapter =
-            EstudianteAgregarAdapter(filterEstudianteList) { estudianteSeleccionado ->
-                val intent = Intent(this, AgregarIncidencia::class.java)
-                intent.putExtra("EXTRA_STUDENT_ID", estudianteSeleccionado.id)
-                intent.putExtra("EXTRA_STUDENT_NAME", estudianteSeleccionado.nombres)
-                intent.putExtra("EXTRA_STUDENT_LAST_NAME", estudianteSeleccionado.apellidos)
-                intent.putExtra("EXTRA_STUDENT_GRADE", estudianteSeleccionado.grado)
-                intent.putExtra("EXTRA_STUDENT_SECTION", estudianteSeleccionado.nivel)
-                intent.putExtra("EXTRA_STUDENT_CELULAR", estudianteSeleccionado.celularApoderado)
-                startActivity(intent)
+        estudianteAdapter = EstudianteAgregarAdapter(filterEstudianteList) { estudiante ->
+            Intent(this, AgregarIncidencia::class.java).apply {
+                putExtra("EXTRA_STUDENT_ID", estudiante.id)
+                putExtra("EXTRA_STUDENT_NAME", estudiante.nombres)
+                putExtra("EXTRA_STUDENT_LAST_NAME", estudiante.apellidos)
+                putExtra("EXTRA_STUDENT_GRADE", estudiante.grado)
+                putExtra("EXTRA_STUDENT_SECTION", estudiante.seccion)
+                putExtra("EXTRA_STUDENT_CELULAR", estudiante.celularApoderado)
+                startActivity(this)
             }
-        recyclerViewEstudiantes.layoutManager = LinearLayoutManager(this)
-        recyclerViewEstudiantes.adapter = estudianteAdapter
+        }
+        recyclerViewEstudiantes.apply {
+            layoutManager = LinearLayoutManager(this@AgregarEstudiantes)
+            adapter = estudianteAdapter
+        }
     }
 
     private fun fetchEstudiantes(grado: String, seccion: String) {
         firestore.collection("Estudiante")
             .whereEqualTo("grado", grado.toInt())
-            .whereEqualTo("nivel", seccion)
+            .whereEqualTo("seccion", seccion)
             .get()
             .addOnSuccessListener { result ->
                 estudianteList.clear()
-                for (document in result) {
-                    val id = document.id  // Obtener el ID del documento
-                    val nombres = document.getString("nombres") ?: ""
-                    val apellidos = document.getString("apellidos") ?: ""
-                    val grado = document.getLong("grado")?.toInt() ?: 0
-                    val seccion = document.getString("nivel") ?: ""
-                    val celularApoderado = document.getLong("celularApoderado")?.toInt() ?: 0
-                    estudianteList.add(EstudianteAgregar(id, nombres, apellidos, grado, seccion, celularApoderado))
+                result.documents.forEach { document ->
+                    EstudianteAgregar(
+                        id = document.id,
+                        nombres = document.getString("nombres") ?: "",
+                        apellidos = document.getString("apellidos") ?: "",
+                        grado = document.getLong("grado")?.toInt() ?: 0,
+                        seccion = document.getString("seccion") ?: "",
+                        celularApoderado = document.getLong("celularApoderado")?.toInt() ?: 0
+                    ).let { estudianteList.add(it) }
                 }
                 filterEstudiante(searchViewEstudiante.query.toString())
-
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error al cargar estudiantes: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
-
     private fun setupSearchView() {
-        searchViewEstudiante.setOnClickListener {
-            searchViewEstudiante.isIconified = false
-            searchViewEstudiante.requestFocus()
+        searchViewEstudiante.apply {
+            setOnClickListener {
+                isIconified = false
+                requestFocus()
+            }
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?) = true
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    newText?.let { filterEstudiante(it) }
+                    return true
+                }
+            })
         }
-
-        searchViewEstudiante.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let { filterEstudiante(it) }
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let { filterEstudiante(it) }
-                return true
-            }
-        })
     }
 
     private fun filterEstudiante(query: String) {
-        val gradoSeleccionado = spinnerGrado.selectedItem.toString()
-        val seccionSeleccionada = spinnerSeccion.selectedItem.toString()
-        val queryWords = query.lowercase().split("\\s+".toRegex())
+        val gradoSeleccionado = spinnerGrado.selectedItem?.toString() ?: ""
+        val seccionSeleccionada = spinnerSeccion.selectedItem?.toString() ?: ""
+        val queryLower = query.lowercase()
 
         filterEstudianteList.clear()
         estudianteList.filterTo(filterEstudianteList) { estudiante ->
-            val coincideGrado =
-                gradoSeleccionado == "Todas" || estudiante.grado.toString() == gradoSeleccionado
-            val coincideSeccion =
-                seccionSeleccionada == "Todas" || estudiante.nivel == seccionSeleccionada
+            val coincideGrado = gradoSeleccionado.isEmpty() || estudiante.grado.toString() == gradoSeleccionado
+            val coincideSeccion = seccionSeleccionada.isEmpty() || estudiante.seccion == seccionSeleccionada
             val nombreCompleto = "${estudiante.nombres} ${estudiante.apellidos}".lowercase()
-            val coincideNombre = queryWords.all { nombreCompleto.contains(it) }
+            val coincideNombre = queryLower.isEmpty() || nombreCompleto.contains(queryLower)
+
             coincideNombre && coincideGrado && coincideSeccion
-        }
-        filterEstudianteList.sortWith { e1, e2 ->
-            val nombreCompleto1 = "${e1.apellidos} ${e1.nombres}".lowercase()
-            val nombreCompleto2 = "${e2.apellidos} ${e2.nombres}".lowercase()
-            nombreCompleto1.compareTo(nombreCompleto2)
+        }.sortedWith { e1, e2 ->
+            "${e1.apellidos} ${e1.nombres}".compareTo("${e2.apellidos} ${e2.nombres}")
         }
         estudianteAdapter.notifyDataSetChanged()
     }
+
     private fun clearSearchView() {
         searchViewEstudiante.setQuery("", false)
         searchViewEstudiante.clearFocus()
     }
+
     override fun onPause() {
         super.onPause()
         clearSearchView()
     }
+
     override fun onResume() {
         super.onResume()
-        // Reset spinners to "Seleccione"
         spinnerGrado.setSelection(0)
         spinnerSeccion.setSelection(0)
-
         filterEstudianteList.clear()
         estudianteAdapter.notifyDataSetChanged()
     }
