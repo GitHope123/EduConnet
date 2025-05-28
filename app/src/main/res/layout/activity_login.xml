@@ -20,10 +20,10 @@
         <!-- Logo -->
         <ImageView
             android:id="@+id/logoImageView"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_user"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/logo_cerro_alegre"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -34,10 +34,10 @@
             android:id="@+id/titleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:text="Bienvenido a EduConnect"
             android:textColor="@color/md_theme_primary"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,9 +49,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="28dp"
+            android:textAlignment="center"
+            android:fontFamily="@font/open_sans"
             android:text="Ingresa tus credenciales para acceder a tu cuenta"
             android:textColor="@color/md_theme_onSurfaceVariant"
-            android:textSize="16sp"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleTextView" />
@@ -77,6 +79,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
+                android:fontFamily="@font/open_sans"
+                android:textSize="14sp"
                 android:textColor="@color/md_theme_onBackground" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -101,6 +105,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
+                android:fontFamily="@font/open_sans"
+                android:textSize="14sp"
                 android:textColor="@color/md_theme_onBackground" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -113,6 +119,7 @@
             android:text="Iniciar sesión"
             app:backgroundTint="@color/md_theme_primary"
             app:cornerRadius="12dp"
+            android:fontFamily="@font/open_sans_bold"
             app:icon="@drawable/ic_login"
             app:iconGravity="textStart"
             app:layout_constraintEnd_toEndOf="parent"
@@ -125,9 +132,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:fontFamily="@font/open_sans"
         android:text="EduConnect v2.0.1 © 2025"
         android:textColor="@color/md_theme_outline"
-        android:textSize="12sp"
+        android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

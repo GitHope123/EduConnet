@@ -2,6 +2,7 @@ package com.example.educonnet.ui.perfil
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputFilter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.educonnet.LoginActivity
@@ -40,6 +41,18 @@ class EditPerfil : AppCompatActivity() {
         binding.etNombres.isEnabled = false
         binding.etApellidos.isEnabled = false
         binding.etCorreo.isEnabled = false
+
+        binding.etCelular.filters = arrayOf(
+            InputFilter.LengthFilter(9),
+            InputFilter { source, _, _, _, _, _ ->
+                if (source.matches(Regex("[0-9]*"))) {
+                    null // Acepta números
+                } else {
+                    Toast.makeText(this, "Solo se permiten números", Toast.LENGTH_SHORT).show()
+                    "" // Bloquea cualquier carácter no numérico
+                }
+            }
+        )
 
         binding.btnGuardar.setOnClickListener {
             guardarCambios(intent.getStringExtra("id") ?: return@setOnClickListener)

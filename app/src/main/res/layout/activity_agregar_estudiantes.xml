@@ -3,13 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+
+    android:background="@android:color/white">
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:title="Lista de Estudiantes"
@@ -21,31 +23,33 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginBottom="16dp"
-        app:cardElevation="1dp"
-        app:strokeWidth="1dp">
+        android:layout_margin="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:cardElevation="2dp"
+        app:strokeColor="@color/md_theme_background"
+        app:strokeWidth="0.5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="12dp"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="8dp">
+            android:padding="12dp">
 
             <!-- Grado -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="60dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:text="Grado"
+                    android:text="Grado:"
+                    android:textSize="16sp"
                     android:textAppearance="?attr/textAppearanceTitleMedium"
                     android:textColor="?attr/colorOnSurface" />
 
@@ -55,6 +59,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="@drawable/background_spinner"
                     android:ellipsize="end"
                     android:inputType="none"
                     android:maxEms="3"
@@ -65,14 +70,16 @@
             <!-- Sección -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="60dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:text="Sección"
+                    android:text="Sección:"
+                    android:textSize="16sp"
                     android:textAppearance="?attr/textAppearanceTitleMedium"
                     android:textColor="?attr/colorOnSurface" />
 
@@ -83,39 +90,71 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:inputType="none"
+                    android:background="@drawable/background_spinner"
                     app:itemTextColor="?attr/colorOnSurface" />
             </LinearLayout>
-
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
     <!-- Search View -->
-    <SearchView
-        android:id="@+id/searchViewEstudiante"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="8dp"
+        app:cardElevation="1dp"
         android:background="@drawable/custom_searchview_background"
-        android:queryHint="Buscar en todos..."
-        android:iconifiedByDefault="false"
-        android:focusable="true"
-        android:layout_marginHorizontal="10dp"
-        android:imeOptions="actionSearch"
-        android:inputType="text|textNoSuggestions"
-        android:theme="@style/CustomSearchViewStyle" />
+        app:strokeWidth="0.5dp">
+
+        <SearchView
+            android:id="@+id/searchViewEstudiante"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:queryHint="Buscar estudiantes..."
+            android:iconifiedByDefault="false"
+            android:focusable="true"
+            android:imeOptions="actionSearch"
+            android:inputType="text|textNoSuggestions"
+            android:theme="@style/CustomSearchViewStyle" />
+
+    </com.google.android.material.card.MaterialCardView>
 
     <!-- Students List -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginHorizontal="10dp"
-        app:cardElevation="1dp">
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="8dp"
+        app:cardElevation="2dp"
+        app:strokeColor="@color/md_theme_background"
+        app:strokeWidth="0.5dp">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewEstudiantes"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:padding="4dp" />
+            android:padding="4dp"
+            android:scrollbars="vertical" />
     </com.google.android.material.card.MaterialCardView>
+
+    <!-- Botón Continuar -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnContinuar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Continuar"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        app:icon="@drawable/ic_arrow_forward"
+        app:iconGravity="end"
+        app:iconTint="@android:color/white"
+        app:backgroundTint="?attr/colorPrimary"
+        android:textColor="@android:color/white"
+        app:cornerRadius="8dp"
+        android:elevation="2dp"
+        android:enabled="false"/>
 </LinearLayout>

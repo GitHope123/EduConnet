@@ -77,7 +77,7 @@ class TutorAdapter(
                 val phoneNumber = profesor.celular.toString()
                 if (phoneNumber.isNotBlank()) {
                     val options = listOf("Llamar a ${profesor.nombres}", "Enviar mensaje por WhatsApp")
-                    val icons = listOf(R.drawable.ic_phone, R.drawable.ic_whatsapp)
+                    val icons = listOf(R.drawable.ic_call_phone, R.drawable.ic_whatsapp)
 
                     val adapter = object : ArrayAdapter<String>(itemView.context, R.layout.dialog_option_item, options) {
                         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {

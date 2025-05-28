@@ -68,6 +68,9 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etCelular"
                     android:layout_width="match_parent"
+                    android:inputType="phone"
+                    android:maxLength="9"
+                    android:digits="123456789"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 

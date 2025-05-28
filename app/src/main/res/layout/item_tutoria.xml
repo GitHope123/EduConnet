@@ -38,10 +38,13 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/textViewFechaTutoria"
-                    style="@style/TextAppearance.Material3.LabelSmall"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="13/08/2024"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/dm_sans"
                     android:textColor="?attr/colorOnSurfaceVariant" />
 
                 <View
@@ -52,7 +55,9 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/textViewHoraTutoria"
-                    style="@style/TextAppearance.Material3.LabelSmall"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/dm_sans"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="4:45pm"
@@ -62,23 +67,46 @@
             <!-- Nombre del estudiante -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/textViewEstudianteTutoria"
-                style="@style/TextAppearance.Material3.BodySmall"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Torres Ramos Sebastian Rodrigo"
                 android:textColor="?attr/colorOnSurface"
-                android:textStyle="bold" />
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/dm_sans" />
 
             <!-- Nombre del profesor -->
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/textViewProfesorTutoria"
-                style="@style/TextAppearance.Material3.BodySmall"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Ana Maria Campos Cruz"
-                android:textColor="?attr/colorOnSurfaceVariant" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/dm_sans"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginTop="4dp"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:text="Remitente:" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textViewProfesorTutoria"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+
+                    android:fontFamily="@font/dm_sans"
+                    android:text="Ana Maria Campos Cruz"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
             <!-- Curso -->
             <LinearLayout
@@ -87,18 +115,18 @@
                 android:orientation="horizontal">
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/textViewCursoTutoria"
-                    style="@style/Widget.Material3.Chip.Assist"
+                    android:id="@+id/textViewTipoIncidenciaTutoria"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Grado y nivel"
+                    android:text="Reconocimiento"
                     android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/dm_sans"
                     app:chipCornerRadius="5dp"
                     app:chipEndPadding="8dp"
                     app:chipMinHeight="24dp"
                     app:chipStartPadding="8dp"
-                    app:chipStrokeWidth="0.5dp" />
+                    app:chipStrokeWidth="0.5dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -116,9 +144,11 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/TextViewGravedadTutoria"
-                        style="@style/TextAppearance.Material3.LabelSmall"
                         android:layout_width="wrap_content"
                         android:layout_marginStart="5dp"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/dm_sans"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
                         android:text="Moderado" />
@@ -137,7 +167,6 @@
             <!-- Estado -->
             <com.google.android.material.chip.Chip
                 android:id="@+id/textViewEstadoTutoria"
-                style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:text="Pendiente"

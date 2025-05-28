@@ -145,12 +145,19 @@ class TutorFragment : Fragment() {
                         dni = document.getLong("dni") ?: 0L
                     }
                 }
-                tutorAdapter.updateList(listaProfesores)
+
+                // Ordenar por grado (ascendente) y luego por sección (alfabéticamente)
+                val listaOrdenada = listaProfesores.sortedWith(
+                    compareBy<Profesor> { it.grado }.thenBy { it.seccion }
+                )
+
+                tutorAdapter.updateList(listaOrdenada)
             }
             .addOnFailureListener { exception ->
                 Toast.makeText(requireContext(), "Error fetching tutors: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

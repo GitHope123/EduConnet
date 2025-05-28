@@ -14,7 +14,7 @@ data class TutoriaClass(
     val hora: String = "",
     val nombreEstudiante: String = "",
     val nombreProfesor: String = "",
-    val nivel: String = "",
+    val seccion: String = "",
     val celularApoderado: Int = 0,
     val tipo: String = "",
     val urlImagen: String = "",

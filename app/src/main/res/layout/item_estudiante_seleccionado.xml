@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginVertical="4dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="12dp">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvNombreEstudiante"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:drawableStart="@drawable/ic_user"
+                android:drawableTint="@color/md_theme_onSurfaceVariant"
+                android:drawablePadding="5dp"
+                android:text="Nombre del estudiante"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvGradoSeccion"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="5° B"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="14sp" />
+
+            <!-- Otro posible contenido adicional (como botón o icono) -->
+
+        </LinearLayout>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            app:dividerColor="?attr/colorOutline" />
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

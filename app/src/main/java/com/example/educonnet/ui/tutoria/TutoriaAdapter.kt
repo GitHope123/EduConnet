@@ -48,7 +48,7 @@ class TutoriaAdapter(
         private val textViewHora: MaterialTextView = binding.textViewHoraTutoria
         private val textViewEstudiante: MaterialTextView = binding.textViewEstudianteTutoria
         private val textViewProfesor: MaterialTextView = binding.textViewProfesorTutoria
-        private val textViewCurso: Chip = binding.textViewCursoTutoria
+        private val textViewTipo: Chip = binding.textViewTipoIncidenciaTutoria
         private val textViewEstado: Chip = binding.textViewEstadoTutoria
         private val buttonMore: MaterialButton = binding.buttonMore
         val rootView: View = binding.root
@@ -60,7 +60,7 @@ class TutoriaAdapter(
             textViewHora.text = tutoria.hora
             textViewEstudiante.text = "${tutoria.apellidoEstudiante} ${tutoria.nombreEstudiante}"
             textViewProfesor.text = "${tutoria.nombreProfesor} ${tutoria.apellidoProfesor}"
-            textViewCurso.text = "${tutoria.grado} ${tutoria.nivel}"
+            textViewTipo.text = tutoria.tipo
             textViewEstado.text = tutoria.estado
             textViewGravedad.text = tutoria.atencion
 
@@ -83,7 +83,6 @@ class TutoriaAdapter(
         private fun setupMoreButton(tutoria: TutoriaClass) {
             buttonMore.setOnClickListener { view ->
                 if (tutoria.estado == "Pendiente") {
-                    buttonMore.isEnabled = false
                     Snackbar.make(
                         rootView,
                         "Debes revisar la tutoria antes de usar otras funciones",

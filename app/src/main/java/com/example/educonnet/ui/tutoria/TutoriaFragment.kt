@@ -17,7 +17,7 @@ class TutoriaFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var tutoriaViewModel: TutoriaViewModel
     private lateinit var grado: String
-    private lateinit var nivel: String
+    private lateinit var seccion: String
 
 
     override fun onCreateView(
@@ -26,9 +26,9 @@ class TutoriaFragment : Fragment() {
     ): View? {
         _binding = FragmentTutoriaBinding.inflate(inflater, container, false)
         grado= LoginActivity.GlobalData.gradoUsuario.toString()
-        nivel = LoginActivity.nivelUsuario
+        seccion = LoginActivity.seccionUsuario
         tutoriaViewModel = ViewModelProvider(this).get(TutoriaViewModel::class.java)
-        tutoriaViewModel.cargarDatos(grado, nivel, TutoriaRepository())
+        tutoriaViewModel.cargarDatos(grado, seccion, TutoriaRepository())
 
         setupViewPagerAndTabs()
 
@@ -52,7 +52,7 @@ class TutoriaFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        tutoriaViewModel.cargarDatos(grado, nivel, TutoriaRepository())
+        tutoriaViewModel.cargarDatos(grado, seccion, TutoriaRepository())
         _binding?.viewPager?.post {
             _binding!!.viewPager?.currentItem = 0
         }

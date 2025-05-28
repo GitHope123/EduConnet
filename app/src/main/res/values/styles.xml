@@ -41,6 +41,12 @@
         <item name="android:textColor">@color/md_theme_primary</item>
     </style>
 
+    <style name="NavigationMenuTextStyle" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:fontFamily">@font/dm_sans</item>
+        <item name="android:textSize">16sp</item> <!-- Opcional -->
+        <item name="android:textColor">#000000</item> <!-- Opcional -->
+    </style>
+
 
 
 </resources>

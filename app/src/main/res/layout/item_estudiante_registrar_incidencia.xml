@@ -5,51 +5,68 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardElevation="1dp"
-    app:strokeWidth="1dp">
+    app:cardElevation="2dp"
+    app:strokeColor="?attr/colorOutline"
+    app:strokeWidth="0.5dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Student Name -->
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/studentNameTextView"
-            android:layout_width="match_parent"
+        <!-- CheckBox en la esquina derecha -->
+        <CheckBox
+            android:id="@+id/checkBoxEstudiante"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawablePadding="8dp"
-            android:drawableTint="?attr/colorPrimary"
-            android:text="Nombre del Estudiante"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
-            android:textColor="?attr/colorOnSurface" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:buttonTint="?attr/colorPrimary" />
 
-        <!-- Grade and Section -->
+        <!-- Contenedor de datos del estudiante -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/studentDataLayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/checkBoxEstudiante"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
+            <!-- Nombre del estudiante -->
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/studentGradeTextView"
-                android:layout_width="wrap_content"
+                android:id="@+id/textViewNombreEstudiante"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:drawablePadding="8dp"
-                android:drawableTint="?attr/colorPrimary"
-                android:text="Grado"
-                android:textAppearance="?attr/textAppearanceBodySmall"
-                android:textColor="?attr/colorOnSurfaceVariant" />
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Nombre del Estudiante"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnSurface" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/studentSectionTextView"
-                android:layout_width="wrap_content"
+            <!-- Grado y Sección en una sola línea -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sección"
-                android:textAppearance="?attr/textAppearanceBodySmall"
-                android:textColor="?attr/colorOnSurfaceVariant" />
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textViewGradoSeccion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3° A"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <!-- Separador opcional -->
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="0dp" />
+
+
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

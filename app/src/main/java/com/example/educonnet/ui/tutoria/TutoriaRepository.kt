@@ -13,7 +13,7 @@ class TutoriaRepository {
     ) {
         var query = firestore.collection("Incidencia")
             .whereEqualTo("grado", grado)
-            .whereEqualTo("nivel", nivel)
+            .whereEqualTo("seccion", nivel)
         query.get()
             .addOnSuccessListener { querySnapshot ->
                 val incidencias = querySnapshot.documents.mapNotNull { document ->
@@ -29,7 +29,7 @@ class TutoriaRepository {
                         hora = document.getString("hora") ?: "",
                         nombreEstudiante = document.getString("nombreEstudiante") ?: "",
                         nombreProfesor = document.getString("nombreProfesor") ?: "",
-                        nivel = document.getString("nivel") ?: "",
+                        seccion = document.getString("seccion") ?: "",
                         celularApoderado =document.getLong("celularApoderado")?.toInt() ?:0,
                         tipo = document.getString("tipo") ?: "",
                         urlImagen = document.getString("urlImagen") ?: "",

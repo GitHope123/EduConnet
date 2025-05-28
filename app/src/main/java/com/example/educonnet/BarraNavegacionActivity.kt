@@ -19,10 +19,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
@@ -61,6 +63,8 @@ class BarraNavegacionActivity : AppCompatActivity(), NavigationView.OnNavigation
 
         setSupportActionBar(binding.appBarBarraNavegacion.toolbar)
 
+
+
         navController = findNavController(R.id.nav_host_fragment_content_barra_navegacion)
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
@@ -79,6 +83,7 @@ class BarraNavegacionActivity : AppCompatActivity(), NavigationView.OnNavigation
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
         navView.setNavigationItemSelectedListener(this)
 
         updateNavigationHeader()

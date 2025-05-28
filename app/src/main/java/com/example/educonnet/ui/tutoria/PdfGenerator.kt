@@ -146,7 +146,7 @@ class PdfGenerator(private val context: Context, private val tutoria: TutoriaCla
         addSection(doc, "Estudiante observado", listOf(
             "Nombre completo" to safeToString("${tutoria.nombreEstudiante} ${tutoria.apellidoEstudiante}", "highlight"),
             "Grado académico" to safeToString(tutoria.grado),
-            "Nivel educativo" to safeToString(tutoria.nivel),
+            "Nivel educativo" to safeToString(tutoria.seccion),
             "Contacto del apoderado" to safeToString(tutoria.celularApoderado)
         ))
 

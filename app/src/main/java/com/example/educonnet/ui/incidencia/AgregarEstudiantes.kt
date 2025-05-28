@@ -9,43 +9,56 @@ import android.widget.SearchView
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.educonnet.R
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.FirebaseFirestore
 
 class AgregarEstudiantes : AppCompatActivity() {
+
     private lateinit var searchViewEstudiante: SearchView
     private lateinit var recyclerViewEstudiantes: RecyclerView
     private lateinit var spinnerGrado: Spinner
     private lateinit var spinnerSeccion: Spinner
+    private lateinit var btnContinuar: MaterialButton
     private val firestore: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
-    private val estudianteList = mutableListOf<EstudianteAgregar>()
-    private val filterEstudianteList = mutableListOf<EstudianteAgregar>()
+
+    private val estudiantesDisponibles = mutableListOf<EstudianteAgregar>()
+    private val estudiantesFiltrados = mutableListOf<EstudianteAgregar>()
+    private val selectedStudents = mutableListOf<EstudianteAgregar>() // Cambiado a lista de objetos completos
+
     private lateinit var estudianteAdapter: EstudianteAgregarAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_agregar_estudiantes)
-        init()
-        setupGradoSpinner()
+        initViews()
+        setupToolbar()
+        setupSpinners()
         setupRecyclerView()
         setupSearchView()
+        setupContinuarButton()
+    }
 
-        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+    private fun initViews() {
+        searchViewEstudiante = findViewById(R.id.searchViewEstudiante)
+        recyclerViewEstudiantes = findViewById(R.id.recyclerViewEstudiantes)
+        spinnerGrado = findViewById(R.id.spinnerGrado)
+        spinnerSeccion = findViewById(R.id.spinnerSeccion)
+        btnContinuar = findViewById(R.id.btnContinuar)
+    }
+
+    private fun setupToolbar() {
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener { finish() }
     }
 
-    private fun init() {
-        recyclerViewEstudiantes = findViewById(R.id.recyclerViewEstudiantes)
-        searchViewEstudiante = findViewById(R.id.searchViewEstudiante)
-        spinnerGrado = findViewById(R.id.spinnerGrado)
-        spinnerSeccion = findViewById(R.id.spinnerSeccion)
-    }
-
-    private fun setupGradoSpinner() {
+    private fun setupSpinners() {
         val grados = arrayOf("Seleccione", "1", "2", "3", "4", "5")
         val adapterGrados = ArrayAdapter(this, R.layout.item_spinner, grados)
         adapterGrados.setDropDownViewResource(R.layout.spinner_dropdown_item)
@@ -53,9 +66,10 @@ class AgregarEstudiantes : AppCompatActivity() {
 
         spinnerGrado.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val gradoSeleccionado = spinnerGrado.selectedItem.toString()
-                setupSeccionSpinner(gradoSeleccionado)
+                val grado = spinnerGrado.selectedItem.toString()
+                setupSeccionSpinner(grado)
             }
+
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
@@ -63,45 +77,28 @@ class AgregarEstudiantes : AppCompatActivity() {
     private fun setupSeccionSpinner(gradoSeleccionado: String) {
         val secciones = when (gradoSeleccionado) {
             "Seleccione" -> arrayOf("Seleccione")
-            "1" -> arrayOf("A", "B", "C", "D", "E")
-            else -> arrayOf("A", "B", "C", "D")
+            "1" -> arrayOf("Seleccione", "A", "B", "C", "D", "E")
+            else -> arrayOf("Seleccione", "A", "B", "C", "D")
         }
 
-        val adapterSecciones = ArrayAdapter(this, R.layout.item_spinner, secciones)
-        adapterSecciones.setDropDownViewResource(R.layout.spinner_dropdown_item)
-        spinnerSeccion.adapter = adapterSecciones
+        val adapterSeccion = ArrayAdapter(this, R.layout.item_spinner, secciones)
+        adapterSeccion.setDropDownViewResource(R.layout.spinner_dropdown_item)
+        spinnerSeccion.adapter = adapterSeccion
         spinnerSeccion.isEnabled = gradoSeleccionado != "Seleccione"
 
         spinnerSeccion.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val grado = spinnerGrado.selectedItem.toString()
                 val seccion = spinnerSeccion.selectedItem.toString()
+
                 if (grado != "Seleccione" && seccion != "Seleccione") {
                     fetchEstudiantes(grado, seccion)
                 } else {
-                    filterEstudianteList.clear()
-                    estudianteAdapter.notifyDataSetChanged()
+                    clearEstudiantes()
                 }
             }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-    }
 
-    private fun setupRecyclerView() {
-        estudianteAdapter = EstudianteAgregarAdapter(filterEstudianteList) { estudiante ->
-            Intent(this, AgregarIncidencia::class.java).apply {
-                putExtra("EXTRA_STUDENT_ID", estudiante.id)
-                putExtra("EXTRA_STUDENT_NAME", estudiante.nombres)
-                putExtra("EXTRA_STUDENT_LAST_NAME", estudiante.apellidos)
-                putExtra("EXTRA_STUDENT_GRADE", estudiante.grado)
-                putExtra("EXTRA_STUDENT_SECTION", estudiante.seccion)
-                putExtra("EXTRA_STUDENT_CELULAR", estudiante.celularApoderado)
-                startActivity(this)
-            }
-        }
-        recyclerViewEstudiantes.apply {
-            layoutManager = LinearLayoutManager(this@AgregarEstudiantes)
-            adapter = estudianteAdapter
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
 
@@ -111,22 +108,64 @@ class AgregarEstudiantes : AppCompatActivity() {
             .whereEqualTo("seccion", seccion)
             .get()
             .addOnSuccessListener { result ->
-                estudianteList.clear()
-                result.documents.forEach { document ->
-                    EstudianteAgregar(
-                        id = document.id,
-                        nombres = document.getString("nombres") ?: "",
-                        apellidos = document.getString("apellidos") ?: "",
-                        grado = document.getLong("grado")?.toInt() ?: 0,
-                        seccion = document.getString("seccion") ?: "",
-                        celularApoderado = document.getLong("celularApoderado")?.toInt() ?: 0
-                    ).let { estudianteList.add(it) }
+                estudiantesDisponibles.clear()
+                estudiantesFiltrados.clear()
+
+                for (doc in result.documents) {
+                    val estudiante = EstudianteAgregar(
+                        id = doc.id,
+                        nombres = doc.getString("nombres") ?: "",
+                        apellidos = doc.getString("apellidos") ?: "",
+                        grado = doc.getLong("grado")?.toInt() ?: 0,
+                        seccion = doc.getString("seccion") ?: "",
+                        celularApoderado = doc.getLong("celularApoderado")?.toInt() ?: 0
+                    )
+                    estudiantesDisponibles.add(estudiante)
                 }
-                filterEstudiante(searchViewEstudiante.query.toString())
+
+                estudiantesFiltrados.addAll(estudiantesDisponibles)
+                ordenarEstudiantes()
+                estudianteAdapter.updateEstudiantes(estudiantesFiltrados)
+                estudianteAdapter.notifyDataSetChanged()
+                updateContinuarButtonState()
             }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Error al cargar estudiantes: ${e.message}", Toast.LENGTH_SHORT).show()
+            .addOnFailureListener {
+                Toast.makeText(this, "Error al cargar estudiantes: ${it.message}", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun clearEstudiantes() {
+        estudiantesDisponibles.clear()
+        estudiantesFiltrados.clear()
+        estudianteAdapter.updateEstudiantes(estudiantesFiltrados)
+        estudianteAdapter.notifyDataSetChanged()
+        updateContinuarButtonState()
+    }
+
+    private fun ordenarEstudiantes() {
+        estudiantesFiltrados.sortWith(compareBy({ it.apellidos }, { it.nombres }))
+    }
+
+    private fun setupRecyclerView() {
+        estudianteAdapter = EstudianteAgregarAdapter(
+            estudiantes = estudiantesFiltrados,
+            seleccionados = selectedStudents.map { it.id }.toSet(),
+            onItemChecked = { estudiante, isChecked ->
+                if (isChecked) {
+                    if (!selectedStudents.any { it.id == estudiante.id }) {
+                        selectedStudents.add(estudiante)
+                    }
+                } else {
+                    selectedStudents.removeAll { it.id == estudiante.id }
+                }
+                updateContinuarButtonState()
+            }
+        )
+
+        recyclerViewEstudiantes.apply {
+            layoutManager = LinearLayoutManager(this@AgregarEstudiantes)
+            adapter = estudianteAdapter
+        }
     }
 
     private fun setupSearchView() {
@@ -135,33 +174,69 @@ class AgregarEstudiantes : AppCompatActivity() {
                 isIconified = false
                 requestFocus()
             }
+
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?) = true
+
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    newText?.let { filterEstudiante(it) }
+                    filtrarEstudiantes(newText.orEmpty())
                     return true
                 }
             })
         }
     }
 
-    private fun filterEstudiante(query: String) {
-        val gradoSeleccionado = spinnerGrado.selectedItem?.toString() ?: ""
-        val seccionSeleccionada = spinnerSeccion.selectedItem?.toString() ?: ""
-        val queryLower = query.lowercase()
+    private fun filtrarEstudiantes(query: String) {
+        val lowerQuery = query.lowercase()
+        estudiantesFiltrados.clear()
 
-        filterEstudianteList.clear()
-        estudianteList.filterTo(filterEstudianteList) { estudiante ->
-            val coincideGrado = gradoSeleccionado.isEmpty() || estudiante.grado.toString() == gradoSeleccionado
-            val coincideSeccion = seccionSeleccionada.isEmpty() || estudiante.seccion == seccionSeleccionada
-            val nombreCompleto = "${estudiante.nombres} ${estudiante.apellidos}".lowercase()
-            val coincideNombre = queryLower.isEmpty() || nombreCompleto.contains(queryLower)
-
-            coincideNombre && coincideGrado && coincideSeccion
-        }.sortedWith { e1, e2 ->
-            "${e1.apellidos} ${e1.nombres}".compareTo("${e2.apellidos} ${e2.nombres}")
+        if (query.isEmpty()) {
+            estudiantesFiltrados.addAll(estudiantesDisponibles)
+        } else {
+            estudiantesDisponibles.filterTo(estudiantesFiltrados) {
+                "${it.nombres} ${it.apellidos}".lowercase().contains(lowerQuery)
+            }
         }
+
+        ordenarEstudiantes()
+        estudianteAdapter.updateEstudiantes(estudiantesFiltrados)
         estudianteAdapter.notifyDataSetChanged()
+    }
+
+    private fun updateContinuarButtonState() {
+        btnContinuar.isEnabled = selectedStudents.isNotEmpty()
+    }
+
+    private fun setupContinuarButton() {
+        btnContinuar.setOnClickListener {
+            if (selectedStudents.isNotEmpty()) {
+                val cantidad = selectedStudents.size
+                val mensaje = if (cantidad == 1)
+                    "1 estudiante seleccionado"
+                else
+                    "$cantidad estudiantes seleccionados"
+
+                Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show()
+
+                val listaNombres = selectedStudents.joinToString("\n") {
+                    "- ${it.nombres} ${it.apellidos}"
+                }
+
+                MaterialAlertDialogBuilder(this)
+                    .setTitle("Confirmar selección")
+                    .setMessage("Has seleccionado:\n\n$listaNombres\n\n¿Deseas continuar?")
+                    .setPositiveButton("Sí") { _, _ ->
+                        val intent = Intent(this, AgregarIncidencia::class.java).apply {
+                            putParcelableArrayListExtra("EXTRA_STUDENTS", ArrayList(selectedStudents))
+                        }
+                        startActivity(intent)
+                    }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
+            } else {
+                Toast.makeText(this, "Seleccione al menos un estudiante", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun clearSearchView() {
@@ -178,7 +253,6 @@ class AgregarEstudiantes : AppCompatActivity() {
         super.onResume()
         spinnerGrado.setSelection(0)
         spinnerSeccion.setSelection(0)
-        filterEstudianteList.clear()
-        estudianteAdapter.notifyDataSetChanged()
+        updateContinuarButtonState()
     }
 }

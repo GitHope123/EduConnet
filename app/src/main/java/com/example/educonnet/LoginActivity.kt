@@ -103,8 +103,9 @@ class LoginActivity : AppCompatActivity() {
                 celularUsuario = document.getLong("celular") ?: 0L
                 correoUsuario = document.getString("correo") ?: ""
                 tutor = isTutor
+                cargoUsuario = document.getString("cargo") ?:""
                 gradoUsuario = document.getLong("grado") ?: 0L
-                nivelUsuario = document.getString("nivel") ?: ""
+                seccionUsuario = document.getString("seccion") ?: ""
                 passwordUsuario = document.getString("password") ?: ""
             }
 
@@ -137,9 +138,10 @@ class LoginActivity : AppCompatActivity() {
         var apellidosUsuario: String = ""
         var celularUsuario: Long = 0L
         var correoUsuario: String = ""
-        var tutor: Boolean = false // Mantenido aunque no se use directamente
+        var tutor: Boolean = false// Mantenido aunque no se use directamente
+        var cargoUsuario : String = ""
         var gradoUsuario: Long = 0L
-        var nivelUsuario: String = ""
+        var seccionUsuario: String = ""
         var passwordUsuario: String =""
     }
 }

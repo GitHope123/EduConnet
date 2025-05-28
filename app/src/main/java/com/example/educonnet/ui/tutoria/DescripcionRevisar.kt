@@ -52,6 +52,10 @@ class DescripcionRevisar : AppCompatActivity() {
 
         // Configurar listeners
         setupListeners()
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener { finish() }
     }
 
     private fun initViews() {
@@ -91,7 +95,7 @@ class DescripcionRevisar : AppCompatActivity() {
         tvFecha.text = tutoria.fecha
         tvHora.text = tutoria.hora
         tvGrado.text = tutoria.grado.toString()
-        tvSeccion.text = tutoria.nivel
+        tvSeccion.text = tutoria.seccion
         tvEstado.text = tutoria.estado
         tvTipo.text = tutoria.tipo ?: "No especificado" // Manejo de nulos
         tvCargo.text = tutoria.cargo ?: ""

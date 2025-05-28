@@ -34,7 +34,7 @@
                 android:id="@+id/profileImage"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/ic_profile_placeholder"
+                android:background="@drawable/logo_cerro_alegre"
                 app:tint="?attr/colorPrimary" />
 
             <TextView
@@ -75,7 +75,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Perfil de usuario"
+                android:text="Mi perfil"
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                 android:textColor="?attr/colorPrimary"
                 android:layout_marginBottom="16dp"/>
@@ -90,7 +90,6 @@
                 android:drawablePadding="8dp"
                 android:paddingVertical="8dp"
                 android:text="947419906"
-
                 android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                 android:textColor="?attr/colorOnSurface"/>
 
