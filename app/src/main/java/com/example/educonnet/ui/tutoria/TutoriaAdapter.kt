@@ -1,7 +1,9 @@
 package com.example.educonnet.ui.tutoria
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -22,7 +24,10 @@ import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.educonnet.R
 import com.example.educonnet.databinding.ItemTutoriaBinding
+import com.example.educonnet.ui.incidencia.estado.IncidenciaClass
+import com.example.educonnet.ui.resources.GeneradorPdfInforme
 import com.example.educonnet.ui.tutoria.recurso.CitarFormulario
+import com.example.educonnet.ui.tutoria.recurso.Informe
 import com.example.educonnet.ui.tutoria.recurso.InformeFormulario
 import com.example.educonnet.ui.tutoria.recurso.TutoriaUpdateCallback
 import com.google.android.material.button.MaterialButton
@@ -33,6 +38,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.firestore.FirebaseFirestore
 import java.io.File
+
 
 class TutoriaAdapter(
     private var listaTutorias: MutableList<TutoriaClass>,
@@ -63,6 +69,51 @@ class TutoriaAdapter(
             textViewTipo.text = tutoria.tipo
             textViewEstado.text = tutoria.estado
             textViewGravedad.text = tutoria.atencion
+
+            binding.buttonPdf.visibility = if (tutoria.estado == "Completado") View.VISIBLE else View.GONE
+
+            binding.buttonPdf.setOnClickListener {
+                // muestra el boton si el estado esta en Completado
+                // Verificar primero si la tutoría tiene un ID de informe asociado
+                if (tutoria.id.isNullOrEmpty()) {
+                    Toast.makeText(it.context, "Esta tutoría no tiene informe asociado", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                // Mostrar progreso mientras se carga
+                val progressDialog = ProgressDialog(it.context).apply {
+                    setMessage("Generando informe...")
+                    setCancelable(false)
+                    show()
+                }
+
+                // Obtener el informe desde Firestore
+                FirebaseFirestore.getInstance().collection("Informe")
+                    .document(tutoria.id)
+                    .get()
+                    .addOnSuccessListener { document ->
+                        progressDialog.dismiss()
+
+                        val informe = document.toObject(Informe::class.java)?.apply {
+                            // Asegurarnos que el ID del informe esté establecido
+                            idInforme = document.id
+                        }
+
+                        if (informe != null) {
+                            generarYMostrarPdf(it.context, tutoria, informe)
+                        } else {
+                            Toast.makeText(it.context, "No se pudo cargar el informe", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        progressDialog.dismiss()
+                        Toast.makeText(
+                            it.context,
+                            "Error al cargar el informe: ${e.localizedMessage}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+            }
 
             // Configuración de estilos
             setEstadoStyle(tutoria.estado)
@@ -157,7 +208,6 @@ class TutoriaAdapter(
                 }
             }
         }
-
         private fun handleCitarAction(tutoria: TutoriaClass): Boolean {
             return when (tutoria.estado) {
                 "Notificado" -> {
@@ -182,12 +232,6 @@ class TutoriaAdapter(
                     Snackbar.make(rootView,
                         "Debes revisar y notificar al apoderado antes de citar",
                         Snackbar.LENGTH_LONG).show()
-                    true
-                }
-                "Citado" -> {
-                    Snackbar.make(rootView,
-                        "Ya se citó al apoderado para esta tutoría",
-                        Snackbar.LENGTH_SHORT).show()
                     true
                 }
                 "Completado" -> {
@@ -457,6 +501,72 @@ class TutoriaAdapter(
 
     override fun onBindViewHolder(holder: TutoriaViewHolder, position: Int) {
         holder.bind(listaTutorias[position])
+    }
+
+    private fun generarYMostrarPdf(context: Context, tutoria: TutoriaClass, informe: Informe) {
+        try {
+            // Archivo PDF a mostrar
+            val fileName = "Informe_Tutoria_${tutoria.id}.pdf"
+            val file = File(context.getExternalFilesDir(null), fileName)
+
+            // Convertir TutoriaClass a IncidenciaClass si es necesario
+            val incidencia = convertirTutoriaAIncidencia(tutoria)
+
+            // Crear generador con los datos correctos
+            val generador = GeneradorPdfInforme(context, incidencia, informe)
+
+            // Generar el PDF
+            generador.generarPdf(file.absolutePath)
+
+            // Obtener URI segura
+            val uri: Uri = FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.fileprovider",
+                file
+            )
+
+            // Intent para abrir el PDF
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, "application/pdf")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NO_HISTORY)
+            }
+
+            // Verificar si hay aplicación para abrir PDFs
+            if (intent.resolveActivity(context.packageManager) != null) {
+                context.startActivity(intent)
+            } else {
+                // Opción alternativa: compartir el archivo
+                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                    type = "application/pdf"
+                    putExtra(Intent.EXTRA_STREAM, uri)
+                    putExtra(Intent.EXTRA_TEXT, "Informe de tutoría: ${tutoria.nombreEstudiante}")
+                }
+                context.startActivity(Intent.createChooser(shareIntent, "Abrir con..."))
+            }
+
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, "No hay aplicación para ver PDF instalada", Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            Toast.makeText(context, "Error al generar PDF: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+            Log.e("PDF_ERROR", "Error al generar PDF", e)
+        }
+    }
+    private fun convertirTutoriaAIncidencia(tutoria: TutoriaClass): IncidenciaClass {
+        return IncidenciaClass(
+            id = tutoria.id,
+            fecha = tutoria.fecha,
+            hora = tutoria.hora,
+            nombreEstudiante = tutoria.nombreEstudiante,
+            apellidoEstudiante = tutoria.apellidoEstudiante,
+            grado = tutoria.grado, // Ajustar según corresponda
+            seccion = tutoria.seccion, // Ajustar según corresponda
+            celularApoderado = tutoria.celularApoderado ?: 0,
+            tipo = tutoria.tipo,
+            atencion = tutoria.atencion,
+            estado = tutoria.estado,
+            detalle =  tutoria.detalle, // Ajustar según corresponda
+            imageUri = tutoria.urlImagen // Ajustar si hay imagen asociada
+        )
     }
 
     fun updateData(newListTutoria: List<TutoriaClass>) {

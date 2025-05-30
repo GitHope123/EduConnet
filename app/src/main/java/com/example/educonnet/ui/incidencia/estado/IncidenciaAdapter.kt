@@ -1,28 +1,42 @@
 package com.example.educonnet.ui.incidencia.estado
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.ProgressDialog
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
 import com.example.educonnet.R
 import com.example.educonnet.databinding.ItemIncidenciaBinding
 import com.example.educonnet.ui.incidencia.DescripcionIncidencia
+import com.example.educonnet.ui.resources.GeneradorPdfInforme
+import com.example.educonnet.ui.tutoria.recurso.Informe
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.firestore.FirebaseFirestore
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class IncidenciaAdapter(
     private var incidencias: List<IncidenciaClass>,
     private val context: Context
 ) : RecyclerView.Adapter<IncidenciaAdapter.IncidenciaViewHolder>() {
+
+    private val firestore = FirebaseFirestore.getInstance()
 
     inner class IncidenciaViewHolder(private val binding: ItemIncidenciaBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -30,131 +44,202 @@ class IncidenciaAdapter(
         @SuppressLint("MissingInflatedId")
         fun bind(incidencia: IncidenciaClass) {
             with(binding) {
-                // Bind basic information
-                tvEstudiante.text = context.getString(
-                    R.string.full_name_format,
-                    incidencia.apellidoEstudiante,
-                    incidencia.nombreEstudiante
-                )
-                tvAtencion.text = incidencia.atencion
+                // Configuración básica de la vista
+                tvEstudiante.text = "${incidencia.apellidoEstudiante} ${incidencia.nombreEstudiante}"
+                tvAtencion.text = incidencia.atencion.ifEmpty { "Destacado" }
                 tvHora.text = incidencia.hora
                 tvFecha.text = incidencia.fecha
                 tvEstado.text = incidencia.estado
-                tvGrado.text = incidencia.grado.toString()
+                tvGrado.text = "${incidencia.grado}°"
                 tvNivel.text = incidencia.seccion
                 tvTipo.text = incidencia.tipo
 
-                clickFrameStepper.setOnClickListener {
-                    try {
-                        // Inflate el layout personalizado del diálogo
-                        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_stepper, null)
-                        if (dialogView == null) {
-                            Toast.makeText(context, "No se pudo cargar la vista del diálogo", Toast.LENGTH_SHORT).show()
-                            return@setOnClickListener
-                        }
+                // Configurar botón PDF
+                configurarBotonPDF(incidencia)
 
-                        // Obtener referencias a los iconos y textos del stepper
-                        val stepViews = listOf(
-                            dialogView.findViewById<ImageView?>(R.id.stepEnviadoIcon) to dialogView.findViewById<TextView?>(R.id.stepEnviadoText),
-                            dialogView.findViewById<ImageView?>(R.id.stepRevisadoIcon) to dialogView.findViewById<TextView?>(R.id.stepRevisadoText),
-                            dialogView.findViewById<ImageView?>(R.id.stepNotificadoIcon) to dialogView.findViewById<TextView?>(R.id.stepNotificadoText),
-                            dialogView.findViewById<ImageView?>(R.id.stepCitadoIcon) to dialogView.findViewById<TextView?>(R.id.stepCitadoText),
-                            dialogView.findViewById<ImageView?>(R.id.stepCompletadoIcon) to dialogView.findViewById<TextView?>(R.id.stepCompletadoText)
+                // Configurar stepper de estado
+                configurarStepper(incidencia)
+
+                // Configurar estilos visuales
+                configurarEstilos(incidencia)
+
+                // Configurar clic en el item
+                root.setOnClickListener { launchDetailActivity(incidencia) }
+            }
+        }
+
+        private fun configurarBotonPDF(incidencia: IncidenciaClass) {
+            binding.chipVerPFDInformeIncidencia.apply {
+                visibility = if (incidencia.estado == "Completado") View.VISIBLE else View.GONE
+                setOnClickListener { generarYMostrarPDF(incidencia) }
+            }
+        }
+
+        private fun configurarStepper(incidencia: IncidenciaClass) {
+            binding.clickFrameStepper.setOnClickListener {
+                try {
+                    val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_stepper, null)
+
+                    val stepViews = listOf(
+                        dialogView.findViewById<ImageView>(R.id.stepEnviadoIcon) to dialogView.findViewById<TextView>(R.id.stepEnviadoText),
+                        dialogView.findViewById<ImageView>(R.id.stepRevisadoIcon) to dialogView.findViewById<TextView>(R.id.stepRevisadoText),
+                        dialogView.findViewById<ImageView>(R.id.stepNotificadoIcon) to dialogView.findViewById<TextView>(R.id.stepNotificadoText),
+                        dialogView.findViewById<ImageView>(R.id.stepCitadoIcon) to dialogView.findViewById<TextView>(R.id.stepCitadoText),
+                        dialogView.findViewById<ImageView>(R.id.stepCompletadoIcon) to dialogView.findViewById<TextView>(R.id.stepCompletadoText)
+                    )
+
+                    val pasosOrden = listOf("Enviado", "Revisado", "Notificado", "Citado", "Completado")
+                    val indexActual = pasosOrden.indexOf(incidencia.estado).coerceAtLeast(0)
+
+                    pasosOrden.forEachIndexed { index, _ ->
+                        val (iconView, textView) = stepViews[index]
+                        val isCompleted = index <= indexActual
+
+                        iconView.setImageResource(
+                            if (isCompleted) R.drawable.ic_radio_button_checked
+                            else R.drawable.ic_radio_button_unchecked
                         )
 
-                        // Mapas para progreso y orden
-                        val pasosOrden = listOf("Enviado", "Revisado", "Notificado", "Citado", "Completado")
-
-                        // Función para actualizar los pasos del stepper
-                        fun actualizarStepper(estadoActual: String) {
-                            try {
-                                val indexActual = pasosOrden.indexOf(estadoActual).coerceAtLeast(0)
-
-                                pasosOrden.forEachIndexed { index, paso ->
-                                    val (iconView, textView) = stepViews[index]
-
-                                    val isCompleted = index <= indexActual
-
-                                    iconView?.setImageResource(
-                                        if (isCompleted) R.drawable.ic_radio_button_checked
-                                        else R.drawable.ic_radio_button_unchecked
-                                    )
-
-                                    val colorRes = if (isCompleted) R.color.md_theme_primary else R.color.md_theme_inverseSurface
-                                    textView?.setTextColor(ContextCompat.getColor(context, colorRes))
-                                }
-                            } catch (e: Exception) {
-                                Log.e("Stepper", "Error al actualizar stepper", e)
-                            }
-                        }
-
-                        // Validar estado de la incidencia
-                        if (incidencia.estado.isNullOrEmpty()) {
-                            Toast.makeText(context, "Estado no disponible", Toast.LENGTH_SHORT).show()
-                            return@setOnClickListener
-                        }
-
-                        // Aplicar cambios visuales según el estado actual
-                        actualizarStepper(incidencia.estado)
-
-                        // Mostrar el diálogo
-                        MaterialAlertDialogBuilder(context)
-                            .setTitle("Estado de la Incidencia")
-                            .setView(dialogView)
-                            .setPositiveButton("Cerrar", null)
-                            .show()
-
-                    } catch (e: Exception) {
-                        Log.e("StepperDialog", "Error al mostrar el diálogo", e)
-                        Toast.makeText(context, "Error al mostrar el estado", Toast.LENGTH_SHORT).show()
+                        val colorRes = if (isCompleted) R.color.md_theme_primary else R.color.md_theme_inverseSurface
+                        textView.setTextColor(ContextCompat.getColor(context, colorRes))
                     }
+
+                    MaterialAlertDialogBuilder(context)
+                        .setTitle("Estado de la Incidencia")
+                        .setView(dialogView)
+                        .setPositiveButton("Cerrar", null)
+                        .show()
+
+                } catch (e: Exception) {
+                    Log.e("StepperDialog", "Error al mostrar diálogo", e)
+                    Toast.makeText(context, "Error al mostrar estado", Toast.LENGTH_SHORT).show()
                 }
+            }
+        }
 
-
-                // Set status color
-                val statusColor = when (incidencia.estado) {
+        private fun configurarEstilos(incidencia: IncidenciaClass) {
+            with(binding) {
+                // Color según estado
+                val estadoColor = when (incidencia.estado) {
                     "Revisado" -> R.color.Green
-                    "Notificado" ->R.color.color_blue
-                    "Citado"-> R.color.md_theme_secondary
-                    "Completado"->R.color.md_theme_primary
+                    "Notificado" -> R.color.color_blue
+                    "Citado" -> R.color.md_theme_secondary
+                    "Completado" -> R.color.md_theme_primary
                     else -> R.color.color_red
                 }
-                tvEstado.setTextColor(context.getColor(statusColor))
-                // Set severity color and icon
-                val (severityColor, severityIcon) = when (incidencia.atencion) {
+                tvEstado.setTextColor(ContextCompat.getColor(context, estadoColor))
+
+                // Color e icono según gravedad
+                val (gravedadColor, gravedadIcon) = when (incidencia.atencion) {
                     "Moderado" -> Pair(R.color.Primary_green, R.drawable.ic_type_indicidencia)
                     "Urgente" -> Pair(R.color.color_orange, R.drawable.ic_type_indicidencia)
                     "Muy urgente" -> Pair(R.color.color_red, R.drawable.ic_type_indicidencia)
-                    else -> Pair(R.color.color_blue, R.drawable.icon_incidencia_positiva) // incidencia positiva
+                    else -> Pair(R.color.color_blue, R.drawable.icon_incidencia_positiva)
                 }
-                if (incidencia.atencion.isBlank()) {
-                    tvAtencion.text = "Destacado" // incidencia positiva
-                } else {
-                    tvAtencion.text = incidencia.atencion
-                }
-                tvAtencion.setTextColor(context.getColor(severityColor))
-                tvImagenGravedad.setColorFilter(context.getColor(severityColor))
-                tvImagenGravedad.setImageResource(severityIcon)
+                tvAtencion.setTextColor(ContextCompat.getColor(context, gravedadColor))
+                tvImagenGravedad.setColorFilter(ContextCompat.getColor(context, gravedadColor))
+                tvImagenGravedad.setImageResource(gravedadIcon)
 
-                // Establecer progreso según estado
+                // Progreso circular
                 val progresoMap = mapOf(
                     "Revisado" to 25f,
                     "Notificado" to 50f,
                     "Citado" to 75f,
                     "Completado" to 100f
                 )
-
                 val progreso = progresoMap[incidencia.estado] ?: 0f
+                circularProgressBar.setProgressWithAnimation(progreso, 1000)
+                tvProgressText.text = "${progreso.toInt()}%"
+            }
+        }
 
-                binding.circularProgressBar.setProgressWithAnimation(progreso, 1000) // duración opcional
-                binding.tvProgressText.text = "${progreso.toInt()}%"
+        private fun generarYMostrarPDF(incidencia: IncidenciaClass) {
+            val progressDialog = ProgressDialog(context).apply {
+                setMessage("Generando informe...")
+                setCancelable(false)
+                show()
+            }
 
+            firestore.collection("Informe")
+                .whereEqualTo("idInforme", incidencia.id)
+                .limit(1)
+                .get()
+                .addOnSuccessListener { documents ->
+                    progressDialog.dismiss()
 
+                    if (documents.isEmpty) {
+                        Toast.makeText(context, "No se encontró informe asociado", Toast.LENGTH_SHORT).show()
+                        return@addOnSuccessListener
+                    }
 
-                // Set click listener
-                root.setOnClickListener {
-                    launchDetailActivity(incidencia)
+                    val informe = documents.first().toObject(Informe::class.java)
+                    val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+                    val fileName = "Informe_${incidencia.id}_$timestamp.pdf"
+                    val file = File(context.getExternalFilesDir(null), fileName)
+
+                    try {
+                        GeneradorPdfInforme(context, incidencia, informe).apply {
+                            generarPdf(file.absolutePath)
+                            mostrarPDFGenerado(file, incidencia)
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "Error al generar PDF", Toast.LENGTH_SHORT).show()
+                        Log.e("PDF_ERROR", "Error al generar PDF", e)
+                    }
                 }
+                .addOnFailureListener {
+                    progressDialog.dismiss()
+                    Toast.makeText(context, "Error al obtener informe", Toast.LENGTH_SHORT).show()
+                }
+        }
+
+        private fun mostrarPDFGenerado(pdfFile: File, incidencia: IncidenciaClass) {
+            try {
+                val uri: Uri = FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.fileprovider",
+                    pdfFile
+                )
+
+                // Otorgar permisos temporales
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    setDataAndType(uri, "application/pdf")
+                    flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NO_HISTORY
+                }
+
+                // Verificar si hay una aplicación para abrir PDFs
+                val packageManager = context.packageManager
+                val activities = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+
+                // Otorgar permisos a todas las aplicaciones que puedan manejar el intent
+                for (resolveInfo in activities) {
+                    val packageName = resolveInfo.activityInfo.packageName
+                    context.grantUriPermission(
+                        packageName,
+                        uri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
+                }
+
+                try {
+                    context.startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                    // Si no hay visor de PDFs, ofrecer compartir
+                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                        type = "application/pdf"
+                        putExtra(Intent.EXTRA_STREAM, uri)
+                        putExtra(Intent.EXTRA_TEXT,
+                            "Informe de incidencia - ${incidencia.nombreEstudiante}\n" +
+                                    "Fecha: ${incidencia.fecha}\n" +
+                                    "Tipo: ${incidencia.tipo}"
+                        )
+                        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    }
+                    context.startActivity(Intent.createChooser(shareIntent, "Compartir informe"))
+                }
+            } catch (e: Exception) {
+                Toast.makeText(context, "Error al mostrar PDF: ${e.message}", Toast.LENGTH_LONG).show()
+                Log.e("PDF_VIEWER", "Error al mostrar PDF", e)
             }
         }
 
@@ -171,12 +256,9 @@ class IncidenciaAdapter(
                     "INCIDENCIA_TIPO" to incidencia.tipo,
                     "INCIDENCIA_ATENCION" to incidencia.atencion,
                     "INCIDENCIA_ESTADO" to incidencia.estado,
-                    "INCIDENCIA_DETALLE" to incidencia.detalle
-                ).apply {
-                    incidencia.imageUri?.let { uri ->
-                        putString("INCIDENCIA_FOTO_URL", uri)
-                    }
-                })
+                    "INCIDENCIA_DETALLE" to incidencia.detalle,
+                    "INCIDENCIA_FOTO_URL" to incidencia.imageUri
+                ))
                 context.startActivity(this)
             }
         }
@@ -194,7 +276,6 @@ class IncidenciaAdapter(
     override fun onBindViewHolder(holder: IncidenciaViewHolder, position: Int) {
         holder.bind(incidencias[position])
     }
-    // si esta en completado formar el informe en pdf tanto para el profesor como al tutor
 
     override fun getItemCount(): Int = incidencias.size
 
@@ -204,7 +285,6 @@ class IncidenciaAdapter(
     }
 
     companion object {
-        // Add this if you need to create the adapter from fragments
         fun newInstance(incidencias: List<IncidenciaClass>, context: Context) =
             IncidenciaAdapter(incidencias, context)
     }

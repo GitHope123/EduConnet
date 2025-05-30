@@ -152,6 +152,9 @@
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
                         android:text="Moderado" />
+
+
+
                 </LinearLayout>
 
             </LinearLayout>
@@ -174,10 +177,25 @@
                 app:chipCornerRadius="5dp"
                 app:chipStrokeWidth="0.5dp" />
 
-            <Space
+            <androidx.legacy.widget.Space
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_pdf"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:padding="0dp"
+                android:backgroundTint="@color/md_theme_light_errorContainer"
+                app:icon="@drawable/ic_pdf"
+                app:iconTint="@color/color_red"
+                app:iconGravity="textEnd"
+                android:textColor="@color/color_red"
+                app:cornerRadius="5dp"
+                app:iconPadding="0dp"
+                app:strokeWidth="0.5dp"
+                app:strokeColor="@color/color_red"
+                android:contentDescription="Ver PDF" />
             <!-- Botón de acción -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_more"

@@ -1,5 +1,6 @@
 package com.example.educonnet.ui.incidencia
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -13,46 +14,42 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.educonnet.LoginActivity
 import com.example.educonnet.R
 import com.example.educonnet.databinding.ActivityAgregarIncidenciaBinding
+import com.example.educonnet.databinding.ItemEstudianteSeleccionadoBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
-
-private typealias TakePhotoLauncher = ActivityResultLauncher<Intent>
-private typealias PickImageLauncher = ActivityResultLauncher<Intent>
 
 class AgregarIncidencia : AppCompatActivity() {
 
     private lateinit var binding: ActivityAgregarIncidenciaBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var storageRef: StorageReference
-
     private var imageUri: Uri? = null
-    private lateinit var takePhotoLauncher: TakePhotoLauncher
-    private lateinit var pickImageLauncher: PickImageLauncher
-
+    private lateinit var takePhotoLauncher: ActivityResultLauncher<Intent>
+    private lateinit var pickImageLauncher: ActivityResultLauncher<Intent>
     private lateinit var idUsuario: String
     private lateinit var datoTipoUsuario: String
-
     private var incidenciasRegistradas = 0
     private var totalIncidencias = 0
-
     private val sugerenciasPositivas = listOf("Participativo", "Colaborativo", "Responsable")
     private val sugerenciasNegativas = listOf("Académica", "Conductual", "Otro")
-
     private val firestore by lazy { FirebaseFirestore.getInstance() }
-
-    private lateinit var estudiantes: List<EstudianteAgregar>
-    private lateinit var adapterEstudiantes: EstudiantesSeleccionadosAdapter
+    private val estudiantes = mutableListOf<EstudianteAgregar>()
+    private lateinit var adapter: EstudiantesSeleccionadosAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,12 +84,19 @@ class AgregarIncidencia : AppCompatActivity() {
             if (result.resultCode == RESULT_OK) {
                 val bitmap = result.data?.extras?.get("data") as? Bitmap
                 bitmap?.let {
-                    val uri = Uri.parse(MediaStore.Images.Media.insertImage(contentResolver, it, "Title", null))
-                    imageUri = uri
+                    imageUri = saveBitmapToCache(it)
                     loadImage()
                 }
             }
         }
+    }
+
+    private fun saveBitmapToCache(bitmap: Bitmap): Uri {
+        val file = File(cacheDir, "temp_photo_${System.currentTimeMillis()}.jpg")
+        FileOutputStream(file).use { out ->
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
+        }
+        return Uri.fromFile(file)
     }
 
     private fun loadImage() {
@@ -102,12 +106,11 @@ class AgregarIncidencia : AppCompatActivity() {
             .into(binding.imageViewEvidencia)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupUI() {
-        estudiantes = intent.extras?.getParcelableArrayList<EstudianteAgregar>("EXTRA_STUDENTS") ?: run {
-            Log.w("AgregarIncidencia", "No se recibió lista de estudiantes o está vacía")
-            emptyList()
-        }
-
+        val estudiantesRecibidos = intent.extras?.getParcelableArrayList<EstudianteAgregar>("EXTRA_STUDENTS") ?: emptyList()
+        estudiantes.clear()
+        estudiantes.addAll(estudiantesRecibidos)
         totalIncidencias = estudiantes.size
 
         setSupportActionBar(binding.toolbar)
@@ -120,33 +123,36 @@ class AgregarIncidencia : AppCompatActivity() {
         binding.tvFecha.text = obtenerFechaActual()
         binding.tvHora.text = obtenerHoraActual()
 
+        binding.btnAddEstudianteIncidencia.setOnClickListener {
+            finish() // Retrocede a la anterior
+        }
+
         if (estudiantes.isEmpty()) {
             Toast.makeText(this, "No se recibieron estudiantes para registrar incidencia", Toast.LENGTH_LONG).show()
         } else {
             val cantidad = estudiantes.size
-            val mensaje = if (cantidad == 1) {
-                "Se recibió 1 estudiante para registrar incidencia"
-            } else {
-                "Se recibieron $cantidad estudiantes para registrar incidencia"
-            }
-            Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show()
-            Log.i("AgregarIncidencia", mensaje)
+            val mensaje = if (cantidad == 1) "Se recibió 1 estudiante" else "Se recibieron $cantidad estudiantes"
+            Toast.makeText(this, "$mensaje para registrar incidencia", Toast.LENGTH_SHORT).show()
         }
     }
-
-
 
     private fun setupRecyclerView() {
-        adapterEstudiantes = EstudiantesSeleccionadosAdapter(estudiantes)
+        adapter = EstudiantesSeleccionadosAdapter(estudiantes) { estudianteEliminado ->
+            // Callback cuando se elimina un estudiante
+            Toast.makeText(this, "Estudiante eliminado: ${estudianteEliminado.nombres}", Toast.LENGTH_SHORT).show()
+        }
+
         binding.rvEstudiantesSeleccionados.apply {
             layoutManager = LinearLayoutManager(this@AgregarIncidencia)
-            adapter = adapterEstudiantes
-            setHasFixedSize(true)
+            adapter = this@AgregarIncidencia.adapter
         }
+
+        // Configura el swipe to delete directamente en el adaptador
+        adapter.attachSwipeToDelete(binding.rvEstudiantesSeleccionados)
     }
 
+
     private fun setupSpinners() {
-        // Spinner de tipo (Reconocimiento/Falta)
         ArrayAdapter.createFromResource(
             this,
             R.array.tipos_incidencia,
@@ -165,7 +171,6 @@ class AgregarIncidencia : AppCompatActivity() {
             override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
         }
 
-        // Spinner de atención (solo para faltas)
         ArrayAdapter.createFromResource(
             this,
             R.array.niveles_atencion,
@@ -177,12 +182,7 @@ class AgregarIncidencia : AppCompatActivity() {
     }
 
     private fun updateSugerencias(tipo: String) {
-        val sugerencias = if (tipo == "Reconocimiento") {
-            sugerenciasPositivas
-        } else {
-            sugerenciasNegativas
-        }
-
+        val sugerencias = if (tipo == "Reconocimiento") sugerenciasPositivas else sugerenciasNegativas
         ArrayAdapter(this, R.layout.item_spinner, sugerencias).also { adapter ->
             adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
             binding.spinnerSugerencias.adapter = adapter
@@ -208,13 +208,17 @@ class AgregarIncidencia : AppCompatActivity() {
 
     private fun validarFormulario(): Boolean {
         return when {
+            estudiantes.isEmpty() -> {
+                Toast.makeText(this, "Seleccione al menos un estudiante", Toast.LENGTH_SHORT).show()
+                false
+            }
             binding.edMultilinea.text.toString().trim().isEmpty() -> {
-                binding.edMultilinea.error = "Por favor ingrese los detalles"
+                binding.edMultilinea.error = "Ingrese los detalles"
                 false
             }
             binding.spinnerTipo.selectedItem.toString() == "Falta" &&
                     binding.spinnerAtencion.selectedItemPosition == 0 -> {
-                Toast.makeText(this, "Seleccione un nivel de atención", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Seleccione nivel de atención", Toast.LENGTH_SHORT).show()
                 false
             }
             else -> true
@@ -234,18 +238,16 @@ class AgregarIncidencia : AppCompatActivity() {
     }
 
     private fun seleccionarImagenGaleria() {
-        val intent = Intent(Intent.ACTION_PICK).apply {
-            type = "image/*"
-        }
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         pickImageLauncher.launch(intent)
     }
 
     private fun tomarFotoCamara() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (takePictureIntent.resolveActivity(packageManager) != null) {
-            takePhotoLauncher.launch(takePictureIntent)
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (intent.resolveActivity(packageManager) != null) {
+            takePhotoLauncher.launch(intent)
         } else {
-            Toast.makeText(this, "No se encontró una aplicación de cámara", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "No se encontró aplicación de cámara", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -257,16 +259,14 @@ class AgregarIncidencia : AppCompatActivity() {
                 binding.progressBar.progress = progress
             }
             .continueWithTask { task ->
-                if (!task.isSuccessful) {
-                    task.exception?.let { throw it }
-                }
+                if (!task.isSuccessful) task.exception?.let { throw it }
                 ref.downloadUrl
             }
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     guardarDatosIncidencia(task.result.toString())
                 } else {
-                    mostrarError("Error al obtener URL de la imagen")
+                    mostrarError("Error al subir imagen")
                     guardarDatosIncidencia(null)
                 }
             }
@@ -276,6 +276,7 @@ class AgregarIncidencia : AppCompatActivity() {
             }
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun guardarDatosIncidencia(urlImagen: String?) {
         idUsuario = LoginActivity.GlobalData.idUsuario
         datoTipoUsuario = LoginActivity.GlobalData.datoTipoUsuario
@@ -283,13 +284,21 @@ class AgregarIncidencia : AppCompatActivity() {
         val tipoIncidencia = binding.spinnerTipo.selectedItem.toString()
         val sugerencia = binding.spinnerSugerencias.selectedItem?.toString() ?: ""
         val detalles = binding.edMultilinea.text.toString().trim()
-        val atencion = if (tipoIncidencia == "Falta") {
-            binding.spinnerAtencion.selectedItem.toString()
+        val atencion = if (tipoIncidencia == "Falta") binding.spinnerAtencion.selectedItem.toString() else ""
+        val detalleFinal = if (sugerencia.isNotEmpty()) {
+            val listaEstudiantes = estudiantes.joinToString("\n• ", "• ") { estudiante ->
+                "${estudiante.nombres} ${estudiante.apellidos} (${estudiante.grado}° ${estudiante.seccion})"
+            }
+            """
+    |ESTUDIANTES INVOLUCRADOS:
+    |$listaEstudiantes
+    |
+    |${sugerencia.uppercase()}:
+    |$detalles
+    """.trimMargin()
         } else {
-            ""
+            detalles
         }
-
-        val detalleFinal = if (sugerencia.isNotEmpty()) "$sugerencia: $detalles" else detalles
 
         estudiantes.forEach { estudiante ->
             val incidencia = hashMapOf(
@@ -352,4 +361,6 @@ class AgregarIncidencia : AppCompatActivity() {
     private fun obtenerHoraActual(): String {
         return SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
     }
+
+
 }

@@ -2,20 +2,30 @@ package com.example.educonnet.ui.incidencia
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Html
+import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.CheckedTextView
+import android.widget.LinearLayout
+import android.widget.ListView
 import android.widget.SearchView
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.educonnet.R
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.FirebaseFirestore
+import org.bouncycastle.crypto.params.Blake3Parameters.context
 
 class AgregarEstudiantes : AppCompatActivity() {
 
@@ -28,7 +38,7 @@ class AgregarEstudiantes : AppCompatActivity() {
 
     private val estudiantesDisponibles = mutableListOf<EstudianteAgregar>()
     private val estudiantesFiltrados = mutableListOf<EstudianteAgregar>()
-    private val selectedStudents = mutableListOf<EstudianteAgregar>() // Cambiado a lista de objetos completos
+    private val selectedStudents = mutableListOf<EstudianteAgregar>()
 
     private lateinit var estudianteAdapter: EstudianteAgregarAdapter
 
@@ -210,33 +220,134 @@ class AgregarEstudiantes : AppCompatActivity() {
     private fun setupContinuarButton() {
         btnContinuar.setOnClickListener {
             if (selectedStudents.isNotEmpty()) {
-                val cantidad = selectedStudents.size
-                val mensaje = if (cantidad == 1)
-                    "1 estudiante seleccionado"
-                else
-                    "$cantidad estudiantes seleccionados"
-
-                Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show()
-
-                val listaNombres = selectedStudents.joinToString("\n") {
-                    "- ${it.nombres} ${it.apellidos}"
-                }
-
-                MaterialAlertDialogBuilder(this)
-                    .setTitle("Confirmar selección")
-                    .setMessage("Has seleccionado:\n\n$listaNombres\n\n¿Deseas continuar?")
-                    .setPositiveButton("Sí") { _, _ ->
-                        val intent = Intent(this, AgregarIncidencia::class.java).apply {
-                            putParcelableArrayListExtra("EXTRA_STUDENTS", ArrayList(selectedStudents))
-                        }
-                        startActivity(intent)
-                    }
-                    .setNegativeButton("Cancelar", null)
-                    .show()
+                showConfirmationDialog()
             } else {
                 Toast.makeText(this, "Seleccione al menos un estudiante", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun showConfirmationDialog() {
+        val inflater = LayoutInflater.from(this)
+        val view = inflater.inflate(R.layout.dialog_estudiantes_seleccionados_material, null)
+        val container = view.findViewById<LinearLayout>(R.id.contenedorEstudiantes)
+
+        selectedStudents.forEachIndexed { index, estudiante ->
+            val nombreCompleto = "${estudiante.apellidos}, ${estudiante.nombres}"
+            val nombreAcortado = if (nombreCompleto.length > 22) {
+                nombreCompleto.take(22) + "..."
+            } else {
+                nombreCompleto
+            }
+
+            // Texto del estudiante
+            val textView = TextView(this).apply {
+                text = "${index + 1}. $nombreAcortado (${estudiante.grado}° ${estudiante.seccion})"
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                setTextColor(ContextCompat.getColor(context, R.color.md_theme_onSurfaceVariant))
+                setPadding(0, 8, 0, 8)
+            }
+            container.addView(textView)
+
+            // Línea divisora (excepto después del último)
+            if (index < selectedStudents.lastIndex) {
+                val divider = View(this).apply {
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        1
+                    ).apply {
+                        topMargin = 4
+                        bottomMargin = 4
+                    }
+                    setBackgroundColor(ContextCompat.getColor(context, R.color.md_theme_onSurfaceVariant)) // Usa un color gris claro
+                }
+                container.addView(divider)
+            }
+        }
+
+        // Crear el diálogo con vista personalizada
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Estudiantes seleccionados")
+            .setView(view)
+            .setPositiveButton("Continuar") { _, _ ->
+                val intent = Intent(this, AgregarIncidencia::class.java).apply {
+                    putParcelableArrayListExtra("EXTRA_STUDENTS", ArrayList(selectedStudents))
+                }
+                startActivity(intent)
+            }
+            .setNegativeButton("Cancelar", null)
+            .setNeutralButton("Quitar estudiantes") { _, _ ->
+                showRemoveStudentsDialog()
+            }
+            .show()
+    }
+
+    private fun showRemoveStudentsDialog() {
+        val studentItems = selectedStudents.map {
+            val nombreCompleto = "${it.nombres} ${it.apellidos}"
+            val nombreAcortado = if (nombreCompleto.length > 30) {
+                nombreCompleto.take(30) + "..."
+            } else {
+                nombreCompleto
+            }
+            "$nombreAcortado (${it.grado}° ${it.seccion})"
+        }.toMutableList() // ← importante para evitar el error
+
+        val checkedItems = BooleanArray(selectedStudents.size) { true }
+
+        val adapter = object : ArrayAdapter<String>(
+            this,
+            android.R.layout.simple_list_item_multiple_choice,
+            studentItems
+        ) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent) as CheckedTextView
+                view.textSize = 12f
+                return view
+            }
+        }
+
+        val listView = ListView(this).apply {
+            choiceMode = ListView.CHOICE_MODE_MULTIPLE
+            this.adapter = adapter
+            for (i in checkedItems.indices) {
+                setItemChecked(i, checkedItems[i])
+            }
+            setOnItemClickListener { _, _, position, _ ->
+                checkedItems[position] = !checkedItems[position]
+            }
+        }
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Quitar estudiantes")
+            .setView(listView)
+            .setPositiveButton("Quitar seleccionados") { _, _ ->
+                removeSelectedStudents(checkedItems)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+
+
+
+    private fun removeSelectedStudents(checkedItems: BooleanArray) {
+        val studentsToRemove = mutableListOf<EstudianteAgregar>()
+
+        for (i in checkedItems.indices) {
+            if (checkedItems[i]) {
+                studentsToRemove.add(selectedStudents[i])
+            }
+        }
+
+        selectedStudents.removeAll(studentsToRemove)
+
+        // Actualizar el estado de los checkboxes en el RecyclerView
+        estudianteAdapter.updateSelectedStudents(selectedStudents.map { it.id }.toSet())
+        estudianteAdapter.notifyDataSetChanged()
+        updateContinuarButtonState()
+
+        Toast.makeText(this, "${studentsToRemove.size} estudiantes removidos", Toast.LENGTH_SHORT).show()
     }
 
     private fun clearSearchView() {

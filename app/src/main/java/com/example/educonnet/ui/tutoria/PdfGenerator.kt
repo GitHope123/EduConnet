@@ -160,9 +160,8 @@ class PdfGenerator(private val context: Context, private val tutoria: TutoriaCla
         addSection(doc, "Detalles de la Incidencia", listOf(
             "Fecha" to safeToString(tutoria.fecha),
             "Horario" to safeToString(tutoria.hora),
-            "Estado" to safeToString(tutoria.estado),
             "Tipo" to safeToString(tutoria.tipo),
-            "Nivel" to safeToString(tutoria.atencion, gravedadClass)
+            "Gravedad" to safeToString(tutoria.atencion, gravedadClass)
         ))
 
         // Detalles adicionales con diseño moderno

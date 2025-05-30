@@ -85,6 +85,7 @@ dependencies {
     // Glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation(libs.firebase.firestore)
+    implementation(libs.androidx.scenecore)
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
     // Animations
