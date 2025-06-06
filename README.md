@@ -88,45 +88,62 @@
 
 ```plaintext
 📁 Estudiante {
-  id: string,
-  nombre: string,
-  grado: number,
-  sección: string,
-  celular_apoderado: string
+  "idEstudiante": "string", // ID generado por Firebase
+  "nombres": "string",
+  "apellidos": "string",
+  "celularApoderado": "int",
+  "grado": "int",
+  "seccion": "string",
+  "cantidadIncidencias": "int"
 }
 
 📁 Incidencia {
-  id: string,
-  tipo: "Positiva" | "Negativa",
-  gravedad: string,
-  descripcion: string,
-  fecha: string (ISO),
-  profesor_id: string,
-  estado: "Pendiente" | "Revisado" | "Notificado" | "Citado" | "Completado",
-  evidencia_url: string
+  "id": "string", // ID generado por Firebase
+  "nombreEstudiante": "string",
+  "apellidoEstudiante": "string",
+  "celularApoderado": "int",
+  "grado": "int",
+  "nivel": "string", // Equivalente a grado académico
+  "seccion": "string", // Ejemplo: A, B, C, D
+  "fecha": "string", // Formato ISO (YYYY-MM-DD)
+  "hora": "string", // HH:mm:ss
+  "tipo": "string", // "Positiva" | "Negativa"
+  "estado": "string", // "Pendiente" | "Revisado" | "Notificado" | "Citado" | "Completado"
+  "atencion": "string", // Gravedad de la incidencia (solo si es negativa)
+  "urlImagen": "string", // URL desde Firebase Storage
+  "idProfesor": "string",
+  "nombreProfesor": "string",
+  "apellidoProfesor": "string",
+  "cargo": "string"
 }
 
 📁 Cita {
-  id: string,
-  incidencia_id: string,
-  apoderado_nombre: string,
-  fecha_cita: string (ISO),
-  fecha_registro: string (ISO)
+  "idCita": "string",
+  "createFecha": "string", // Fecha de creación de la cita (ISO)
+  "apoderado": "string",
+  "fechaCita": "string", // Fecha programada de la cita (ISO)
+  "hora": "string" // Hora programada de la cita
 }
 
 📁 Informe {
-  id: string,
-  incidencia_id: string,
-  contenido_html: string,
-  pdf_url: string,
-  fecha_emision: string (ISO)
+  "idInforme": "string",
+  "createFecha": "string", // Fecha de generación del informe (ISO)
+  "detalles": "string",
+  "apoderado": "string",
+  "relacionFamiliar": "string"
 }
 
 📁 Profesor {
-  id: string,
-  nombre: string,
-  rol: "Profesor" | "Tutor" | "Administrador",
-  seccion_asignada: string
+  "idProfesor": "string", // ID generado por Firebase
+  "nombres": "string",
+  "apellidos": "string",
+  "celular": "int",
+  "correo": "string",
+  "dni": "int",
+  "grado": "int",
+  "seccion": "string", // Puede ser null
+  "cargo": "string",
+  "password": "string" // Hash almacenado en Firebase
 }
 ```
 ---
