@@ -28,7 +28,7 @@
 ### 🧑‍🏫 Gestión Docente y Tutoría
 - 📲 Registro desde dispositivos móviles.
 - 👩‍🏫 Acceso personalizado para tutores según grupo asignado.
-- 📂 Filtros visuales: `Todas`, `Pendientes`, `Resueltas`.
+- 📂 Filtros visuales: `Todas`, `Pendientes`, `Revisados`.
 - 💬 Actualización en tiempo real del estado y comentarios.
 
 ### 🗓️ Programación de Citas con Apoderados
