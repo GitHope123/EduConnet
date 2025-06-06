@@ -63,8 +63,6 @@ class BarraNavegacionActivity : AppCompatActivity(), NavigationView.OnNavigation
 
         setSupportActionBar(binding.appBarBarraNavegacion.toolbar)
 
-
-
         navController = findNavController(R.id.nav_host_fragment_content_barra_navegacion)
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
@@ -92,6 +90,12 @@ class BarraNavegacionActivity : AppCompatActivity(), NavigationView.OnNavigation
         if (userType == "Administrador") {
             notificacionesPush()
         }
+    }
+
+    override fun onDestroy() {
+        // Limpiar referencias para evitar memory leaks
+        binding.navView.setNavigationItemSelectedListener(null)
+        super.onDestroy()
     }
 
     private fun updateNavigationHeader() {

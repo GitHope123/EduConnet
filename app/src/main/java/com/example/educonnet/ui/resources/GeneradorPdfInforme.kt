@@ -13,81 +13,82 @@ class GeneradorPdfInforme(
 ) {
 
     fun generarPdf(rutaSalida: String) {
+        val esReconocimiento = incidencia.tipo.contains("Reconocimiento", ignoreCase = true)
+
         val html = """
             <html>
             <head>
                 <style>
                     body {
                         font-family: 'Arial', sans-serif;
-                        line-height: 1.6;
-                        color: #333;
-                        padding: 25px;
+                        line-height: 1.5;
+                        color: #333333;
+                        padding: 0;
+                        margin: 0;
+                    }
+                    .container {
                         max-width: 800px;
                         margin: 0 auto;
+                        padding: 30px;
                     }
                     .header {
                         text-align: center;
                         margin-bottom: 30px;
                         padding-bottom: 20px;
-                        border-bottom: 2px solid #2c3e50;
+                        border-bottom: 2px solid #0058BC;
                     }
                     .title {
-                        color: #2c3e50;
-                        font-size: 24px;
+                        color: #0058BC;
+                        font-size: 22px;
+                        font-weight: bold;
                         margin-bottom: 5px;
+                        text-transform: uppercase;
                     }
                     .subtitle {
-                        color: #7f8c8d;
+                        color: #666666;
                         font-size: 14px;
                     }
                     .section {
                         margin: 25px 0;
-                        padding: 20px;
-                        background-color: #f8f9fa;
-                        border-radius: 8px;
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
                     }
                     .section-title {
-                        color: #3498db;
+                        color: #0058BC;
                         font-weight: bold;
-                        font-size: 18px;
+                        font-size: 16px;
                         margin-bottom: 15px;
-                        padding-bottom: 8px;
-                        border-bottom: 1px solid #eee;
+                        padding-bottom: 5px;
+                        border-bottom: 1px solid #0070EB;
                     }
-                    .info-grid {
-                        display: grid;
-                        grid-template-columns: 160px 1fr;
-                        gap: 12px;
-                        margin-bottom: 10px;
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 20px;
                     }
-                    .info-label {
-                        font-weight: bold;
-                        color: #7f8c8d;
+                    .data-table td {
+                        padding: 10px 12px;
+                        border-bottom: 1px solid #E0E0E0;
+                        vertical-align: top;
                     }
-                    .info-value {
-                        color: #2c3e50;
+                    .compact-table td {
+                        padding: 8px 10px;
+                        border-bottom: 1px solid #E0E0E0;
+                        vertical-align: middle;
                     }
                     .highlight-box {
-                        background-color: #e8f4fd;
+                        background-color: #F5F9FF;
                         padding: 15px;
-                        border-radius: 5px;
-                        border-left: 4px solid #3498db;
+                        border-radius: 4px;
+                        border-left: 4px solid #0058BC;
                         margin: 15px 0;
-                    }
-                    .signature-area {
-                        margin-top: 40px;
-                        padding-top: 20px;
-                        border-top: 1px dashed #ccc;
-                        display: grid;
-                        grid-template-columns: 1fr 1fr;
-                        gap: 30px;
+                        font-size: 14px;
                     }
                     .footer {
-                        margin-top: 30px;
+                        margin-top: 40px;
                         text-align: center;
-                        font-size: 12px;
-                        color: #95a5a6;
+                        font-size: 11px;
+                        color: #666666;
+                        padding-top: 15px;
+                        border-top: 1px solid #E0E0E0;
                     }
                     .badge {
                         display: inline-block;
@@ -95,78 +96,105 @@ class GeneradorPdfInforme(
                         border-radius: 4px;
                         font-size: 12px;
                         font-weight: bold;
+                        background-color: #0070EB;
+                        color: #FFFFFF;
                     }
                     .badge-urgent {
-                        background-color: #ffebee;
-                        color: #c62828;
+                        background-color: #D32F2F;
                     }
-                    .badge-normal {
-                        background-color: #e8f5e9;
-                        color: #2e7d32;
+                    .info-label {
+                        font-weight: bold;
+                        color: #555555;
+                        display: block;
+                        margin-bottom: 2px;
+                        font-size: 13px;
+                    }
+                    .info-value {
+                        color: #333333;
+                        font-size: 14px;
                     }
                 </style>
             </head>
             <body>
-                <div class="header">
-                    <div class="title">REPORTE DE INCIDENCIA</div>
-                    <div class="subtitle">${incidencia.fecha} - ${incidencia.hora}</div>
-                </div>
-                
-                <div class="section">
-                    <div class="section-title">INFORMACIÓN PRINCIPAL</div>
-                    <div class="info-grid">
-                        <div class="info-label">Estudiante:</div>
-                        <div class="info-value">${incidencia.nombreEstudiante} ${incidencia.apellidoEstudiante}</div>
-                        <div class="info-label">Grado/Sección:</div>
-                        <div class="info-value">${incidencia.grado}° ${incidencia.seccion}</div>
-                        <div class="info-label">Tipo de incidencia:</div>
-                        <div class="info-value">${incidencia.tipo}</div>
-                        <div class="info-label">Nivel de atención:</div>
-                        <div class="info-value">
-                            <span class="badge ${if (incidencia.atencion.contains("Urgente")) "badge-urgent" else "badge-normal"}">
-                                ${incidencia.atencion}
-                            </span>
-                        </div>
-                        <div class="info-label">Contacto apoderado:</div>
-                        <div class="info-value">${incidencia.celularApoderado}</div>
+                <div class="container">
+                    <div class="header">
+                        <div class="title">${if(esReconocimiento) "Reporte de Reconocimiento" else "Reporte de Incidencia"}</div>
+                        <div class="subtitle">${incidencia.fecha} - ${incidencia.hora} | Sistema EduConnet</div>
                     </div>
-                </div>
+                    
+<div class="section">
+    <div class="section-title">Información Principal</div>
+    ${if(esReconocimiento) """
+    <table class="compact-table">
+        <tr>
+            <td style="width: 50%;"><span class="info-label">Estudiante</span> <span class="info-value">${incidencia.nombreEstudiante} ${incidencia.apellidoEstudiante}</span></td>
+            <td style="width: 50%;"><span class="info-label">Grado/Sección</span> <span class="info-value">${incidencia.grado}° ${incidencia.seccion}</span></td>
+        </tr>
+        <tr>
+            <td colspan="2"><span class="info-label">Tipo</span> <span class="info-value">${incidencia.tipo}</span></td>
+        </tr>
+        <tr>
+            <td colspan="2"><span class="info-label">Contacto apoderado</span> <span class="info-value">${incidencia.celularApoderado}</span></td>
+        </tr>
+    </table>
+    """ else """
+    <table class="compact-table">
+        <tr>
+            <td style="width: 50%;"><span class="info-label">Estudiante</span> <span class="info-value">${incidencia.nombreEstudiante} ${incidencia.apellidoEstudiante}</span></td>
+            <td style="width: 50%;"><span class="info-label">Grado/Sección</span> <span class="info-value">${incidencia.grado}° ${incidencia.seccion}</span></td>
+        </tr>
+        <tr>
+            <td style="width: 50%;"><span class="info-label">Tipo</span> <span class="info-value">${incidencia.tipo}</span></td>
+            <td style="width: 50%;"><span class="info-label">Nivel</span> 
+                <span class="info-value">
+                    <span class="badge ${if (incidencia.atencion.contains("Urgente")) "badge-urgent" else ""}">
+                        ${incidencia.atencion}
+                    </span>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><span class="info-label">Contacto apoderado</span> <span class="info-value">${incidencia.celularApoderado}</span></td>
+        </tr>
+    </table>
+    """}
+</div>
+                    <div class="section">
+                        <div class="section-title">${if(esReconocimiento) "Detalles del Reconocimiento" else "Detalles de la Incidencia"}</div>
+                        <div class="highlight-box">
+                            ${incidencia.detalle.replace("\n", "<br>")}
+                        </div>
+                        ${if (!incidencia.imageUri.isNullOrEmpty()) """
+                            <table class="data-table">
+                                <tr>
+                                    <td><span class="info-label">Evidencia adjunta</span><span class="info-value">Documento disponible en el sistema</span></td>
+                                </tr>
+                            </table>
+                        """ else ""}
+                    </div>
 
-                <div class="section">
-                    <div class="section-title">DETALLES DE LA INCIDENCIA</div>
-                    <div class="highlight-box">
-                        ${incidencia.detalle.replace("\n", "<br>")}
-                    </div>
-                    ${if (!incidencia.imageUri.isNullOrEmpty()) """
-                        <div class="info-grid">
-                            <div class="info-label">Evidencia:</div>
-                            <div class="info-value">Documento adjunto</div>
+                    ${if (informe != null) """
+                    <div class="section">
+                        <div class="section-title">Informe de Seguimiento</div>
+                        <table class="compact-table">
+                            <tr>
+                                <td style="width: 25%;"><span class="info-label">Fecha</span><span class="info-value">${informe.createFecha ?: "N/A"}</span></td>
+                                <td style="width: 25%;"><span class="info-label">Hora</span><span class="info-value">${informe.createHora ?: "N/A"}</span></td>
+                                <td style="width: 25%;"><span class="info-label">Apoderado</span><span class="info-value">${informe.apoderado ?: "N/A"}</span></td>
+                                <td style="width: 25%;"><span class="info-label">Relación</span><span class="info-value">${informe.relacionFamiliar ?: "N/A"}</span></td>
+                            </tr>
+                        </table>
+                        <div class="section-title">Acuerdos y conclusiones</div>
+                        <div class="highlight-box">
+                            ${informe.detalles?.replace("\n", "<br>") ?: "No se registraron detalles adicionales."}
                         </div>
+                    </div>
                     """ else ""}
-                </div>
 
-                ${if (informe != null) """
-                <div class="section">
-                    <div class="section-title">INFORME DE SEGUIMIENTO</div>
-                    <div class="info-grid">
-                        <div class="info-label">Fecha informe:</div>
-                        <div class="info-value">${informe.createFecha ?: "N/A"}</div>
-                        <div class="info-label">Hora informe:</div>
-                        <div class="info-value">${informe.createHora ?: "N/A"}</div>
-                        <div class="info-label">Apoderado:</div>
-                        <div class="info-value">${informe.apoderado ?: "N/A"}</div>
-                        <div class="info-label">Relación familiar:</div>
-                        <div class="info-value">${informe.relacionFamiliar ?: "N/A"}</div>
+                    <div class="footer">
+                        Documento confidencial - Generado automáticamente por EduConnet © ${java.time.Year.now().value}<br>
+                        Todos los derechos reservados
                     </div>
-                    <div class="highlight-box">
-                        <strong>Acuerdos y conclusiones:</strong><br>
-                        ${informe.detalles?.replace("\n", "<br>") ?: "No se registraron detalles adicionales."}
-                    </div>
-                </div>
-                """ else ""}
-
-                <div class="footer">
-                    Documento generado automáticamente - Sistema EduConnet © ${java.time.Year.now().value}
                 </div>
             </body>
             </html>

@@ -1,12 +1,9 @@
 <resources>
     <string name="app_name">EduConnet</string>
     <string name="title_activity_barra_navegacion">BarraNavegacionActivity</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
     <string name="action_logout">Cerrar sesión</string>
     <string name="menu_perfil">Mi perfil</string>
     <string name="menu_profesor">Profesores</string>
@@ -15,12 +12,13 @@
     <string name="menu_incidencia">Incidencias</string>
     <string name="menu_tutoria">Tutoria</string>
     <string name="menu_reporte">Reporte</string>
-    <string name="buscar_profesores">Buscar profesores...</string>
-    <string name="agregar_profesor">Agregar profesor</string>
-    <string name="grado">Grado</string>
-    <string name="seccion">Sección</string>
-    <string name="buscar_estudiantes">Buscar estudiantes...</string>
-    <string name="agregar_estudiante">Agregar</string>
+
+    <string name="app_logo">Application Logo</string>
+    <string name="login_subtitle">Ingresa tus credenciales para acceder a tu cuenta</string>
+    <string name="email_hint">Correo electrónico</string>
+    <string name="password_hint">Contraseña</string>
+    <string name="login_button">Iniciar sesión</string>
+    <string name="version_info">EduConnect v2.0.1 © 2025</string>
 
     <string-array name="tipos_incidencia">
         <item>Reconocimiento</item>
@@ -39,49 +37,20 @@
         <item>Tomar foto</item>
     </string-array>
 
-    <string name="pending_status">Pendiente</string>
-    <string name="reviewed_status">Revisado</string>
-    <string name="moderate_severity">Moderado</string>
-    <string name="urgent_severity">Urgente</string>
-    <string name="serious_severity">Grave</string>
-    <string name="behavioral_type">Conductual</string>
-    <string name="academic_type">Académico</string>
-    <string name="attendance_type">Asistencia</string>
-    <string name="hint_tipo">Tipo</string>
     <string name="hint_detalle">Detalle</string>
     <string name="hint_evidencia">Evidencia</string>
     <string name="hint_registrar_incidencia">Registrar incidencia</string>
 
     <!-- Toolbar -->
     <string name="back_button">Regresar</string>
-    <string name="incident_details_title">Detalles de Incidencia</string>
 
     <!-- Status -->
-    <string name="status_pending">Pendiente</string>
-    <string name="status_resolved">Resuelta</string>
-    <string name="status_in_progress">En progreso</string>
 
     <!-- Incident Types -->
-    <string name="type_behavioral">Conductual</string>
-    <string name="type_academic">Académica</string>
-    <string name="type_other">Otros</string>
 
     <!-- Attention Levels -->
-    <string name="attention_moderate">Moderado</string>
-    <string name="attention_urgent">Urgente</string>
-    <string name="attention_critical">Muy grave</string>
 
     <!-- Labels -->
-    <string name="label_date">Fecha</string>
-    <string name="label_time">Hora</string>
-    <string name="label_student">Estudiante</string>
-    <string name="label_grade">Grado</string>
-    <string name="label_section">Sección</string>
-    <string name="label_status">Estado</string>
-    <string name="label_type">Tipo</string>
-    <string name="label_attention">Atención</string>
-    <string name="label_details">Detalles</string>
-    <string name="label_evidence">Evidencia</string>
 
     <!-- Formatos -->
     <string name="full_name_format">%1$s %2$s</string>
@@ -109,11 +78,6 @@
 
     <!-- Content Descriptions -->
     <string name="evidence_image">Imagen de evidencia de la incidencia</string>
-    <string name="calendar_icon">Icono de calendario</string>
-    <string name="person_icon">Icono de persona</string>
-    <string name="status_icon">Icono de estado</string>
-    <string name="details_icon">Icono de detalles</string>
-    <string name="delete_icon">Icono de eliminar</string>
 
     <string name="hint_name">Nombres</string>
     <string name="hint_lastName">Apellidos</string>
@@ -121,29 +85,7 @@
     <string name="hint_section">Sección</string>
     <string name="hint_call">Celular</string>
     <string name="modificar">Modificar</string>
-    <string name="eliminar">Eliminar</string>
 
-
-    <string name="reporte_url">https://lookerstudio.google.com/reporting/861f85b1-4e07-4e3e-b3da-c863a4f02d45</string>
-    <string name="reporte_clip_label">Reporte URL</string>
-    <string name="url_copiada">URL copiada al portapapeles</string>
-    <string name="compartir_reporte">Revisa este reporte: %s</string>
-    <string name="titulo_reporte">Reporte Analítico</string>
-    <string name="hint_url">Enlace del reporte</string>
-    <string name="boton_copiar">Copiar</string>
-    <string name="boton_compartir">Compartir</string>
-    <string name="mensaje_informativo">Utiliza estos botones para copiar o compartir el enlace del reporte</string>
-
-
-    <string-array name="grados_array">
-        <item>Seleccione</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-    </string-array>
 
     <string-array name="item_fecha_tutoria">
         <item>Todos</item>
@@ -153,17 +95,7 @@
         <item>Este año</item>
     </string-array>
 
-    <string-array name="seccion_array">
-        <item>Seleccione</item>
-        <item>A</item>
-        <item>B</item>
-        <item>C</item>
-        <item>D</item>
-        <item>E</item>
-
-    </string-array>
-
-        <!-- Otros arrays que puedas tener -->
+    <!-- Otros arrays que puedas tener -->
         <string-array name="parentesco_array">
             <item>Madre</item>
             <item>Padre</item>
@@ -172,18 +104,13 @@
             <item>Hermano/a mayor</item>
             <item>Otro (especificar)</item> // añadir un texto para rellenar
         </string-array>
-    <string name="dialog_informe_titulo">Generar Informe</string>
     <string name="hint_detalles_informe">Detalles del informe</string>
     <string name="hint_fecha_informe">Fecha del informe</string>
-    <string name="btn_enviar_informe">Guardar Informe</string>
     <string name="informe_registrado_exito">Informe guardado correctamente</string>
     <string name="error_registro_informe">Error al guardar informe: %1$s</string>
     <string name="error_detalles_vacios">Debe ingresar los detalles del informe</string>
     <string name="error_detalles_cortos">Los detalles deben tener al menos 10 caracteres</string>
     <string name="hint_parentesco">Relación familiar</string>
-    <string-array name="secciones_default">
-        <item>Seleccione</item>
-    </string-array>
     <string name="nombre_completo_format">%1$s %2$s</string>
     <string name="grado_nivel_format">%1$s° %2$s</string>
     <string name="phone_not_available">No disponible</string>
@@ -193,9 +120,7 @@
     <string name="whatsapp_not_installed">WhatsApp no está instalado</string>
     <string name="sms_failed">No se pudo enviar SMS</string>
 
-        <string name="titulo_cita_apoderado">Citar Apoderado</string>
-        <string name="boton_cancelar">Cancelar</string>
-        <string name="error_campos_vacios">Por favor, complete todos los campos.</string>
+    <string name="error_campos_vacios">Por favor, complete todos los campos.</string>
         <string name="cita_registrada_exito">Cita registrada con éxito.</string>
         <string name="error_registro_cita">Error al registrar la cita: %1$s</string>
 
@@ -214,7 +139,6 @@
         <item>Enviar SMS</item>
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="attention_default" />
     <string name="dialog_citar_titulo">Citar Apoderado</string>
     <string name="confirmacion_informe">Confirma que se completo el informe</string>

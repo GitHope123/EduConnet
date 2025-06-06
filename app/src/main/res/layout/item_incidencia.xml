@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardElevation="1dp"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
     app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="1dp"
     app:strokeColor="?attr/colorOutline"
     app:strokeWidth="1dp">
 
@@ -16,7 +18,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Student name and severity section -->
+        <!-- Header Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -30,42 +32,46 @@
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="Apellidos y Nombre de los estudiantes"
+                android:text="Apellidos y Nombre del Estudiante"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:textColor="?attr/colorOnSurface" />
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/tvImagenGravedad"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="8dp"
-                app:srcCompat="@drawable/ic_type_indicidencia"
-                app:tint="?attr/colorError" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tvAtencion"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Moderado"
-                android:textAppearance="?attr/textAppearanceLabelMedium"
-                android:textColor="?attr/colorError" />
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="?attr/selectableItemBackgroundBorderless">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/tvImagenGravedad"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:srcCompat="@drawable/ic_type_indicidencia"
+                    app:tint="?attr/colorError" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tvAtencion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="Moderado"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                    android:textColor="?attr/colorError" />
+            </LinearLayout>
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="8dp"/>
-
-        <!-- Grade, level and type section -->
+        <!-- Metadata Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
@@ -73,22 +79,13 @@
                     android:id="@+id/tvGrado"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="3"
-                    android:textAppearance="?attr/textAppearanceBodySmall"
-                    android:textColor="?attr/colorOnSurfaceVariant" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tvNivel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="A"
+                    android:text="3° A"
                     android:textAppearance="?attr/textAppearanceBodySmall"
                     android:textColor="?attr/colorOnSurfaceVariant" />
 
                 <View
                     android:layout_width="1dp"
-                    android:layout_height="16dp"
+                    android:layout_height="12dp"
                     android:layout_marginHorizontal="8dp"
                     android:background="?attr/colorOutline" />
 
@@ -96,42 +93,27 @@
                     android:id="@+id/tvTipo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
                     android:text="Conductual"
                     android:textAppearance="?attr/textAppearanceBodySmall"
                     android:textColor="?attr/colorOnSurfaceVariant" />
             </LinearLayout>
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipVerPFDInformeIncidencia"
-                android:layout_width="80dp"
-                android:layout_height="35dp"
-                android:textAlignment="center"
-                android:backgroundTint="@color/md_theme_light_errorContainer"
-                android:text="Ver PDF"
-                app:chipCornerRadius="5dp"
-                android:textColor="@color/color_red"
-                android:textSize="12dp"
-                app:chipStrokeColor="@color/color_red"
-                app:chipStrokeWidth="1dp" />
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="8dp"/>
-
-        <!-- Date, time and status section -->
+        <!-- Footer Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
+            <!-- Circular progress con texto dentro -->
             <FrameLayout
                 android:id="@+id/clickFrameStepper"
-                android:layout_width="30dp"
-                android:layout_height="30dp">
+                android:layout_width="24dp"
+                android:layout_height="24dp">
 
                 <com.mikhaellopez.circularprogressbar.CircularProgressBar
                     android:id="@+id/circularProgressBar"
@@ -139,29 +121,30 @@
                     android:layout_height="match_parent"
                     app:cpb_progress="25"
                     app:cpb_progress_max="100"
-                    app:cpb_progressbar_width="4dp"
-                    app:cpb_background_progressbar_width="2dp"
-                    app:cpb_background_progressbar_color="@color/md_theme_surfaceContainerHigh_mediumContrast"
-                    app:cpb_progressbar_color="@color/md_theme_primary" />
+                    app:cpb_progressbar_width="2dp"
+                    app:cpb_background_progressbar_width="1dp"
+                    app:cpb_background_progressbar_color="?attr/colorOutline"
+                    app:cpb_progressbar_color="?attr/colorPrimary" />
 
                 <TextView
                     android:id="@+id/tvProgressText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="25%"
-                    android:textColor="@color/md_theme_primary"
-                    android:textSize="10sp"
+                    android:textSize="8sp"
+                    android:textColor="?attr/colorPrimary"
                     android:gravity="center"
                     android:fontFamily="sans-serif-medium" />
             </FrameLayout>
 
-
+            <!-- Separador vertical -->
             <View
                 android:layout_width="1dp"
-                android:layout_height="16dp"
+                android:layout_height="12dp"
                 android:layout_marginHorizontal="8dp"
-                android:background="@color/md_theme_primary"/>
+                android:background="?attr/colorOutline" />
 
+            <!-- Fecha -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvFecha"
                 android:layout_width="wrap_content"
@@ -170,31 +153,58 @@
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="?attr/colorOnSurfaceVariant" />
 
+            <!-- Hora -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvHora"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="8dp"
                 android:text="4:45pm"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <!-- Espaciador para empujar a la derecha -->
             <View
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/tvEstado"
+            <!-- Estado + botón PDF -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pendiente"
-                app:chipStrokeColor="?attr/colorOutline"
-                app:chipStrokeWidth="1dp"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginStart="8dp">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/tvEstado"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Pendiente"
+                    android:textSize="10sp"
+                    app:chipCornerRadius="4dp"
+                    app:chipStrokeColor="?attr/colorOutline"
+                    app:chipStrokeWidth="0.5dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/chipVerPFDInformeIncidencia"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="8dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="Ver PDF"
+                    android:backgroundTint="@color/md_theme_light_errorContainer"
+                    android:textColor="@color/color_red"
+                    android:textSize="10sp"
+                    app:cornerRadius="5dp"
+                    app:strokeColor="@color/color_red"
+                    app:strokeWidth="1dp" />
+            </LinearLayout>
+
         </LinearLayout>
+
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

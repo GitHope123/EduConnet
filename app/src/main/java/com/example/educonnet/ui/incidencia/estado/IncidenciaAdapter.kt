@@ -7,6 +7,8 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,7 +26,9 @@ import com.example.educonnet.databinding.ItemIncidenciaBinding
 import com.example.educonnet.ui.incidencia.DescripcionIncidencia
 import com.example.educonnet.ui.resources.GeneradorPdfInforme
 import com.example.educonnet.ui.tutoria.recurso.Informe
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.firebase.firestore.FirebaseFirestore
 import java.io.File
 import java.text.SimpleDateFormat
@@ -50,8 +54,7 @@ class IncidenciaAdapter(
                 tvHora.text = incidencia.hora
                 tvFecha.text = incidencia.fecha
                 tvEstado.text = incidencia.estado
-                tvGrado.text = "${incidencia.grado}°"
-                tvNivel.text = incidencia.seccion
+                tvGrado.text = "${incidencia.grado}° ${incidencia.seccion}"
                 tvTipo.text = incidencia.tipo
 
                 // Configurar botón PDF
@@ -73,6 +76,9 @@ class IncidenciaAdapter(
                 visibility = if (incidencia.estado == "Completado") View.VISIBLE else View.GONE
                 setOnClickListener { generarYMostrarPDF(incidencia) }
             }
+            binding.tvEstado.apply {
+                visibility = if (incidencia.estado != "Completado") View.VISIBLE else View.GONE
+            }
         }
 
         private fun configurarStepper(incidencia: IncidenciaClass) {
@@ -80,42 +86,95 @@ class IncidenciaAdapter(
                 try {
                     val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_stepper, null)
 
+                    val progressBar = dialogView.findViewById<LinearProgressIndicator>(R.id.progressBar)
+                    val statusSummary = dialogView.findViewById<TextView>(R.id.statusSummary)
+
                     val stepViews = listOf(
-                        dialogView.findViewById<ImageView>(R.id.stepEnviadoIcon) to dialogView.findViewById<TextView>(R.id.stepEnviadoText),
-                        dialogView.findViewById<ImageView>(R.id.stepRevisadoIcon) to dialogView.findViewById<TextView>(R.id.stepRevisadoText),
-                        dialogView.findViewById<ImageView>(R.id.stepNotificadoIcon) to dialogView.findViewById<TextView>(R.id.stepNotificadoText),
-                        dialogView.findViewById<ImageView>(R.id.stepCitadoIcon) to dialogView.findViewById<TextView>(R.id.stepCitadoText),
-                        dialogView.findViewById<ImageView>(R.id.stepCompletadoIcon) to dialogView.findViewById<TextView>(R.id.stepCompletadoText)
+                        Triple(
+                            dialogView.findViewById<MaterialCardView>(R.id.stepEnviadoCard),
+                            dialogView.findViewById<ImageView>(R.id.stepEnviadoIcon),
+                            dialogView.findViewById<TextView>(R.id.stepEnviadoText)
+                        ),
+                        Triple(
+                            dialogView.findViewById<MaterialCardView>(R.id.stepRevisadoCard),
+                            dialogView.findViewById<ImageView>(R.id.stepRevisadoIcon),
+                            dialogView.findViewById<TextView>(R.id.stepRevisadoText)
+                        ),
+                        Triple(
+                            dialogView.findViewById<MaterialCardView>(R.id.stepNotificadoCard),
+                            dialogView.findViewById<ImageView>(R.id.stepNotificadoIcon),
+                            dialogView.findViewById<TextView>(R.id.stepNotificadoText)
+                        ),
+                        Triple(
+                            dialogView.findViewById<MaterialCardView>(R.id.stepCitadoCard),
+                            dialogView.findViewById<ImageView>(R.id.stepCitadoIcon),
+                            dialogView.findViewById<TextView>(R.id.stepCitadoText)
+                        ),
+                        Triple(
+                            dialogView.findViewById<MaterialCardView>(R.id.stepCompletadoCard),
+                            dialogView.findViewById<ImageView>(R.id.stepCompletadoIcon),
+                            dialogView.findViewById<TextView>(R.id.stepCompletadoText)
+                        )
                     )
 
                     val pasosOrden = listOf("Enviado", "Revisado", "Notificado", "Citado", "Completado")
                     val indexActual = pasosOrden.indexOf(incidencia.estado).coerceAtLeast(0)
+                    val progress = ((indexActual + 1) / pasosOrden.size.toFloat()) * 100
 
-                    pasosOrden.forEachIndexed { index, _ ->
-                        val (iconView, textView) = stepViews[index]
-                        val isCompleted = index <= indexActual
+                    progressBar.progress = progress.toInt()
+                    statusSummary.text = "Estado actual: ${incidencia.estado}"
 
-                        iconView.setImageResource(
-                            if (isCompleted) R.drawable.ic_radio_button_checked
-                            else R.drawable.ic_radio_button_unchecked
-                        )
+                    pasosOrden.forEachIndexed { index, paso ->
+                        val (card, icon, text) = stepViews[index]
+                        val isCompleted = index < indexActual
+                        val isCurrent = index == indexActual
 
-                        val colorRes = if (isCompleted) R.color.md_theme_primary else R.color.md_theme_inverseSurface
-                        textView.setTextColor(ContextCompat.getColor(context, colorRes))
+                        when {
+                            isCompleted -> {
+                                card.strokeColor = ContextCompat.getColor(context, R.color.md_theme_primary)
+                                card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.md_theme_primaryContainer))
+                                icon.setImageResource(R.drawable.ic_check)
+                                icon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.md_theme_onPrimaryContainer))
+                                text.setTextColor(ContextCompat.getColor(context, R.color.md_theme_onSurface))
+                                text.setTypeface(null, Typeface.BOLD)
+                            }
+                            isCurrent -> {
+                                card.strokeColor = ContextCompat.getColor(context, R.color.md_theme_primary)
+                                card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.md_theme_primaryContainer))
+
+                                if (incidencia.estado == "Completado") {
+                                    icon.setImageResource(R.drawable.ic_check)
+                                } else {
+                                    icon.setImageResource(R.drawable.ic_clock)
+                                }
+
+                                icon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.md_theme_onPrimaryContainer))
+                                text.setTextColor(ContextCompat.getColor(context, R.color.md_theme_onSurface))
+                                text.setTypeface(null, Typeface.BOLD)
+                            }
+                            else -> {
+                                card.strokeColor = ContextCompat.getColor(context, R.color.md_theme_outline)
+                                card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.md_theme_surface))
+                                icon.setImageResource(R.drawable.ic_circle_outline)
+                                icon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.md_theme_onSurfaceVariant))
+                                text.setTextColor(ContextCompat.getColor(context, R.color.md_theme_onSurfaceVariant))
+                            }
+                        }
                     }
 
                     MaterialAlertDialogBuilder(context)
-                        .setTitle("Estado de la Incidencia")
+                        .setTitle("Progreso de la Incidencia")
                         .setView(dialogView)
                         .setPositiveButton("Cerrar", null)
                         .show()
 
                 } catch (e: Exception) {
                     Log.e("StepperDialog", "Error al mostrar diálogo", e)
-                    Toast.makeText(context, "Error al mostrar estado", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Error al mostrar el progreso", Toast.LENGTH_SHORT).show()
                 }
             }
         }
+
 
         private fun configurarEstilos(incidencia: IncidenciaClass) {
             with(binding) {

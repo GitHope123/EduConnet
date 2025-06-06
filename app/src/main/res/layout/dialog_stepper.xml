@@ -1,244 +1,280 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/stepperContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Contenedor con Scroll horizontal -->
-    <HorizontalScrollView
+    <!-- Modern Stepper with Dynamic Progress -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:fillViewport="true">
+        app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+        app:cardElevation="0dp">
 
-        <!-- Contenedor para los pasos -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="8dp">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <!-- Paso 1: Enviado -->
-            <LinearLayout
-                android:id="@+id/stepEnviadoLayout"
-                android:layout_width="wrap_content"
+            <!-- Progress Indicator -->
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_marginBottom="16dp"
+                app:indicatorColor="?attr/colorPrimary"
+                app:trackColor="?attr/colorSurfaceContainerHighest"
+                app:trackCornerRadius="2dp" />
+
+            <!-- Compact Stepper -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:paddingHorizontal="8dp">
+                app:cardBackgroundColor="?attr/colorSurfaceContainer"
+                app:strokeColor="?attr/colorOutline"
+                app:strokeWidth="1dp">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/stepEnviadoCard"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    app:cardCornerRadius="20dp"
-                    app:strokeColor="?attr/colorOutline"
-                    app:strokeWidth="1dp"
-                    app:cardBackgroundColor="?attr/colorSurface">
-
-                    <ImageView
-                        android:id="@+id/stepEnviadoIcon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_outline_circle_24"/>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/stepEnviadoText"
-                    style="@style/TextAppearance.Material3.LabelSmall"
-                    android:layout_width="wrap_content"
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Enviado"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:textSize="12sp" />
-            </LinearLayout>
+                    android:scrollbars="none">
 
-            <!-- Línea divisoria 1 -->
-            <View
-                android:id="@+id/line1"
-                android:layout_width="24dp"
-                android:layout_height="2dp"
-                android:layout_gravity="center_vertical"
-                android:background="?attr/colorOutline"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingVertical="12dp">
 
-            <!-- Paso 2: Revisado -->
-            <LinearLayout
-                android:id="@+id/stepRevisadoLayout"
-                android:layout_width="wrap_content"
+                        <!-- Step 1 -->
+                        <LinearLayout
+                            android:id="@+id/stepEnviadoLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingHorizontal="16dp"
+                            android:gravity="center">
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/stepEnviadoCard"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                app:cardBackgroundColor="?attr/colorPrimaryContainer"
+                                app:cardCornerRadius="18dp"
+                                app:strokeColor="?attr/colorPrimary"
+                                app:strokeWidth="1.5dp">
+
+                                <ImageView
+                                    android:id="@+id/stepEnviadoIcon"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_check"
+                                    app:tint="?attr/colorOnPrimaryContainer" />
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/stepEnviadoText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="Enviado"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <!-- Connector -->
+                        <View
+                            android:layout_width="16dp"
+                            android:layout_height="2dp"
+                            android:layout_gravity="center_vertical"
+                            android:background="?attr/colorOutlineVariant" />
+
+                        <!-- Step 2 -->
+                        <LinearLayout
+                            android:id="@+id/stepRevisadoLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingHorizontal="16dp"
+                            android:gravity="center">
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/stepRevisadoCard"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+                                app:cardCornerRadius="18dp"
+                                app:strokeColor="?attr/colorOutline"
+                                app:strokeWidth="1dp">
+
+                                <ImageView
+                                    android:id="@+id/stepRevisadoIcon"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_clock"
+                                    app:tint="?attr/colorOnSurfaceVariant" />
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/stepRevisadoText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="Revisado"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <!-- Connector -->
+                        <View
+                            android:layout_width="16dp"
+                            android:layout_height="2dp"
+                            android:layout_gravity="center_vertical"
+                            android:background="?attr/colorOutlineVariant" />
+
+                        <!-- Step 3 -->
+                        <LinearLayout
+                            android:id="@+id/stepNotificadoLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingHorizontal="16dp"
+                            android:gravity="center">
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/stepNotificadoCard"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                app:cardBackgroundColor="?attr/colorSurface"
+                                app:cardCornerRadius="18dp"
+                                app:strokeColor="?attr/colorOutline"
+                                app:strokeWidth="1dp">
+
+                                <ImageView
+                                    android:id="@+id/stepNotificadoIcon"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_circle_outline"
+                                    app:tint="?attr/colorOnSurfaceVariant" />
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/stepNotificadoText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="Notificado"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <!-- Connector -->
+                        <View
+                            android:layout_width="16dp"
+                            android:layout_height="2dp"
+                            android:layout_gravity="center_vertical"
+                            android:background="?attr/colorOutlineVariant" />
+
+                        <!-- Step 4 -->
+                        <LinearLayout
+                            android:id="@+id/stepCitadoLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingHorizontal="16dp"
+                            android:gravity="center">
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/stepCitadoCard"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                app:cardBackgroundColor="?attr/colorSurface"
+                                app:cardCornerRadius="18dp"
+                                app:strokeColor="?attr/colorOutline"
+                                app:strokeWidth="1dp">
+
+                                <ImageView
+                                    android:id="@+id/stepCitadoIcon"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_circle_outline"
+                                    app:tint="?attr/colorOnSurfaceVariant" />
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/stepCitadoText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="Citado"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <!-- Connector -->
+                        <View
+                            android:layout_width="16dp"
+                            android:layout_height="2dp"
+                            android:layout_gravity="center_vertical"
+                            android:background="?attr/colorOutlineVariant" />
+
+                        <!-- Step 5 -->
+                        <LinearLayout
+                            android:id="@+id/stepCompletadoLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingHorizontal="16dp"
+                            android:gravity="center">
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/stepCompletadoCard"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                app:cardBackgroundColor="?attr/colorSurface"
+                                app:cardCornerRadius="18dp"
+                                app:strokeColor="?attr/colorOutline"
+                                app:strokeWidth="1dp">
+
+                                <ImageView
+                                    android:id="@+id/stepCompletadoIcon"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_circle_outline"
+                                    app:tint="?attr/colorOnSurfaceVariant" />
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/stepCompletadoText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="Completado"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </HorizontalScrollView>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Status Summary -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/statusSummary"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:paddingHorizontal="8dp">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/stepRevisadoCard"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    app:cardCornerRadius="20dp"
-                    app:strokeColor="?attr/colorOutline"
-                    app:strokeWidth="1dp"
-                    app:cardBackgroundColor="?attr/colorSurface">
-
-                    <ImageView
-                        android:id="@+id/stepRevisadoIcon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_outline_circle_24"/>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/stepRevisadoText"
-                    style="@style/TextAppearance.Material3.LabelSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Revisado"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <!-- Línea divisoria 2 -->
-            <View
-                android:id="@+id/line2"
-                android:layout_width="24dp"
-                android:layout_height="2dp"
-                android:layout_gravity="center_vertical"
-                android:background="?attr/colorOutline"/>
-
-            <!-- Paso 3: Notificado -->
-            <LinearLayout
-                android:id="@+id/stepNotificadoLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:paddingHorizontal="8dp">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/stepNotificadoCard"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    app:cardCornerRadius="20dp"
-                    app:strokeColor="?attr/colorOutline"
-                    app:strokeWidth="1dp"
-                    app:cardBackgroundColor="?attr/colorSurface">
-
-                    <ImageView
-                        android:id="@+id/stepNotificadoIcon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_outline_circle_24"/>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/stepNotificadoText"
-                    style="@style/TextAppearance.Material3.LabelSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Notificado"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <!-- Línea divisoria 3 -->
-            <View
-                android:id="@+id/line3"
-                android:layout_width="24dp"
-                android:layout_height="2dp"
-                android:layout_gravity="center_vertical"
-                android:background="?attr/colorOutline"/>
-
-            <!-- Paso 4: Citado -->
-            <LinearLayout
-                android:id="@+id/stepCitadoLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:paddingHorizontal="8dp">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/stepCitadoCard"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    app:cardCornerRadius="20dp"
-                    app:strokeColor="?attr/colorOutline"
-                    app:strokeWidth="1dp"
-                    app:cardBackgroundColor="?attr/colorSurface">
-
-                    <ImageView
-                        android:id="@+id/stepCitadoIcon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_outline_circle_24"/>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/stepCitadoText"
-                    style="@style/TextAppearance.Material3.LabelSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Citado"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <!-- Línea divisoria 4 -->
-            <View
-                android:id="@+id/line4"
-                android:layout_width="24dp"
-                android:layout_height="2dp"
-                android:layout_gravity="center_vertical"
-                android:background="?attr/colorOutline"/>
-
-            <!-- Paso 5: Completado -->
-            <LinearLayout
-                android:id="@+id/stepCompletadoLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:paddingHorizontal="8dp">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/stepCompletadoCard"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    app:cardCornerRadius="20dp"
-                    app:strokeColor="?attr/colorOutline"
-                    app:strokeWidth="1dp"
-                    app:cardBackgroundColor="?attr/colorSurface">
-
-                    <ImageView
-                        android:id="@+id/stepCompletadoIcon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_outline_circle_24"/>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/stepCompletadoText"
-                    style="@style/TextAppearance.Material3.LabelSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Completado"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:textSize="12sp" />
-            </LinearLayout>
+                android:layout_marginTop="12dp"
+                android:text="Estado actual: Enviado para revisión"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurface"
+                android:textStyle="italic" />
         </LinearLayout>
-    </HorizontalScrollView>
+    </com.google.android.material.card.MaterialCardView>
 </LinearLayout>
