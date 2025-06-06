@@ -143,7 +143,8 @@
   "grado": "int",
   "seccion": "string", // Puede ser null
   "cargo": "string",
-  "password": "string" // Hash almacenado en Firebase
+  "password": "string", // Hash almacenado en Firebase
+  "tutor": "boolean" // true o false
 }
 ```
 ---
