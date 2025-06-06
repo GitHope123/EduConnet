@@ -1,136 +1,112 @@
 # 🎓 EduConnect  
-### Sistema de Registro de Incidencias Escolares
+## Sistema Integral de Registro y Seguimiento de Incidencias Escolares
 
-**EduConnect** es una solución móvil integral para instituciones educativas que buscan **gestionar, registrar y dar seguimiento a incidencias escolares** de forma **eficiente, digital y en tiempo real**.
+**EduConnect** es una aplicación móvil diseñada para instituciones educativas que desean modernizar la gestión de incidencias escolares. Permite registrar, monitorear y notificar comportamientos estudiantiles de forma **rápida, digital y en tiempo real**, facilitando el trabajo colaborativo entre docentes, tutores y directivos.
 
 <p align="center">
-  <img src="https://img.shields.io/badge/estado-en%20desarrollo%20avanzado-yellow" />
-  <img src="https://img.shields.io/badge/Firebase-integrado-orange" />
-  <img src="https://img.shields.io/badge/Plataforma-Android-blue" />
-  <img src="https://img.shields.io/badge/Licencia-Privada-lightgrey" />
+  <img src="https://img.shields.io/badge/estado-en%20desarrollo%20avanzado-yellow"  />
+  <img src="https://img.shields.io/badge/Firebase-integrado-orange"  />
+  <img src="https://img.shields.io/badge/Plataforma-Android-blue"  />
+  <img src="https://img.shields.io/badge/Licencia-Privada-lightgrey"  />
 </p>
 
 ---
 
-## 🚀 Funcionalidades destacadas
+## 🚀 Funcionalidades Principales
 
-### 📝 Registro de incidencias
-- 📌 Registro detallado de comportamientos escolares.
-- 👦 Asociación con estudiantes por nombre, grado y sección.
-- 🏷️ Categorización por:
-  - Tipo: `✅ Positiva` | `⚠️ Negativa`
-  - Estado: `Pendiente` → `Revisado` → `Notificado` → `Citado` → `Completado`
-  - Gravedad: (en casos negativos)
+### 📝 Registro Completo de Incidencias
+- ✅ Descripción detallada de cada caso.
+- 👦 Relación con estudiantes por nombre, grado y sección.
+- 🏷️ Clasificación avanzada:
+  - **Tipo:** `Positiva` | `Negativa`
+  - **Estado:** `Pendiente` → `Revisado` → `Notificado` → `Citado` → `Completado`
+  - **Gravedad:** (en casos negativos)
 - 🕓 Fecha y hora automáticas.
-- 👨‍🏫 Asignación del profesor responsable.
-- 📷 Evidencia fotográfica integrada (Firebase Storage).
+- 👨‍🏫 Asignación de responsable docente.
+- 📷 Carga de evidencia fotográfica mediante Firebase Storage.
 
-### 🧑‍🏫 Gestión docente y tutoría
-- 📲 Docentes registran incidencias desde su dispositivo móvil.
-- 👩‍🏫 Tutores gestionan incidencias de sus estudiantes asignados.
-- 📂 Visualización por pestañas: `Todos`, `Pendientes`, `Revisados`
-- 💬 Retroalimentación y seguimiento en tiempo real.
+### 🧑‍🏫 Gestión Docente y Tutoría
+- 📲 Registro desde dispositivos móviles.
+- 👩‍🏫 Acceso personalizado para tutores según grupo asignado.
+- 📂 Filtros visuales: `Todas`, `Pendientes`, `Resueltas`.
+- 💬 Actualización en tiempo real del estado y comentarios.
 
-### 📅 Gestión de citas con apoderados
-- 🗓️ Programación de reuniones desde la app.
+### 🗓️ Programación de Citas con Apoderados
+- 📆 Agenda integrada para coordinar reuniones.
 - Campos registrados:
   - 👤 Nombre del apoderado
   - 🕒 Fecha y hora de la cita
   - 🧾 Fecha de creación del caso
 
-### 📄 Informes institucionales
-- 📑 Generación automática de informes PDF.
-- Contenido del informe:
+### 📄 Generación Automática de Informes PDF
+- 📑 Exportación de informes completos en formato PDF.
+- Contenido incluido:
   - 🧩 Detalles del caso
-  - 🧬 Relación familiar
+  - 🧬 Información familiar
   - 📆 Fecha de emisión
 
-### 👥 Gestión de estudiantes
-- 📋 Visualización de datos personales:
-  - Nombre completo, grado, sección, celular del apoderado.
-- 📈 Historial individual de incidencias.
+### 👥 Gestión de Estudiantes
+- 📋 Datos personales centralizados: nombre, grado, sección, contacto del apoderado.
+- 📈 Historial completo de incidencias por estudiante.
 
-### 🔐 Seguridad y autenticación
-- 🔑 Login por correo y contraseña (Firebase Auth).
-- 🎭 Roles diferenciados:
-  - `👨‍🏫 Profesor`, `🧑‍🏫 Tutor`, `🏛️ Administrador`
+### 🔐 Autenticación Segura y Roles Diferenciados
+- 🔑 Inicio de sesión seguro con correo y contraseña (Firebase Auth).
+- 🎭 Tipos de usuarios definidos:
+  - `👨‍🏫 Profesor`
+  - `🧑‍🏫 Tutor`
+  - `🏛️ Administrador`
 
 ---
 
-## 🔧 Tecnologías utilizadas
+## 🔧 Tecnologías Utilizadas
 
-| 🔧 Tecnología        | ⚙️ Uso principal                          |
+| 🔧 Tecnología        | ⚙️ Uso Principal                          |
 |----------------------|-------------------------------------------|
-| **Kotlin**           | Lógica y desarrollo Android               |
-| **ViewBinding**      | Vinculación segura con layouts XML        |
+| **Kotlin**           | Lógica principal y desarrollo Android     |
+| **ViewBinding**      | Vinculación segura entre vistas y código  |
 | **Firebase Auth**    | Sistema de autenticación                  |
 | **Cloud Firestore**  | Base de datos NoSQL en tiempo real        |
 | **Firebase Storage** | Almacenamiento de imágenes                |
 | **Crashlytics**      | Monitoreo de errores                      |
-| **Analytics**        | Análisis de uso y métricas                |
-| **Glide**            | Carga optimizada de imágenes              |
+| **Analytics**        | Análisis de uso y comportamiento          |
+| **Glide**            | Carga eficiente de imágenes               |
 | **iTextPDF / Jsoup** | Generación de informes PDF                |
 
 ---
 
-## 🏫 Aplicación en contexto escolar
+## 🏫 Aplicación en el Contexto Escolar
 
-> Actualmente en uso en una institución de **educación secundaria**, donde:
+> 📌 En uso piloto en una institución de **educación secundaria**, con los siguientes beneficios:
 
-- 🧑‍🏫 **Docentes** registran incidencias desde aula.
-- 👨‍🏫 **Tutores** acceden a incidencias filtradas por sección.
-- 📊 **Directivos** generan reportes para gestión institucional.
-
----
-
-## 🗃️ Estructura de base de datos (Firestore)
-
-📁 Estudiante
- ┣ idEstudiante
- ┣ nombres, apellidos
- ┣ grado, sección
- ┣ celularApoderado
- ┗ cantidadIncidencias
-
-📁 Incidencia
- ┣ tipo, estado, atencion
- ┣ fecha, hora
- ┣ grado, sección
- ┣ nombreEstudiante, nombreProfesor
- ┣ urlImagen, idProfesor
- ┗ ...
-
-📁 Cita
- ┣ apoderado
- ┣ fechaCita, hora
- ┣ createFecha
- ┗ idCita
-
-📁 Informe
- ┣ detalles, apoderado
- ┣ relacionFamiliar
- ┣ createFecha
- ┗ idInforme
-
-📁 Profesor
- ┣ idProfesor, nombres, apellidos
- ┣ correo, celular, cargo
- ┣ grado, sección, dni, password
- ┗ ...
- 
-## 📌 Estado actual del proyecto
-
-> 🟡 **En desarrollo avanzado, listo para pruebas en producción real.**  
-> Actualmente en etapa de evaluación por los operadores para su despliegue completo.
+- 🧑‍🏫 **Docentes:** Registra incidencias desde el aula en segundos.
+- 👨‍🏫 **Tutores:** Supervisa casos específicos de su grupo.
+- 📊 **Directivos:** Genera reportes institucionales automatizados.
 
 ---
 
-## 👥 Equipo de desarrollo
+## 🗃️ Estructura de Colecciones en Firebase
+
+📁 Estudiante { id, nombre, grado, sección, celular_apoderado }
+📁 Incidencia { id, tipo, gravedad, descripcion, fecha, profesor_id, estado, evidencia_url }
+📁 Cita { id, incidencia_id, apoderado_nombre, fecha_cita, fecha_registro }
+📁 Informe { id, incidencia_id, contenido_html, pdf_url, fecha_emision }
+📁 Profesor { id, nombre, rol, seccion_asignada }
+
+---
+
+## 📌 Estado Actual del Proyecto
+
+> 🟡 **En desarrollo avanzado, listo para pruebas en entorno real.**  
+> ✔️ Pruebas internas finalizadas.  
+> ✔️ Preparado para despliegue oficial tras evaluación operativa.
+
+---
+
+## 👥 Equipo de Desarrollo
 
 | Nombre         | Rol                    |
-|----------------|-------------------------|
-| [Karol]     | Operador  |
-| [Melisa]     | Desarrollador      |
-| [Sebastian]     | Operador |
-| [Adrian]     | Desarrollador      |
-
+|----------------|------------------------|
+| Karol          | Operador               |
+| Melisa         | Desarrollador Android  |
+| Sebastián      | Operador               |
+| Adrián         | Desarrollador Android  |
