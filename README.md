@@ -1,7 +1,7 @@
 # 📚 EduConnect - Registro de Incidencias Escolares
 
 ![platform](https://img.shields.io/badge/Plataforma-Android-blue?logo=android)
-![status](https://img.shields.io/badge/Estado-Producción-brightgreen)
+![status](https://img.shields.io/badge/Estado-En%20desarrollo%20avanzado-yellow)
 ![firebase](https://img.shields.io/badge/Backend-Firebase-orange?logo=firebase)
 ![license](https://img.shields.io/badge/Licencia-MIT-lightgrey)
 
@@ -80,8 +80,8 @@ Este sistema está siendo aplicado en un entorno **escolar real**, con beneficio
 
 ## ✅ Estado del proyecto
 
-🟢 **Producción funcional y en mejora continua.**  
-Actualmente en uso en una institución educativa de nivel secundario.
+🔧 **En desarrollo avanzado, próximo a producción y fase de evaluación institucional.**  
+Ya se encuentra en uso parcial por docentes seleccionados y se están realizando ajustes finales.
 
 ---
 
@@ -89,10 +89,10 @@ Actualmente en uso en una institución educativa de nivel secundario.
 
 | Nombre                  | Rol                  |
 |------------------------|----------------------|
-| 👨‍💻 **Melisa**   | Desarrollador   |
-| 👩‍💻 **Adrian**   | Desarrollador  |
+| 👨‍💻 **Karol**   | Operador   |
+| 👩‍💻 **Melisa**   | Desarrollador   |
 | 👨‍🏫 **Sebastian**   | Operador  |
-| 🧑‍🔧 **Karol**   | Operador  |
+| 🧑‍🔧 **Karol**   | Desarrollador  |
 
 ---
 
