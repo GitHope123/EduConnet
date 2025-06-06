@@ -86,12 +86,49 @@
 
 ## 🗃️ Estructura de Colecciones en Firebase
 
-📁 Estudiante { id, nombre, grado, sección, celular_apoderado }
-📁 Incidencia { id, tipo, gravedad, descripcion, fecha, profesor_id, estado, evidencia_url }
-📁 Cita { id, incidencia_id, apoderado_nombre, fecha_cita, fecha_registro }
-📁 Informe { id, incidencia_id, contenido_html, pdf_url, fecha_emision }
-📁 Profesor { id, nombre, rol, seccion_asignada }
+```plaintext
+📁 Estudiante {
+  id: string,
+  nombre: string,
+  grado: number,
+  sección: string,
+  celular_apoderado: string
+}
 
+📁 Incidencia {
+  id: string,
+  tipo: "Positiva" | "Negativa",
+  gravedad: string,
+  descripcion: string,
+  fecha: string (ISO),
+  profesor_id: string,
+  estado: "Pendiente" | "Revisado" | "Notificado" | "Citado" | "Completado",
+  evidencia_url: string
+}
+
+📁 Cita {
+  id: string,
+  incidencia_id: string,
+  apoderado_nombre: string,
+  fecha_cita: string (ISO),
+  fecha_registro: string (ISO)
+}
+
+📁 Informe {
+  id: string,
+  incidencia_id: string,
+  contenido_html: string,
+  pdf_url: string,
+  fecha_emision: string (ISO)
+}
+
+📁 Profesor {
+  id: string,
+  nombre: string,
+  rol: "Profesor" | "Tutor" | "Administrador",
+  seccion_asignada: string
+}
+```
 ---
 
 ## 📌 Estado Actual del Proyecto
