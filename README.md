@@ -1,4 +1,4 @@
-# 🎓 EduConnect  
+# 🎓 EduConnet  
 ## Sistema Integral de Registro y Seguimiento de Incidencias Escolares
 
 **EduConnect** es una aplicación móvil diseñada para instituciones educativas que desean modernizar la gestión de incidencias escolares. Permite registrar, monitorear y notificar comportamientos estudiantiles de forma **rápida, digital y en tiempo real**, facilitando el trabajo colaborativo entre docentes, tutores y directivos.
