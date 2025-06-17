@@ -4,12 +4,24 @@
         <!-- Color del ícono de búsqueda -->
         <item name="searchIcon">@drawable/ic_seccion</item>
         <!-- Color del texto -->
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textColorHint">@color/md_theme_inverseSurface</item>
+        <item name="android:textColor">@color/md_theme_onSurface</item>
+        <item name="android:textColorHint">@color/md_theme_outline</item>
         <!-- Fondo del campo de texto -->
         <item name="android:background">@android:color/transparent</item>
-        <!-- Eliminar subrayado -->
+        <!-- Eliminar subrayado y línea por defecto -->
         <item name="queryBackground">@android:color/transparent</item>
+        <item name="android:editTextBackground">@android:color/transparent</item>
+        <!-- Estilo del texto -->
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/dm_sans</item>
+        <!-- Padding interno -->
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <!-- Elevación y sombra -->
+        <item name="android:elevation">2dp</item>
+        <!-- Eliminar línea de búsqueda -->
+        <item name="android:divider">@null</item>
+        <item name="android:dividerHeight">0dp</item>
     </style>
 
     <!-- Estilo personalizado claro para DatePickerDialog -->
@@ -23,6 +35,21 @@
         <item name="android:textColor">#000000</item> <!-- Opcional -->
     </style>
 
+    <style name="Widget.App.SearchBar" parent="Widget.Material3.SearchBar">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.SearchBar</item>
+        <item name="android:background">@drawable/custom_searchview_background</item>
+        <item name="android:elevation">2dp</item>
+        <item name="height">48dp</item> <!-- Altura típica para un SearchBar compacto -->
+        <item name="android:layout_marginHorizontal">16dp</item>
+        <item name="android:layout_marginTop">12dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+    </style>
 
+    <style name="ThemeOverlay.App.SearchBar" parent="">
+        <item name="colorSurface">@color/md_theme_surfaceContainerLow</item>
+        <item name="colorOnSurface">@color/md_theme_onSurface</item>
+        <item name="colorPrimary">@color/md_theme_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_onPrimary</item>
+    </style>
 
 </resources>

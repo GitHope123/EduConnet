@@ -226,15 +226,60 @@ class AgregarIncidencia : AppCompatActivity() {
     }
 
     private fun showImagePickerDialog() {
-        AlertDialog.Builder(this)
-            .setTitle("Seleccionar imagen")
-            .setItems(R.array.opciones_imagen) { _, which ->
-                when (which) {
-                    0 -> seleccionarImagenGaleria()
-                    1 -> tomarFotoCamara()
+        if (checkAndRequestPermissions()) {
+            AlertDialog.Builder(this)
+                .setTitle("Seleccionar imagen")
+                .setItems(R.array.opciones_imagen) { _, which ->
+                    when (which) {
+                        0 -> seleccionarImagenGaleria()
+                        1 -> tomarFotoCamara()
+                    }
                 }
+                .show()
+        }
+    }
+
+    private fun checkAndRequestPermissions(): Boolean {
+        val permissions = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(
+                android.Manifest.permission.READ_MEDIA_IMAGES,
+                android.Manifest.permission.CAMERA
+            )
+        } else {
+            arrayOf(
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.CAMERA
+            )
+        }
+
+        val permissionsToRequest = permissions.filter {
+            checkSelfPermission(it) != android.content.pm.PackageManager.PERMISSION_GRANTED
+        }.toTypedArray()
+
+        if (permissionsToRequest.isNotEmpty()) {
+            requestPermissions(permissionsToRequest, PERMISSIONS_REQUEST_CODE)
+            return false
+        }
+        return true
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSIONS_REQUEST_CODE) {
+            if (grantResults.all { it == android.content.pm.PackageManager.PERMISSION_GRANTED }) {
+                showImagePickerDialog()
+            } else {
+                Toast.makeText(
+                    this,
+                    "Se requieren permisos para acceder a la galería y cámara",
+                    Toast.LENGTH_LONG
+                ).show()
             }
-            .show()
+        }
     }
 
     private fun seleccionarImagenGaleria() {
@@ -285,17 +330,22 @@ class AgregarIncidencia : AppCompatActivity() {
         val sugerencia = binding.spinnerSugerencias.selectedItem?.toString() ?: ""
         val detalles = binding.edMultilinea.text.toString().trim()
         val atencion = if (tipoIncidencia == "Falta") binding.spinnerAtencion.selectedItem.toString() else ""
+
         val detalleFinal = if (sugerencia.isNotEmpty()) {
-            val listaEstudiantes = estudiantes.joinToString("\n• ", "• ") { estudiante ->
-                "${estudiante.nombres} ${estudiante.apellidos} (${estudiante.grado}° ${estudiante.seccion})"
+            val estudiantesSection = if (estudiantes.size > 1) {
+                val listaEstudiantes = estudiantes.joinToString("\n• ", "• ") { estudiante ->
+                    "${estudiante.nombres} ${estudiante.apellidos} (${estudiante.grado}° ${estudiante.seccion})"
+                }
+                "|ESTUDIANTES COLABORADORES:\n|$listaEstudiantes\n|\n"
+            } else {
+                ""
             }
+
             """
-    |ESTUDIANTES INVOLUCRADOS:
-    |$listaEstudiantes
-    |
-    |${sugerencia.uppercase()}:
-    |$detalles
-    """.trimMargin()
+        $estudiantesSection
+        |${sugerencia.uppercase()}:
+        |$detalles
+        """.trimMargin()
         } else {
             detalles
         }
@@ -346,6 +396,9 @@ class AgregarIncidencia : AppCompatActivity() {
         incidenciasRegistradas++
         if (incidenciasRegistradas >= totalIncidencias) {
             Toast.makeText(this, "Incidencias registradas exitosamente", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, AgregarEstudiantes::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
             finish()
         }
     }
@@ -362,5 +415,7 @@ class AgregarIncidencia : AppCompatActivity() {
         return SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
     }
 
-
+    companion object {
+        private const val PERMISSIONS_REQUEST_CODE = 100
+    }
 }

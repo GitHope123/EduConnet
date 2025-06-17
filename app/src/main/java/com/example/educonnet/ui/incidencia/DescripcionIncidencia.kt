@@ -101,13 +101,15 @@ class DescripcionIncidencia : AppCompatActivity() {
         tvEstado.text = getString(R.string.status_format, estado)
         tvTipo.text = getString(R.string.type_format, tipo)
 
-        val textoAtencion = if (atencion.isBlank()) {
-            getString(R.string.attention_format, getString(R.string.attention_default))
+        if (atencion.isBlank()) {
+            // If 'atencion' is blank, hide the TextView
+            tvAtencion.visibility = View.GONE // or View.INVISIBLE
         } else {
-            getString(R.string.attention_format, atencion)
+            // If 'atencion' has content, show it and set the text
+            tvAtencion.visibility = View.VISIBLE
+            val textoAtencion = getString(R.string.attention_format, atencion)
+            tvAtencion.text = textoAtencion
         }
-
-        tvAtencion.text = textoAtencion
 
 
         tvDetalle.text = detalle

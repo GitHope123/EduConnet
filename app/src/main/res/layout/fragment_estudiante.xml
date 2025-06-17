@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorSurfaceVariant"
     tools:context=".ui.estudiante.EstudianteFragment">
 
     <!-- Contenedor de filtros -->
@@ -35,23 +36,6 @@
             android:singleLine="true"/>
     </LinearLayout>
 
-    <!-- Barra de búsqueda -->
-    <SearchView
-        android:id="@+id/searchView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:background="@drawable/custom_searchview_background"
-        android:queryHint="Buscar en todos..."
-        android:iconifiedByDefault="false"
-        android:focusable="true"
-        android:imeOptions="actionSearch"
-        android:inputType="text|textNoSuggestions"
-        android:theme="@style/CustomSearchViewStyle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/filterContainer"/>
-
     <!-- RecyclerView para la lista de estudiantes -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -65,7 +49,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchView"
         tools:listitem="@layout/item_estudiante" />
 
     <!-- Botón de acción flotante -->

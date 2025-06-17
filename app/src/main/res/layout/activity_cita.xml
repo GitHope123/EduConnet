@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/md_theme_inverseOnSurface"
+    tools:context=".ui.tutoria.cita.CitaActivity">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        app:title="Citas"
+        app:titleTextColor="@color/white"
+        app:navigationIconTint="@color/white"
+        app:navigationIcon="?attr/homeAsUpIndicator" />
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/custom_searchview_background"
+        android:focusable="true"
+        android:iconifiedByDefault="false"
+        android:imeOptions="actionSearch"
+        android:inputType="text|textNoSuggestions"
+        android:queryHint="Buscar en todos..."
+        app:iconifiedByDefault="false"
+        app:queryHint="Buscar cita..." />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/citaRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyleLarge" />
+
+</LinearLayout>

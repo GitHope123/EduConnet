@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
+    android:background="?attr/colorSurfaceVariant"
     tools:context=".ui.tutor.TutorFragment">
 
     <!-- Contenedor principal -->
@@ -27,8 +27,7 @@
             android:imeOptions="actionSearch"
             android:inputType="text|textNoSuggestions"
             app:iconifiedByDefault="false"
-            app:queryHint="Buscar en todos..."
-            android:theme="@style/CustomSearchViewStyle"/>
+            app:queryHint="Buscar en todos..." />
 
         <!-- Lista de tutores -->
         <androidx.recyclerview.widget.RecyclerView

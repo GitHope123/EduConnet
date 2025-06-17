@@ -40,7 +40,6 @@ class EstudianteFragment : Fragment() {
     private fun setupUI() {
         setupSpinners()
         setupRecyclerView()
-        setupSearchView()
         setupButtons()
     }
 
@@ -102,7 +101,6 @@ class EstudianteFragment : Fragment() {
                 result.documents.mapNotNull { it.toEstudiante() }.forEach {
                     estudiantesList.add(it)
                 }
-                filtrarEstudiantes(binding.searchView.query?.toString() ?: "")
             }
             .addOnFailureListener { e ->
                 Log.e("EstudianteFragment", "Error al cargar estudiantes", e)
@@ -170,16 +168,6 @@ class EstudianteFragment : Fragment() {
             adapter = estudianteAdapter
             setHasFixedSize(true)
         }
-    }
-
-    private fun setupSearchView() {
-        binding.searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?) = true
-            override fun onQueryTextChange(newText: String?): Boolean {
-                filtrarEstudiantes(newText ?: "")
-                return true
-            }
-        })
     }
 
     private fun setupButtons() {

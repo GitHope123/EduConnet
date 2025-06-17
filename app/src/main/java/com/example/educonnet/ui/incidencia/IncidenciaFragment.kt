@@ -7,15 +7,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.educonnet.LoginActivity
 import com.example.educonnet.databinding.FragmentIncidenciaBinding
 import com.example.educonnet.ui.incidencia.estado.AdapterEstado
 import com.example.educonnet.ui.incidencia.estado.IncidenciaRepository
 import com.example.educonnet.ui.incidencia.estado.IncidenciaViewModel
+import com.example.educonnet.ui.incidencia.estado.*
 
 class IncidenciaFragment : Fragment() {
     private lateinit var incidenciaViewModel: IncidenciaViewModel
     private lateinit var idUsuario: String
+    private lateinit var chipAdapter: AdapterEstado
+    private lateinit var fragmentAdapter: FragmentAdapter
+    private var isUpdatingViewPager = false
 
     // Usamos View Binding para gestionar las vistas
     private var _binding: FragmentIncidenciaBinding? = null
@@ -32,8 +37,6 @@ class IncidenciaFragment : Fragment() {
         incidenciaViewModel.cargarIncidencias(idUsuario, IncidenciaRepository())
     }
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,17 +49,37 @@ class IncidenciaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Configurar el ViewPager y el TabLayout
-        binding.viewPager.adapter = AdapterEstado(childFragmentManager)
-        binding.tabLayout.setupWithViewPager(binding.viewPager)
+        setupChips()
+        setupViewPager()
+        init()
+    }
 
-        // Establecer la pestaña "Todos" como la predeterminada
-        binding.viewPager.post {
-            binding.viewPager.currentItem = 0
+    private fun setupChips() {
+        chipAdapter = AdapterEstado { position ->
+            if (!isUpdatingViewPager) {
+                binding.viewPager.setCurrentItem(position, true)
+            }
         }
 
-        // Inicializar el botón para agregar incidencias
-        init()
+        binding.recyclerViewChips.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = chipAdapter
+        }
+    }
+
+    private fun setupViewPager() {
+        fragmentAdapter = FragmentAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
+        binding.viewPager.adapter = fragmentAdapter
+
+        binding.viewPager.registerOnPageChangeCallback(object : androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                if (!isUpdatingViewPager) {
+                    isUpdatingViewPager = true
+                    chipAdapter.updateSelectedPosition(position)
+                    isUpdatingViewPager = false
+                }
+            }
+        })
     }
 
     private fun init() {
@@ -72,11 +95,6 @@ class IncidenciaFragment : Fragment() {
 
         // Recargar incidencias
         recargarIncidencias()
-
-        // Asegurarse de que la pestaña "Todos" esté seleccionada al volver
-        binding.viewPager.post {
-            binding.viewPager.currentItem = 0
-        }
     }
 
     private fun recargarIncidencias() {
@@ -85,6 +103,7 @@ class IncidenciaFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.viewPager.unregisterOnPageChangeCallback(object : androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback() {})
         _binding = null
     }
 }

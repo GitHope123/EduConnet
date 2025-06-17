@@ -19,12 +19,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
@@ -51,6 +48,9 @@ class BarraNavegacionActivity : AppCompatActivity(), NavigationView.OnNavigation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Cargar datos persistentes de usuario
+        SessionManager.loadUserData(this)
 
         binding = ActivityBarraNavegacionBinding.inflate(layoutInflater)
         setContentView(binding.root)

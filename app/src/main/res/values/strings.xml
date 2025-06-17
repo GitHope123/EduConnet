@@ -10,9 +10,24 @@
     <string name="menu_estudiante">Estudiantes</string>
     <string name="menu_tutor">Tutores</string>
     <string name="menu_incidencia">Incidencias</string>
+    <string name="menu_cita">Citas</string>
     <string name="menu_tutoria">Tutoria</string>
     <string name="menu_reporte">Reporte</string>
 
+    <string-array name="fechas_array">
+        <item>Todos</item>
+        <item>Hoy</item>
+        <item>Últimos 7 días</item>
+        <item>Este mes</item>
+        <item>Este año</item>
+    </string-array>
+
+    <!-- Strings para BaseIncidenciaFragment -->
+    <string name="more_incidences_title">Más incidencias disponibles</string>
+    <string name="more_incidences_message">Hay más incidencias que puedes ver. ¿Deseas cargar más?</string>
+    <string name="load_more">Cargar más</string>
+    <string name="loaded_more_incidences">Se cargaron %d incidencias más</string>
+    <string name="no_more_incidences">No hay más incidencias</string>
     <string name="app_logo">Application Logo</string>
     <string name="login_subtitle">Ingresa tus credenciales para acceder a tu cuenta</string>
     <string name="email_hint">Correo electrónico</string>
@@ -127,9 +142,19 @@
         <string name="hint_apoderado">Nombre del apoderado</string>
         <string name="hint_fecha">Fecha de la cita</string>
         <string name="hint_hora">Hora de la cita</string>
-        <string name="confirmacion_cita">Confirmo que deseo agendar esta cita</string>
+        <string name="confirmacion_cita">Confirmar cita</string>
         <string name="btn_cancelar">Cancelar</string>
         <string name="btn_enviar">Enviar</string>
+
+
+        <!-- Diálogo de detalles -->
+        <string name="titulo_detalles_cita">Detalles de la Cita</string>
+        <string name="accion_cerrar">Cerrar</string>
+
+        <!-- Mensajes predeterminados -->
+        <string name="fecha_no_disponible">Fecha no disponible</string>
+        <string name="hora_no_disponible">Hora no disponible</string>
+        <string name="motivo_no_especificado">No se especificó motivo</string>
 
 
 
@@ -143,4 +168,12 @@
     <string name="dialog_citar_titulo">Citar Apoderado</string>
     <string name="confirmacion_informe">Confirma que se completo el informe</string>
     <string name="titulo_informe">Generar Informe</string>
+    <string name="descripcion_citas">Visualiza las citas generadas</string>
+
+    <string name="apoderado_label">Apoderado:</string>
+    <string name="fecha_label">Fecha:</string>
+    <string name="hora_label">Hora:</string>
+    <string name="parentesco_label">Parentesco:</string>
+    <string name="editar">Editar</string>
+    <string name="eliminar">Eliminar</string>
 </resources>

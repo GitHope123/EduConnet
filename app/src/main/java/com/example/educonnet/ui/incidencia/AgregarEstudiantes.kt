@@ -2,7 +2,6 @@ package com.example.educonnet.ui.incidencia
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.Html
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -12,11 +11,10 @@ import android.widget.ArrayAdapter
 import android.widget.CheckedTextView
 import android.widget.LinearLayout
 import android.widget.ListView
-import android.widget.SearchView
-import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,15 +22,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.educonnet.R
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.firebase.firestore.FirebaseFirestore
-import org.bouncycastle.crypto.params.Blake3Parameters.context
 
 class AgregarEstudiantes : AppCompatActivity() {
 
     private lateinit var searchViewEstudiante: SearchView
     private lateinit var recyclerViewEstudiantes: RecyclerView
-    private lateinit var spinnerGrado: Spinner
-    private lateinit var spinnerSeccion: Spinner
+    private lateinit var spinnerGrado: MaterialAutoCompleteTextView
+    private lateinit var spinnerSeccion: MaterialAutoCompleteTextView
     private lateinit var btnContinuar: MaterialButton
     private val firestore: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
 
@@ -71,16 +69,11 @@ class AgregarEstudiantes : AppCompatActivity() {
     private fun setupSpinners() {
         val grados = arrayOf("Seleccione", "1", "2", "3", "4", "5")
         val adapterGrados = ArrayAdapter(this, R.layout.item_spinner, grados)
-        adapterGrados.setDropDownViewResource(R.layout.spinner_dropdown_item)
-        spinnerGrado.adapter = adapterGrados
+        spinnerGrado.setAdapter(adapterGrados)
 
-        spinnerGrado.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val grado = spinnerGrado.selectedItem.toString()
-                setupSeccionSpinner(grado)
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        spinnerGrado.setOnItemClickListener { _, _, position, _ ->
+            val grado = spinnerGrado.text.toString()
+            setupSeccionSpinner(grado)
         }
     }
 
@@ -92,23 +85,18 @@ class AgregarEstudiantes : AppCompatActivity() {
         }
 
         val adapterSeccion = ArrayAdapter(this, R.layout.item_spinner, secciones)
-        adapterSeccion.setDropDownViewResource(R.layout.spinner_dropdown_item)
-        spinnerSeccion.adapter = adapterSeccion
+        spinnerSeccion.setAdapter(adapterSeccion)
         spinnerSeccion.isEnabled = gradoSeleccionado != "Seleccione"
 
-        spinnerSeccion.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val grado = spinnerGrado.selectedItem.toString()
-                val seccion = spinnerSeccion.selectedItem.toString()
+        spinnerSeccion.setOnItemClickListener { _, _, _, _ ->
+            val grado = spinnerGrado.text.toString()
+            val seccion = spinnerSeccion.text.toString()
 
-                if (grado != "Seleccione" && seccion != "Seleccione") {
-                    fetchEstudiantes(grado, seccion)
-                } else {
-                    clearEstudiantes()
-                }
+            if (grado != "Seleccione" && seccion != "Seleccione") {
+                fetchEstudiantes(grado, seccion)
+            } else {
+                clearEstudiantes()
             }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
 
@@ -327,9 +315,6 @@ class AgregarEstudiantes : AppCompatActivity() {
             .setNegativeButton("Cancelar", null)
             .show()
     }
-
-
-
 
     private fun removeSelectedStudents(checkedItems: BooleanArray) {
         val studentsToRemove = mutableListOf<EstudianteAgregar>()

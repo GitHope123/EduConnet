@@ -15,26 +15,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <SearchView
+        <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_margin="8dp"
             android:background="@drawable/custom_searchview_background"
-            android:queryHint="Buscar en pendiente..."
-            android:iconifiedByDefault="false"
             android:focusable="true"
+            android:iconifiedByDefault="false"
             android:imeOptions="actionSearch"
             android:inputType="text|textNoSuggestions"
-            android:theme="@style/CustomSearchViewStyle" />
+            android:queryHint="Buscar en pendiente..."
+            app:iconifiedByDefault="false"
+            app:queryHint="Buscar en pendiente..."
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewIncidenciaPendiente"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingTop="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+        <ProgressBar
+            android:id="@+id/progressBarPaginacionPendiente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            android:visibility="gone" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

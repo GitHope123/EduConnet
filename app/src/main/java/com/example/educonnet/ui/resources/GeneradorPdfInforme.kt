@@ -118,59 +118,78 @@ class GeneradorPdfInforme(
             <body>
                 <div class="container">
                     <div class="header">
-                        <div class="title">${if(esReconocimiento) "Reporte de Reconocimiento" else "Reporte de Incidencia"}</div>
+                        <div class="title">${if (esReconocimiento) "Reporte de Reconocimiento" else "Reporte de Incidencia"}</div>
                         <div class="subtitle">${incidencia.fecha} - ${incidencia.hora} | Sistema EduConnet</div>
                     </div>
-                    
-<div class="section">
-    <div class="section-title">Información Principal</div>
-    ${if(esReconocimiento) """
-    <table class="compact-table">
-        <tr>
-            <td style="width: 50%;"><span class="info-label">Estudiante</span> <span class="info-value">${incidencia.nombreEstudiante} ${incidencia.apellidoEstudiante}</span></td>
-            <td style="width: 50%;"><span class="info-label">Grado/Sección</span> <span class="info-value">${incidencia.grado}° ${incidencia.seccion}</span></td>
-        </tr>
-        <tr>
-            <td colspan="2"><span class="info-label">Tipo</span> <span class="info-value">${incidencia.tipo}</span></td>
-        </tr>
-        <tr>
-            <td colspan="2"><span class="info-label">Contacto apoderado</span> <span class="info-value">${incidencia.celularApoderado}</span></td>
-        </tr>
-    </table>
-    """ else """
-    <table class="compact-table">
-        <tr>
-            <td style="width: 50%;"><span class="info-label">Estudiante</span> <span class="info-value">${incidencia.nombreEstudiante} ${incidencia.apellidoEstudiante}</span></td>
-            <td style="width: 50%;"><span class="info-label">Grado/Sección</span> <span class="info-value">${incidencia.grado}° ${incidencia.seccion}</span></td>
-        </tr>
-        <tr>
-            <td style="width: 50%;"><span class="info-label">Tipo</span> <span class="info-value">${incidencia.tipo}</span></td>
-            <td style="width: 50%;"><span class="info-label">Nivel</span> 
-                <span class="info-value">
-                    <span class="badge ${if (incidencia.atencion.contains("Urgente")) "badge-urgent" else ""}">
-                        ${incidencia.atencion}
-                    </span>
-                </span>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2"><span class="info-label">Contacto apoderado</span> <span class="info-value">${incidencia.celularApoderado}</span></td>
-        </tr>
-    </table>
-    """}
-</div>
+
                     <div class="section">
-                        <div class="section-title">${if(esReconocimiento) "Detalles del Reconocimiento" else "Detalles de la Incidencia"}</div>
+                        <div class="section-title">Información Principal</div>
+                        ${if (esReconocimiento) """
+                        <table class="compact-table">
+                            <tr>
+                                <td style="width: 50%;">
+                                    <span class="info-label">Estudiante</span>
+                                    <span class="info-value">${incidencia.nombreEstudiante} ${incidencia.apellidoEstudiante}</span>
+                                </td>
+                                <td style="width: 50%;">
+                                    <span class="info-label">Grado/Sección</span>
+                                    <span class="info-value">${incidencia.grado}° ${incidencia.seccion}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <span class="info-label">Tipo</span>
+                                    <span class="info-value">${incidencia.tipo}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <span class="info-label">Contacto apoderado</span>
+                                    <span class="info-value">${incidencia.celularApoderado}</span>
+                                </td>
+                            </tr>
+                        </table>
+                        """ else """
+                        <table class="compact-table">
+                            <tr>
+                                <td style="width: 50%;">
+                                    <span class="info-label">Estudiante</span>
+                                    <span class="info-value">${incidencia.nombreEstudiante} ${incidencia.apellidoEstudiante}</span>
+                                </td>
+                                <td style="width: 50%;">
+                                    <span class="info-label">Grado/Sección</span>
+                                    <span class="info-value">${incidencia.grado}° ${incidencia.seccion}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 50%;">
+                                    <span class="info-label">Tipo</span>
+                                    <span class="info-value">${incidencia.tipo}</span>
+                                </td>
+                                <td style="width: 50%;">
+                                    <span class="info-label">Nivel</span>
+                                    <span class="info-value">
+                                        <span class="badge ${if (incidencia.atencion.contains("Urgente")) "badge-urgent" else ""}">
+                                            ${incidencia.atencion}
+                                        </span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <span class="info-label">Contacto apoderado</span>
+                                    <span class="info-value">${incidencia.celularApoderado}</span>
+                                </td>
+                            </tr>
+                        </table>
+                        """}
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">${if (esReconocimiento) "Detalles del Reconocimiento" else "Detalles de la Incidencia"}</div>
                         <div class="highlight-box">
                             ${incidencia.detalle.replace("\n", "<br>")}
                         </div>
-                        ${if (!incidencia.imageUri.isNullOrEmpty()) """
-                            <table class="data-table">
-                                <tr>
-                                    <td><span class="info-label">Evidencia adjunta</span><span class="info-value">Documento disponible en el sistema</span></td>
-                                </tr>
-                            </table>
-                        """ else ""}
                     </div>
 
                     ${if (informe != null) """
@@ -178,10 +197,22 @@ class GeneradorPdfInforme(
                         <div class="section-title">Informe de Seguimiento</div>
                         <table class="compact-table">
                             <tr>
-                                <td style="width: 25%;"><span class="info-label">Fecha</span><span class="info-value">${informe.createFecha ?: "N/A"}</span></td>
-                                <td style="width: 25%;"><span class="info-label">Hora</span><span class="info-value">${informe.createHora ?: "N/A"}</span></td>
-                                <td style="width: 25%;"><span class="info-label">Apoderado</span><span class="info-value">${informe.apoderado ?: "N/A"}</span></td>
-                                <td style="width: 25%;"><span class="info-label">Relación</span><span class="info-value">${informe.relacionFamiliar ?: "N/A"}</span></td>
+                                <td style="width: 25%;">
+                                    <span class="info-label">Fecha</span>
+                                    <span class="info-value">${informe.createFecha ?: "N/A"}</span>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span class="info-label">Hora</span>
+                                    <span class="info-value">${informe.createHora ?: "N/A"}</span>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span class="info-label">Apoderado</span>
+                                    <span class="info-value">${informe.apoderado ?: "N/A"}</span>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span class="info-label">Relación</span>
+                                    <span class="info-value">${informe.relacionFamiliar ?: "N/A"}</span>
+                                </td>
                             </tr>
                         </table>
                         <div class="section-title">Acuerdos y conclusiones</div>

@@ -10,9 +10,9 @@
     app:strokeWidth="0.5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:padding="8dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_height="wrap_content">
 
         <!-- CheckBox en la esquina derecha -->
         <CheckBox

@@ -7,20 +7,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import com.example.educonnet.LoginActivity
+import androidx.lifecycle.ViewModelProvider
+import com.example.educonnet.R
 import com.example.educonnet.databinding.FragmentPerfilBinding
+import com.example.educonnet.ui.incidencia.AgregarEstudiantes
+import com.example.educonnet.ui.incidencia.IncidenciaFragment
+import com.example.educonnet.ui.tutoria.cita.CitaActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class PerfilFragment : Fragment() {
 
     private var _binding: FragmentPerfilBinding? = null
     private val binding get() = _binding!!
+    private lateinit var viewModel: PerfilViewModel
 
     // Registro para manejar el resultado de la actividad de edición
     private val editProfileLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        // Actualizar datos cuando regresamos de editar
-        updateUserDataFromGlobal()
+    ) {
+        viewModel.loadUserData()
     }
 
     override fun onCreateView(
@@ -29,36 +34,59 @@ class PerfilFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPerfilBinding.inflate(inflater, container, false)
+        viewModel = ViewModelProvider(this)[PerfilViewModel::class.java]
+
         setupEditButton()
-        loadProfessorData()
+        observeUserData()
         return binding.root
     }
 
-    private fun updateUserDataFromGlobal() {
-        val globalData = LoginActivity.GlobalData
-        binding.profileName.text = "${globalData.nombresUsuario} ${globalData.apellidosUsuario}"
-        binding.profilePhone.text = globalData.celularUsuario.toString()
-        binding.profileEmail.text = globalData.correoUsuario
-    }
+    private fun observeUserData() {
+        viewModel.userData.observe(viewLifecycleOwner) { userData ->
+            binding.profileName.text = "${userData.nombre} ${userData.apellido}"
+            binding.profilePhone.text = userData.celular
+            binding.profileEmail.text = userData.correo
 
-    private fun loadProfessorData() {
-        updateUserDataFromGlobal()
+            setupQuickAccessButtons(userData.isTutor)
+        }
     }
 
     private fun setupEditButton() {
         binding.btnEditar.setOnClickListener {
-            val globalData = LoginActivity.GlobalData
-            val intent = Intent(requireContext(), EditPerfil::class.java).apply {
-                putExtra("nombre", globalData.nombresUsuario)
-                putExtra("apellido", globalData.apellidosUsuario)
-                putExtra("celular", globalData.celularUsuario.toString())
-                putExtra("correo", globalData.correoUsuario)
-                putExtra("password", globalData.passwordUsuario)
-                putExtra("id", globalData.idUsuario)
-                putExtra("isTutor", globalData.tutor)
+            viewModel.userData.value?.let { userData ->
+                val intent = Intent(requireContext(), EditPerfil::class.java).apply {
+                    putExtra("nombre", userData.nombre)
+                    putExtra("apellido", userData.apellido)
+                    putExtra("celular", userData.celular)
+                    putExtra("correo", userData.correo)
+                    putExtra("password", userData.password)
+                    putExtra("id", userData.id)
+                    putExtra("isTutor", userData.isTutor)
+                }
+                editProfileLauncher.launch(intent)
             }
-            editProfileLauncher.launch(intent)
         }
+    }
+
+    private fun setupQuickAccessButtons(isTutor: Boolean) {
+        // Botón para generar incidencia
+        binding.btnSeleccionarEstudiante.setOnClickListener {
+            val intent = Intent(requireContext(), AgregarEstudiantes::class.java)
+            startActivity(intent)
+        }
+
+        // Botón para ver citas: visible solo si es tutor
+        if (isTutor) {
+            binding.btnVerCitas.visibility = View.VISIBLE
+            binding.btnVerCitas.setOnClickListener {
+                val intent = Intent(requireContext(), CitaActivity::class.java)
+                startActivity(intent)
+            }
+        } else {
+            binding.btnVerCitas.visibility = View.GONE
+        }
+
+
     }
 
     override fun onDestroyView() {

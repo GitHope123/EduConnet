@@ -1,0 +1,26 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="?attr/colorPrimary">  <!-- Color adaptable al tema -->
+
+    <!-- 4 cuadrados equidistantes (representando "todos los elementos") -->
+    <group>
+        <!-- Fila superior -->
+        <path
+            android:fillColor="#FF000000"
+        android:pathData="M5,5h6v6H5z"/>
+        <path
+            android:fillColor="#FF000000"
+            android:pathData="M13,5h6v6H13z"/>
+
+        <!-- Fila inferior -->
+        <path
+            android:fillColor="#FF000000"
+            android:pathData="M5,13h6v6H5z"/>
+        <path
+            android:fillColor="#FF000000"
+            android:pathData="M13,13h6v6H13z"/>  <!-- Cuadrado inferior derecho -->
+    </group>
+</vector>

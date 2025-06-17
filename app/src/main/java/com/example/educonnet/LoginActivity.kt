@@ -11,6 +11,7 @@ import com.example.educonnet.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import android.content.Context
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -25,6 +26,9 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         window.statusBarColor = ContextCompat.getColor(this, R.color.md_theme_primary)
         setContentView(binding.root)
+
+        // Cargar datos persistentes de usuario
+        SessionManager.loadUserData(this)
 
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
@@ -67,6 +71,8 @@ class LoginActivity : AppCompatActivity() {
             datoTipoUsuario = userType
             idUsuario = "Administrador"
         }
+        // Guardar datos persistentes
+        SessionManager.saveUserData(this, GlobalData)
         navigateToMainActivity()
     }
 
@@ -109,7 +115,9 @@ class LoginActivity : AppCompatActivity() {
                 passwordUsuario = document.getString("password") ?: ""
             }
 
+            // Guardar datos persistentes
             withContext(Dispatchers.Main) {
+                SessionManager.saveUserData(this@LoginActivity, GlobalData)
                 navigateToMainActivity()
             }
         }
@@ -130,7 +138,6 @@ class LoginActivity : AppCompatActivity() {
     private fun showError(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
-
     companion object GlobalData {
         var datoTipoUsuario: String = ""
         var idUsuario: String = ""

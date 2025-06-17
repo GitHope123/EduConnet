@@ -39,7 +39,6 @@ import com.google.android.material.textview.MaterialTextView
 import com.google.firebase.firestore.FirebaseFirestore
 import java.io.File
 
-
 class TutoriaAdapter(
     private var listaTutorias: MutableList<TutoriaClass>,
     private val updateCallback: TutoriaUpdateCallback
@@ -58,7 +57,12 @@ class TutoriaAdapter(
         private val textViewEstado: Chip = binding.textViewEstadoTutoria
         private val buttonMore: MaterialButton = binding.buttonMore
         val rootView: View = binding.root
-
+        fun updateData(newListTutoria: List<TutoriaClass>) {
+            val uniqueTutorias = newListTutoria.distinctBy { it.id }
+            listaTutorias.clear()
+            listaTutorias.addAll(uniqueTutorias)
+            notifyDataSetChanged()
+        }
         @SuppressLint("ResourceAsColor")
         fun bind(tutoria: TutoriaClass) {
             // Configuración de datos
@@ -309,9 +313,9 @@ class TutoriaAdapter(
                     textViewEstado.chipStrokeColor = ContextCompat.getColorStateList(context, R.color.md_theme_light_error)
                 }
                 "Revisado" -> {
-                    textViewEstado.setChipBackgroundColorResource(R.color.md_theme_light_tertiaryContainer)
-                    textViewEstado.setTextColor(ContextCompat.getColor(context, R.color.md_theme_light_onTertiaryContainer))
-                    textViewEstado.chipStrokeColor = ContextCompat.getColorStateList(context, R.color.md_theme_light_tertiary)
+                    textViewEstado.setChipBackgroundColorResource(R.color.md_theme_light_tertiaryContainerGreen)
+                    textViewEstado.setTextColor(ContextCompat.getColor(context, R.color.md_theme_light_onTertiaryContainerGreen))
+                    textViewEstado.chipStrokeColor = ContextCompat.getColorStateList(context, R.color.md_theme_light_tertiaryGreen)
                 }
                 "Completado" -> {
                     textViewEstado.setChipBackgroundColorResource(R.color.md_theme_light_tertiaryContainerBlue)
@@ -323,6 +327,11 @@ class TutoriaAdapter(
                     textViewEstado.setTextColor(ContextCompat.getColor(context, R.color.md_theme_light_onTertiaryContainerYellow))
                     textViewEstado.chipStrokeColor = ContextCompat.getColorStateList(context, R.color.md_theme_light_tertiaryYellow)
                 }
+                "Citado" -> {
+                    textViewEstado.setChipBackgroundColorResource(R.color.md_theme_light_tertiaryContainerBlue)
+                    textViewEstado.setTextColor(ContextCompat.getColor(context, R.color.md_theme_light_onTertiaryContainerBlue))
+                    textViewEstado.chipStrokeColor = ContextCompat.getColorStateList(context, R.color.md_theme_light_tertiaryBlue)
+                }
                 else -> {
                     textViewEstado.setChipBackgroundColorResource(R.color.md_theme_light_secondaryContainer)
                     textViewEstado.setTextColor(ContextCompat.getColor(context, R.color.md_theme_light_onSecondaryContainer))
@@ -333,13 +342,18 @@ class TutoriaAdapter(
 
         private fun getAlertColor(gravedad: String): Int {
             val context = binding.root.context
-            return when (gravedad) {
-                "Moderado" -> ContextCompat.getColor(context, R.color.md_theme_light_primary)
-                "Urgente" -> ContextCompat.getColor(context, R.color.color_orange)
-                "Muy urgente" -> ContextCompat.getColor(context, R.color.md_theme_light_error)
+
+            // Asegura que la alerta se muestre inicialmente
+            imagenViewAlerta.visibility = View.VISIBLE
+
+            return when (gravedad.trim().lowercase()) {
+                "moderado" -> ContextCompat.getColor(context, R.color.md_theme_light_primary)
+                "urgente" -> ContextCompat.getColor(context, R.color.color_orange)
+                "muy urgente" -> ContextCompat.getColor(context, R.color.md_theme_light_error)
                 else -> {
+                    // Oculta el icono de alerta solo si la gravedad no coincide
                     imagenViewAlerta.visibility = View.GONE
-                    ContextCompat.getColor(context, R.color.md_theme_light_error)
+                    ContextCompat.getColor(context, R.color.md_theme_light_error) // Valor por defecto
                 }
             }
         }

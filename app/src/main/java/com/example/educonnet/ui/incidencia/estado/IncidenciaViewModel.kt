@@ -30,11 +30,11 @@ class IncidenciaViewModel : ViewModel() {
 
     fun filtrarIncidenciasPorEstado(estado: String) {
         _incidenciasLiveData.value?.let { incidencias ->
-            val incidenciasFiltradas = if (estado.isEmpty()) {
-                // Si no hay estado, mostrar todas
+            val incidenciasFiltradas = if (estado == "Todos") {
+                // Si el estado es "Todos", mostrar todas las incidencias
                 incidencias
             } else {
-                // Filtrar por estado
+                // Filtrar por estado específico
                 incidencias.filter { it.estado == estado }
             }
 
