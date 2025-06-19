@@ -39,6 +39,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            proguardFile("${buildDir}/outputs/mapping/release/missing_rules.txt")
         }
         debug {
             isDebuggable = true
@@ -131,6 +132,9 @@ dependencies {
 
     // PDF Generation
     implementation("com.itextpdf:itext7-core:8.0.2")
+    implementation("org.bouncycastle:bcprov-jdk15on:1.70")
+    implementation("com.itextpdf.bouncycastle:itext7-bouncycastle-adapter:8.0.2")
+    implementation("org.slf4j:slf4j-simple:2.0.9")
 
     // Compose
     implementation(platform("androidx.compose:compose-bom:2024.02.00"))

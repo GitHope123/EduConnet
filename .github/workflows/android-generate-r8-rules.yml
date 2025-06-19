@@ -1,0 +1,32 @@
+name: Generate R8 Rules
+
+on:
+  workflow_dispatch:
+
+jobs:
+  generate-rules:
+    name: Generate Missing R8 Rules
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build with R8 rules generation
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: Upload missing rules
+        uses: actions/upload-artifact@v4
+        with:
+          name: missing-r8-rules
+          path: app/build/outputs/mapping/release/missing_rules.txt 
