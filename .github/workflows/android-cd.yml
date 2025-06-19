@@ -9,6 +9,10 @@ jobs:
   deploy:
     name: Build and Release Signed APK
     runs-on: ubuntu-latest
+    env:
+      KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
     steps:
       - name: Checkout Repository
@@ -24,8 +28,8 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Copy keystore to app directory
-        run: cp my-release-key.jks app/my-release-key.jks
+      - name: Decode keystore from secrets
+        run: echo "${{ secrets.SIGNING_KEY }}" | base64 --decode > app/my-release-key.jks
 
       - name: Build Release APK
         run: ./gradlew assembleRelease

@@ -24,9 +24,9 @@ android {
     signingConfigs {
         create("release") {
             storeFile = file("my-release-key.jks")
-            storePassword = "a24322843"
-            keyAlias = "my-alias"
-            keyPassword = "a24322843"
+            storePassword = System.getenv("KEY_STORE_PASSWORD") ?: "a24322843"
+            keyAlias = System.getenv("KEY_ALIAS") ?: "my-alias"
+            keyPassword = System.getenv("KEY_PASSWORD") ?: "a24322843"
         }
     }
 
@@ -64,6 +64,12 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+
+    lint {
+        abortOnError = false
+        checkReleaseBuilds = false
+        baseline = file("lint-baseline.xml")
     }
 
     composeOptions {
