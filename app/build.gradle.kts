@@ -39,7 +39,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            proguardFile("${buildDir}/outputs/mapping/release/missing_rules.txt")
         }
         debug {
             isDebuggable = true
@@ -59,6 +58,12 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+        compose = true
+    }
+
+    composeOptions {
+        // Actualizada para ser compatible con Kotlin 1.9.22
+        kotlinCompilerExtensionVersion = "1.5.8"
     }
 
     packaging {
@@ -72,14 +77,10 @@ android {
         checkReleaseBuilds = false
         baseline = file("lint-baseline.xml")
     }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
 }
 
 dependencies {
-    // Core Library Desugaring - Updated to 2.0.4
+    // Core Library Desugaring
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
     // Core Android
@@ -104,7 +105,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-storage")
 
-    // Play Services - Updated to latest versions
+    // Play Services
     implementation("com.google.android.gms:play-services-tasks:18.3.0")
     implementation("com.google.android.gms:play-services-basement:18.7.0")
 
@@ -117,27 +118,43 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.50")
     kapt("com.google.dagger:hilt-android-compiler:2.50")
 
+    // Agregar estas dependencias en la sección dependencies de tu build.gradle.kts
+
+// JSoup para parsing HTML
+    implementation("org.jsoup:jsoup:1.17.2")
+
+// Para conversión HTML a PDF (iText html2pdf)
+    implementation("com.itextpdf:html2pdf:5.0.1")
+
+// Si prefieres usar una alternativa más moderna para HTML a PDF:
+// implementation("org.xhtmlrenderer:flying-saucer-pdf:9.1.22")
+// implementation("org.xhtmlrenderer:flying-saucer-core:9.1.22")
+
     // Glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
-    implementation(libs.firebase.firestore)
-    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+    kapt("com.github.bumptech.glide:compiler:4.16.0")
 
     // Animations
     implementation("androidx.dynamicanimation:dynamicanimation:1.1.0")
     implementation("com.mikhaellopez:circularprogressbar:3.1.0")
 
-    // PDF and HTML
-    implementation("com.itextpdf:html2pdf:4.0.4")
-    implementation("org.jsoup:jsoup:1.15.4")
+    // PDF Generation - Alternative approach without problematic BouncyCastle dependency
+    implementation("com.itextpdf:itext7-core:7.2.5")
+    implementation("com.itextpdf:kernel:7.2.5")
+    implementation("com.itextpdf:io:7.2.5")
+    implementation("com.itextpdf:layout:7.2.5")
 
-    // PDF Generation
-    implementation("com.itextpdf:itext7-core:8.0.2")
+    // Alternative: Use standard BouncyCastle instead of iText's adapter
     implementation("org.bouncycastle:bcprov-jdk15on:1.70")
-    implementation("com.itextpdf.bouncycastle:itext7-bouncycastle-adapter:8.0.2")
+    implementation("org.bouncycastle:bcpkix-jdk15on:1.70")
+
+    // If you need the iText BouncyCastle adapter, use a local file:
+    // implementation files('libs/itext7-bouncycastle-adapter-7.2.5.jar')
+
     implementation("org.slf4j:slf4j-simple:2.0.9")
 
-    // Compose
-    implementation(platform("androidx.compose:compose-bom:2024.02.00"))
+    // Compose - Actualizado BOM y versiones
+    implementation(platform("androidx.compose:compose-bom:2024.04.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -147,7 +164,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.02.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.04.01"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")

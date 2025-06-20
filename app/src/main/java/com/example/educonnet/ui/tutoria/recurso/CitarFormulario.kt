@@ -327,7 +327,7 @@ class CitarFormulario private constructor() {
             val db = FirebaseFirestore.getInstance()
 
             db.runTransaction { transaction ->
-                val citaRef = db.collection("Cita").document(cita.idCita)
+                val citaRef = db.collection("Cita").document(cita.idCita.toString())
                 val tutoriaRef = db.collection("Incidencia").document(tutoria.id)
 
                 // Verificar que la tutoría aún existe y no ha sido citada
