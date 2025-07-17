@@ -87,64 +87,71 @@
 ## 🗃️ Estructura de Colecciones en Firebase
 
 ```plaintext
-📁 Estudiante {
-  "idEstudiante": "string", // ID generado por Firebase
-  "nombres": "string",
-  "apellidos": "string",
-  "celularApoderado": "int",
-  "grado": "int",
-  "seccion": "string",
-  "cantidadIncidencias": "int"
+// Firebase DBML
+Estudiante {
+  idEstudiante varchar [pk] // generado pro firebase
+  nombres varchar
+  apellidos varchar
+  celularApoderado int
+  grado int
+  seccion varchar
+  cantidadIncidencias int
 }
 
-📁 Incidencia {
-  "id": "string", // ID generado por Firebase
-  "nombreEstudiante": "string",
-  "apellidoEstudiante": "string",
-  "celularApoderado": "int",
-  "grado": "int",
-  "nivel": "string", // Equivalente a grado académico
-  "seccion": "string", // Ejemplo: A, B, C, D
-  "fecha": "string", // Formato ISO (YYYY-MM-DD)
-  "hora": "string", // HH:mm:ss
-  "tipo": "string", // "Positiva" | "Negativa"
-  "estado": "string", // "Pendiente" | "Revisado" | "Notificado" | "Citado" | "Completado"
-  "atencion": "string", // Gravedad de la incidencia (solo si es negativa)
-  "urlImagen": "string", // URL desde Firebase Storage
-  "idProfesor": "string",
-  "nombreProfesor": "string",
-  "apellidoProfesor": "string",
-  "cargo": "string"
+Incidencia {
+  id varchar [pk] // id generado por firebase
+  nombreEstudiante varchar
+  apellidoEstudiante varchar
+  celularApoderado int
+  grado int
+  nivel varchar
+  seccion varcha // A B C D ... // lista(como comentario) conductual: el estudian...
+  fecha varchar
+  hora varchar
+  tipo varchar // reconocimiento o falta
+  estado varchar // pendiente(0%), revisado(25%), notificado(50%), citado (75%), completado (100%)
+  atencion varchar // moderado, grave y muy grave
+  urlImagen varchar
+  idProfesor varchar
+  nombreProfesor varchar
+  apellidoProfesor varchar
+  cargo varchar
+}
+Cita{
+  idCita varchar
+  createFecha varchar
+  apoderado varchar
+  fechaCita varchar
+  hora varchar
+}
+Informe{
+  idInforme varchar
+  createFecha varchar
+  detalles varchar
+  apoderado varchar
+  relacionFamiliar varchar
 }
 
-📁 Cita {
-  "idCita": "string",
-  "createFecha": "string", // Fecha de creación de la cita (ISO)
-  "apoderado": "string",
-  "fechaCita": "string", // Fecha programada de la cita (ISO)
-  "hora": "string" // Hora programada de la cita
+Profesor {
+  idProfesor varchar [pk] // generado por firebase 
+  nombres varchar
+  apellidos varchar
+  celular int
+  correo varchar
+  dni int
+  grado int
+  seccion varchar [null]
+  cargo varchar
+  password varchar
+  tutor booleam
 }
-
-📁 Informe {
-  "idInforme": "string",
-  "createFecha": "string", // Fecha de generación del informe (ISO)
-  "detalles": "string",
-  "apoderado": "string",
-  "relacionFamiliar": "string"
-}
-
-📁 Profesor {
-  "idProfesor": "string", // ID generado por Firebase
-  "nombres": "string",
-  "apellidos": "string",
-  "celular": "int",
-  "correo": "string",
-  "dni": "int",
-  "grado": "int",
-  "seccion": "string", // Puede ser null
-  "cargo": "string",
-  "password": "string", // Hash almacenado en Firebase
-  "tutor": "boolean" // true o false
+Diagnostico {
+  idDiagnostico varchar [pk]
+  idIncidencia varchar
+  fecha varchar
+  hora varchar
+  factores float[] // [minuciosidad, emocionalidad, agresividad, dependiente, temerosidad]
+  diagnosticoFinal varchar
 }
 ```
 ---
