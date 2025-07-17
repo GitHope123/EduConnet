@@ -18,7 +18,7 @@
 - ✅ Descripción detallada de cada caso.
 - 👦 Relación con estudiantes por nombre, grado y sección.
 - 🏷️ Clasificación avanzada:
-  - **Tipo:** `Positiva` | `Negativa`
+  - **Tipo:** `Reconocimiento` | `Falta`
   - **Estado:** `Pendiente` → `Revisado` → `Notificado` → `Citado` → `Completado`
   - **Gravedad:** (en casos negativos)
 - 🕓 Fecha y hora automáticas.
