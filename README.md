@@ -89,7 +89,7 @@
 ```plaintext
 // Firebase DBML
 Estudiante {
-  idEstudiante varchar [pk] // generado pro firebase
+  idEstudiante varchar [pk] // generado por firebase
   nombres varchar
   apellidos varchar
   celularApoderado int
